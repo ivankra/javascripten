@@ -1,0 +1,3 @@
+[submodule "bench/octane"]
+	path = bench/octane
+	url = https://github.com/chromium/octane.git
