@@ -1,36 +1,23 @@
-# JIT-less build of V8.
+# Build of V8 from Chromium's tree with profile-guided optimizations.
 
 FROM javascripten-debian:stable
 
-ARG JS_REPO=https://chromium.googlesource.com/v8/v8.git
+# lkgr='last known good revision'
+ARG JS_COMMIT=lkgr
 
 WORKDIR /work
 RUN git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git /work/depot_tools
 ENV PATH=/work/depot_tools:$PATH
 
-RUN fetch --nohooks --nohistory v8
+# Fetch source with pgo profiles (for is_official_build=true)
+RUN gclient config --name src https://chromium.googlesource.com/chromium/src.git --unmanaged --custom-var=checkout_pgo_profiles=True
+RUN gclient sync --no-history --revision "src@${JS_COMMIT}"
 
-# lkgr='last known good revision'
-#ARG JS_COMMIT=lkgr
-ARG JS_COMMIT=14.2.3
-RUN gclient sync --no-history --revision "v8@${JS_COMMIT}"
-
-WORKDIR /work/v8
+WORKDIR /work/src
 
 # Build deps
 RUN sed -i -e 's/ stable-updates$/ stable-updates bookworm/' /etc/apt/sources.list.d/debian.sources  # for the missing libpcre3-dev in trixie
-RUN build/install-build-deps.sh --no-prompt
-
-# Can do basic x64 build, but no customizations, fails for arm64 on linux
-#RUN tools/dev/gm.py x64.release-d8
-
-# Build clang - no pre-built linux arm64 toolchain for third_party/llvm-build
-#RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/') && \
-#    if [ $ARCH = "arm64" ]; then \
-#      python build/linux/sysroot_scripts/install-sysroot.py --arch="$ARCH" && \
-#      tools/clang/scripts/build.py --without-android --without-fuchsia --host-cc=gcc --host-cxx=g++ --use-system-cmake --disable-asserts --with-ml-inliner-model=""; \
-#    fi
-#RUN tools/rust/build_rust.py  # fails on linux arm64 => enable_rust=false
+RUN /work/src/build/install-build-deps.sh --no-prompt
 
 # Use debian's clang for //build/toolchain/linux/unbundle
 RUN apt-get update -y && apt-get install -y clang lld rustc cargo
@@ -50,9 +37,7 @@ RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/') && \
         use_sysroot=false; \
       fi; \
       # Full release build, trim some fat. \
-      # PGO profiles not available => chrome_pgo_phase=0 \
       echo \
-        chrome_pgo_phase=0 \
         dcheck_always_on=false \
         is_component_build=false \
         is_debug=false \
@@ -68,17 +53,11 @@ RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/') && \
         v8_enable_webassembly=false \
         v8_target_cpu='"'$ARCH'"' \
         v8_use_external_startup_data=false; \
-      # Disable JIT compilers \
-      echo \
-        v8_jitless=true \
-        v8_enable_sparkplug=false \
-        v8_enable_maglev=false \
-        v8_enable_turbofan=false; \
     } | tr ' ' '\n' >out/release/args.gn
 
 RUN gn gen out/release/
 RUN autoninja -C out/release/ d8
 
-ENV JS_BINARY=/work/v8/out/release/d8
+ENV JS_BINARY=/work/src/out/release/d8
 RUN ${JS_BINARY} -e 'console.log(version())' >version
 CMD ${JS_BINARY}

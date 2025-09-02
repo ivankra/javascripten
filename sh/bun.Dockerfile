@@ -1,10 +1,10 @@
-# Bun: JavaScriptCore-based runtime written in Zig.
-# Supports TypeScript out of the box.
+# JavaScriptCore-based JS/TS runtime written in Zig.
 #
-# URL: https://github.com/nodejs/node
+# URL: https://github.com/oven-sh/bun
 
 FROM javascripten-sh
 
-# Precompiled release: npm install bun
-ENV JS_BINARY_LINK=/opt/node/bin/bun
-CMD ${JS_BINARY_LINK} repl
+# Precompiled release from `npm install bun`
+ENV JS_BINARY=/opt/node/bin/bun
+RUN ${JS_BINARY} -v | egrep -o '[0-9.]+.*' >version
+CMD ${JS_BINARY} repl

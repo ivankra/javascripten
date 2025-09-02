@@ -1,3 +1,8 @@
+# JIT-less build of SpiderMonkey
+#
+# Like --no-jit-backend flag.
+# XXX not same as --no-ion --no-baseline --no-asmjs --no-native-regexp
+
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/mozilla-firefox/firefox
@@ -24,4 +29,5 @@ RUN MOZCONFIG=/work/MOZCONFIG ./mach build
 RUN ln -s obj-*/ obj
 
 ENV JS_BINARY=/work/obj/dist/bin/js
+RUN ${JS_BINARY} -v | egrep -o [0-9.]+ >version
 CMD ${JS_BINARY}

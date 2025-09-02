@@ -1,3 +1,13 @@
+# JavaScript engine in pure Go
+#
+# URL:      https://github.com/robertkrimen/otto
+# Standard: ES5, non-compliant regex
+# Tech:     tree-walker
+# Language: Go
+# License:  MIT
+# LOC:      26462 (cloc --fullpath --not_match_f="(?i)(test)" .)
+# Timeline: 2012-
+
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/robertkrimen/otto.git

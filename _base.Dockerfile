@@ -16,20 +16,26 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
         autoconf \
+        automake \
         bash \
         bison \
         build-essential \
         ca-certificates \
+        clang \
         cloc \
         cmake \
         curl \
         file \
         findutils \
         flex \
+        gdb \
+        gettext \
         git \
         gperf \
         gzip \
         less \
+        libtool \
+        llvm \
         locales \
         lsb-release \
         make \
@@ -49,11 +55,8 @@ RUN apt-get update -y && \
         vim \
         wget \
         xz-utils \
-        zip
+        zip && \
+    echo "en_US.UTF-8 UTF-8" >/etc/locale.gen && \
+    locale-gen
 
-RUN apt-get install -y --no-install-recommends \
-        libedit-dev \
-        libpcre2-dev \
-        libreadline-dev
-
-# TODO: clang llvm gdb libtool gettext, set up locale
+# TODO: clang-21 lld python3-pip python3-psutil cargo rustc cbindgen

@@ -1,3 +1,40 @@
+# JavaScript engine of Firefox.
+#
+# URL:      https://spidermonkey.dev/
+# Standard: ESnext
+# Tech:     stack VM, 2-tier JIT, irregexp
+# Language: C++
+# License:  MPL-2.0
+# Org:      Mozilla
+# LOC:      1028123 (cloc --not_match_d="(?i)(test|octane)" js/src)
+#
+# Timeline: 1996-
+#   * 1996: Nescape Navigator 2.0
+#     * Traces history all the way back to the first browser with JavaScript.
+#   * 2008: TraceMonkey - tracing JIT compiler for hot loops
+#   * 2010: JägerMonkey - method JIT
+#     * https://hacks.mozilla.org/2010/03/improving-javascript-performance-with-jagermonkey/
+#   * 2012: IonMonkey - SSA-based optimizing compiler
+#   * 2013: Baseline JIT - method JIT
+#     * Inline caching, collects type information
+#     * https://blog.mozilla.org/javascript/2013/04/05/the-baseline-compiler-has-landed/
+#   * 2014: irregexp engine from V8
+#     * https://hacks.mozilla.org/2020/06/a-new-regexp-engine-in-spidermonkey/
+#   * 2019: Baseline Interpreter
+#     * https://hacks.mozilla.org/2019/08/the-baseline-interpreter-a-faster-js-interpreter-in-firefox-70/
+#   * 2020: WarpMonkey
+#
+# VM: https://github.com/mozilla-firefox/firefox/blob/main/js/src/vm/Interpreter.cpp
+#     https://github.com/mozilla-firefox/firefox/blob/main/js/src/vm/Opcodes.h
+# GC: https://firefox-source-docs.mozilla.org/js/gc.html
+#
+# Build instructions: https://firefox-source-docs.mozilla.org/js/build.html
+# Run './js/src/configure --help' for configure options.
+# Full binary: 35.4M (stripped arm64)
+# --with-system-icu => 18.2M
+# --without-intl-api --disable-icu4x => 14.9M
+# --without-intl-api --disable-icu4x --disable-jit => 12.7M
+
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/mozilla-firefox/firefox
@@ -24,12 +61,5 @@ RUN MOZCONFIG=/work/MOZCONFIG ./mach build
 RUN ln -s obj-*/ obj
 
 ENV JS_BINARY=/work/obj/dist/bin/js
+RUN ${JS_BINARY} -v | egrep -o [0-9.]+ >version
 CMD ${JS_BINARY}
-
-# https://firefox-source-docs.mozilla.org/js/build.html
-# Run './js/src/configure --help' for configure options.
-# Baseline: 35.4M (stripped arm64)
-# --with-system-icu => 18.2M
-# --without-intl-api --disable-icu4x => 14.9M
-# --without-intl-api --disable-icu4x --disable-jit => 12.7M
-# TODO: heredoc

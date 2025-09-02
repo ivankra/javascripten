@@ -1,3 +1,13 @@
+# JavaScript engine in pure Go.
+#
+# URL:      https://github.com/dop251/goja
+# Standard: ES5, some ES6
+# Tech:     stack VM
+# Language: Go
+# License:  MIT
+# LOC:      46141 (cloc --fullpath --not_match_f="(?i)(test)" .)
+# Timeline: 2016-
+
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/dop251/goja.git

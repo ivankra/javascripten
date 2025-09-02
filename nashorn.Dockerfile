@@ -1,3 +1,14 @@
+# JavaScript engine bundled with JDK 8-14 (2014-2020).
+#
+# URL:      https://openjdk.org/projects/nashorn/
+# Standard: ES5, some ES6+
+# Tech:     JVM, invokedynamic-heavy bytecode, JIT
+# Language: Java
+# License:  GPL-2.0
+# Org:      Oracle
+# LOC:      89134 (cloc src/org.openjdk.nashorn)
+# Timeline: 2011-
+
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/openjdk/nashorn.git
@@ -12,10 +23,13 @@ RUN cd make/nashorn && ant jar
 RUN mkdir /opt/nashorn && \
     cp /work/build/nashorn/dist/*.jar /opt/nashorn && \
     cp /work/build/nashorn/dependencies/*.jar /opt/nashorn && \
-    echo >/opt/nashorn/nashorn \
+    echo >/usr/local/bin/nashorn \
       '#!/bin/bash'"\n" \
       'java --add-exports=jdk.internal.le/jdk.internal.org.jline.{reader,reader.impl,reader.impl.completer,terminal,keymap}=ALL-UNNAMED -cp "/opt/nashorn/*" org.openjdk.nashorn.tools.jjs.Main "$@"' && \
-    chmod a+rx /opt/nashorn/nashorn && \
-    ln -s /opt/nashorn/nashorn /usr/local/bin/nashorn
+    chmod a+rx /usr/local/bin/nashorn
 
-CMD /usr/local/bin/nashorn
+# --language=es5/es6
+# -ot (optimistic types): may or may not help on some tests
+ENV JS_BINARY=/usr/local/bin/nashorn
+RUN git describe --tags | sed -e 's/^release-//' >version
+CMD ${JS_BINARY} --language=es6

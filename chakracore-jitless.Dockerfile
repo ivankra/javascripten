@@ -1,3 +1,5 @@
+# JIT-less build of ChakraCore
+
 FROM javascripten-ubuntu:22.04
 
 ARG JS_REPO=https://github.com/chakra-core/ChakraCore.git

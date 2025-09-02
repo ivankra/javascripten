@@ -1,3 +1,13 @@
+# Experimental JavaScript engine written in Rust with a cache-friendly data-oriented design.
+#
+# URL:      https://trynova.dev/
+# Standard: partially ES6+
+# Tech:     stack VM
+# Language: Rust
+# License:  MPL-2.0
+# LOC:      102297 (cloc --not_match_d="(?i)(test)" nova_vm)
+# Timeline: 2022-
+
 FROM javascripten-debian:stable
 
 # Unstable project...  b6b295cc 2025-07-06
@@ -12,5 +22,6 @@ RUN sed -i -e 's/ stable-updates$/ stable-updates sid/' /etc/apt/sources.list.d/
 RUN apt-get update -y && apt-get install -y --no-install-recommends -t sid rustc cargo
 RUN cargo build --release --bin nova_cli
 
+# Usage: ${JS_BINARY} eval script.js
 ENV JS_BINARY=/work/target/release/nova_cli
 CMD ${JS_BINARY} repl

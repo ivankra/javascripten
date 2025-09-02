@@ -1,3 +1,15 @@
+# JavaScript engine of Microsoft Edge Legacy.
+# Open-sourced in 2016, abandoned by Microsoft in 2021.
+#
+# URL:      https://github.com/chakra-core/ChakraCore
+# Standard: ES6 (partial)
+# Tech:     register VM, 2-tier JIT, deferred compilation
+# Language: C++
+# License:  MIT
+# Org:      Microsoft
+# LOC:      769731 (cloc lib pal)
+# Timeline: 2015-2021
+
 FROM javascripten-ubuntu:22.04
 
 ARG JS_REPO=https://github.com/chakra-core/ChakraCore.git

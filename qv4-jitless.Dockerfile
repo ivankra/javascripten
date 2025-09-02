@@ -1,19 +1,4 @@
-# JavaScript engine of Qt's QML framework.
-# Fails checksum in NavierStokes test.
-#
-# URL:      https://wiki.qt.io/V4
-# Standard: ES2016
-# Tech:     register VM, JIT, YARR
-# Language: C++
-# License:  LGPL, GPL, Qt
-# Org:      Qt
-# LOC:      50221 (cloc qtdeclarative/src/{qml/{jsruntime,jsapi,jit})
-#   * +extra 50k in qtdeclarative/src/3rdparty/masm - JSC's masm/yarr
-# Timeline: 2012-
-#   * Started out in 2012 as V8 wrapper, then switched to a home-grown engine.
-# VM:
-#   * https://github.com/qt/qtdeclarative/blob/dev/src/qml/jsruntime/qv4vme_moth.cpp
-#   * register-based VM with accumulator, 1-arg binary ops
+# JIT-less build of QV4.
 
 FROM javascripten-debian:stable
 
@@ -34,11 +19,11 @@ RUN cmake -B build -G Ninja \
       -DQT_FEATURE_private_tests=ON \
       -DQT_FEATURE_qml_animation=OFF \
       -DQT_FEATURE_qml_debug=OFF \
-      -DQT_FEATURE_qml_jit=ON \
+      -DQT_FEATURE_qml_jit=OFF \
       -DQT_FEATURE_qml_locale=OFF \
       -DQT_FEATURE_qml_network=OFF \
       -DQT_FEATURE_qml_profiler=OFF
 RUN ninja -C build qmljs
 
 ENV JS_BINARY=/work/build/qtbase/bin/qmljs
-CMD ${JS_BINARY}
+CMD ${JS_BINARY} --interpret

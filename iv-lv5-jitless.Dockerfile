@@ -1,18 +1,4 @@
-# JIT-enabled ES5 engine in C++.
-#
-# URL:      https://github.com/Constellation/iv
-# Standard: ES5
-# Tech:     register VM, context-threaded/method JIT (x64), PIC
-# Language: C++
-# License:  BSD-2-Clause
-# LOC:      69771 (cloc --not_match_d="(?i)(test|third_party)" iv)
-# Timeline: 2009-2015
-#
-# Components:
-#   * iv/lv5/railgun: bytecode compiler
-#   * iv/lv5/railgun/vm.h: direct-threaded register-based VM, 3-args binary ops
-#   * iv/lv5/breaker: JIT compiler
-#   * iv/aero: regex engine with x64 JIT
+# JIT-less build of iv-lv5.
 
 FROM javascripten-debian:stable
 
@@ -26,8 +12,9 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends libgc-dev su
 # Some bug on arm64 with gc causing infinite init loop, call LabelTable() singleton early.
 RUN sed -iEe 's/iv::lv5::railgun::ExecuteInGlobal/iv::lv5::railgun::VM::LabelTable(); iv::lv5::railgun::ExecuteInGlobal/' iv/lv5/main.cc
 RUN export CXXFLAGS="-Wno-implicit-fallthrough -Wno-deprecated-copy -Wno-deprecated -Wl,--allow-multiple-definition" && \
-    cmake -H. -Brelease -DCMAKE_BUILD_TYPE=Release && \
+    cmake -H. -Brelease -DCMAKE_BUILD_TYPE=Release -DJIT=OFF && \
     make -C release lv5 -j
+# Verify that JIT is off: ./lv5 --version
 
 ENV JS_BINARY=/work/release/iv/lv5/lv5
 CMD ${JS_BINARY}

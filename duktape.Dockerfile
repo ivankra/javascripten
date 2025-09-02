@@ -1,3 +1,13 @@
+# Embeddable Javascript engine with a focus on portability and compact footprint.
+#
+# URL:      https://github.com/svaarala/duktape
+# Standard: ES5, some ES6/ES2016
+# Tech:     register VM
+# Language: C
+# License:  MIT
+# LOC:      130383 (cloc --not_match_d="(?i)(src-tools|website|config|deps|doc|docker|extras|src-tools|test)" .)
+# Timeline: 2013-
+
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/svaarala/duktape.git

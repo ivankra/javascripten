@@ -1,7 +1,10 @@
 FROM javascripten-debian:stable
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+        libedit-dev \
         libicu-dev \
+        libpcre2-dev \
+        libreadline-dev \
         openjdk-25-jdk-headless \
         # Guile has a primitive unfinished ES3 engine, run 'guile --language=ecmascript' \
         guile-3.0 \
@@ -38,5 +41,7 @@ RUN cd /opt && wget "https://github.com/ringo/ringojs/releases/download/v4.0.0/r
     tar xf ringojs*.tar.gz && \
     echo >/usr/local/bin/ringojs \
       '#!/bin/sh'"\n" \
-      'java -jar /opt/ringo*/run.jar "$@"' \
+      'java -jar /opt/ringo*/run.jar "$@"' && \
     chmod a+rx /usr/local/bin/ringojs
+
+WORKDIR /work

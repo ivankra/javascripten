@@ -1,4 +1,6 @@
-# txiki: QuickJS-NG/libuv-based runtime
+# Tiny QuickJS-NG/libuv-based runtime
+#
+# URL: https://github.com/saghul/txiki.js
 
 FROM javascripten-debian:stable
 
@@ -16,4 +18,5 @@ RUN CC=clang CXX=clang++ CFLAGS=-Wno-stringop-overread \
 # ffi submodule build fails
 
 ENV JS_BINARY=/work/build/tjs
+RUN ${JS_BINARY} -v | egrep -o '[0-9.]+.*' >version
 CMD ${JS_BINARY}
