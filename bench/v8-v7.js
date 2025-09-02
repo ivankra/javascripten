@@ -1,6 +1,6 @@
-// Chrome's bench-v8 version 7 benchmark
-// Merged files from https://github.com/mozilla/arewefastyet/tree/master/benchmarks/v8-v7
-
+// Chrome/v8 octane benchmark - version 7 - single self-contained merged file
+// https://github.com/mozilla/arewefastyet/tree/master/benchmarks/v8-v7
+// https://github.com/chromium/octane
 if (typeof print === "undefined" && typeof "console" !== "undefined") print = console.log;
 
 // Copyright 2008 the V8 project authors. All rights reserved.
