@@ -1,3 +1,4 @@
-dist/
-JetStream/
 .iid/
+JetStream/
+bin/
+dist/

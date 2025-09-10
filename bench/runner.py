@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# Runner for octane benchmarks tests.
+# Runner for benchmarks tests.
 # Takes js binary + flags, runs repeatedly on each single test.
+
+import argparse
 import os
 import sys
 import subprocess
@@ -30,19 +32,24 @@ OCTANE_TESTS = [
 ]
 
 def main():
-    args = sys.argv[1:]
-
+    usage = f'Usage: {sys.argv[0]} [-r reps] [-t timeout] binary [flags] [test.js ...]'
     reps = 20
-    if len(args) >= 2 and args[0] == '-r':
-        reps = int(args[1])
+    timeout = 600
+
+    args = sys.argv[1:]
+    while len(args) >= 2 and args[0] in ('-r', '-t'):
+        if args[0] == '-r':
+            reps = int(args[1])
+        else:
+            timeout = int(args[1])  # in seconds
         args = args[2:]
 
     test_files = []
     while len(args) > 1 and args[-1].endswith('.js'):
         test_files = [args.pop()] + test_files
 
-    if not args:
-        print('Usage: ./bench.py [-r reps] binary [flags] [test.js ...]', file=sys.stderr)
+    if not args or not os.path.exists(args[0]):
+        print(usage)
         sys.exit(1)
 
     if not test_files:
@@ -76,7 +83,6 @@ def main():
         for i in range(reps):
             sys.stdout.flush()
             try:
-                timeout = 600
                 start_time = time.time()
                 result = subprocess.run(tee_cmd, shell=True, stdin=None, stdout=subprocess.PIPE,
                                         text=True, timeout=timeout)
@@ -96,6 +102,10 @@ def main():
 
                 wall_times.append(wall_time)
 
+            except subprocess.TimeoutExpired:
+                print_warning(f'{test_file} timed out')
+                break
+
             except Exception as e:
                 print_warning(f'{test_file} failed: {e}')
                 break
@@ -108,9 +118,10 @@ def main():
         for test_name, scores in scores_by_test.items():
             assert len(wall_times) == len(scores)
             res = {
-                'score_iqmean': int(interquartile_mean(scores)),
+                'median': median(scores),
+                'max': max(scores),
                 'time_avg': round(avg_wall_time, 2),
-                'scores': list(sorted(map(int, scores))),
+                'scores': scores,
             }
             print(f"'{test_name}': {res}")
             sys.stdout.flush()
@@ -129,10 +140,11 @@ def print_warning(msg):
 
 def extract_scores(output):
     scores = []
-    matches = re.findall(r'([A-Zz][a-zA-Z0-9]+): (\d+)', output)
+    matches = re.findall(r'([A-Zz][a-zA-Z0-9]+|Score [(]version .[)]): (\d+)', output)
     for name, score in matches:
         if name == 'LEAK': continue
-        scores.append((name, float(score)))
+        name = name.replace(' (version ', 'V').replace(')', '')
+        scores.append((name, int(score)))
     return scores
 
 def interquartile_mean(values):
@@ -142,6 +154,10 @@ def interquartile_mean(values):
     assert n == 0 or n-2*k >= 1
     values = values[k:(n-k)]
     return sum(values) / len(values) if len(values) > 0 else None
+
+def median(arr):
+    arr = list(sorted(arr))
+    return arr[len(arr)//2] if len(arr) > 0 else None
 
 if __name__ == '__main__':
     main()

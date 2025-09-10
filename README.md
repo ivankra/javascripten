@@ -10,9 +10,9 @@ Prerequisites: Linux with podman/docker. Builds tested on x86-64 and arm64.
 Make targets:
   * `make all`: build everything
   * `make <engine>[-sh]`: build a single engine and drop into its REPL or bash
-  * `make dist`: strip and copy built binaries into ./dist directory
+  * `make bin`: strip and copy built binaries into ./bin directory
   * `make sh`: drop into bash in a throwaway test container with pre-installed
-    libraries/runtimes and ./dist directory with all engines built so far.
+    libraries/runtimes and ./bin directory with all engines built so far.
 
 There is a single Dockerfile per engine, and some Dockerfiles for JavaScript
 runtimes (node/deno/bun etc) in `sh/` that are installed in test container
