@@ -1,7 +1,7 @@
-# JavaScript engine bundled with JDK 8-14 (2014-2020).
+# JavaScript engine of JDK 8-14 (2014-2020).
 #
 # URL:      https://openjdk.org/projects/nashorn/
-# Standard: ES5, some ES6+
+# Standard: ES6+ (partial)
 # Tech:     JVM, invokedynamic-heavy bytecode, JIT
 # Language: Java
 # License:  GPL-2.0

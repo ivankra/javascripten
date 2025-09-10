@@ -1,7 +1,7 @@
 # Experimental JavaScript engine written in Rust with a cache-friendly data-oriented design.
 #
 # URL:      https://trynova.dev/
-# Standard: partially ES6+
+# Standard: ES6+ (partial)
 # Tech:     stack VM
 # Language: Rust
 # License:  MPL-2.0

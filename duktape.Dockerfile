@@ -1,7 +1,7 @@
 # Embeddable Javascript engine with a focus on portability and compact footprint.
 #
 # URL:      https://github.com/svaarala/duktape
-# Standard: ES5, some ES6/ES2016
+# Standard: ES2016 (partial)
 # Tech:     register VM
 # Language: C
 # License:  MIT

@@ -1,4 +1,4 @@
-# JavaScript engine of Chrome and its various derivatives, Node.js etc.
+# JavaScript engine of Chrome, Node.js etc.
 #
 # URL:      https://v8.dev/
 # Standard: ESnext

@@ -2,7 +2,7 @@
 #
 # URL:      https://bellard.org/quickjs/
 # Standard: ES2023
-# Tech:     stack VM, hidden classes, refcounting GC
+# Tech:     stack VM, hidden classes w/o PIC, refcounting GC
 # Language: C
 # License:  MIT
 # LOC:      73590 (cloc *.c *.h)

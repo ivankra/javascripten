@@ -1,4 +1,4 @@
-# JavaScript engine of Safari/WebKit/iOS.
+# JavaScript engine of Safari/WebKit.
 #
 # URL:      https://trac.webkit.org/wiki/JavaScriptCore
 # Standard: ESnext

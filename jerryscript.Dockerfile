@@ -1,7 +1,7 @@
 # Lightweight JavaScript engine for microcontrollers.
 #
 # URL:      https://jerryscript.net/
-# Standard: ES2022 with some exceptions
+# Standard: ES2022 (partial)
 # Tech:     stack VM
 # Language: C
 # License:  Apache-2.0

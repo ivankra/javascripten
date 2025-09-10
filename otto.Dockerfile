@@ -1,7 +1,8 @@
 # JavaScript engine in pure Go
 #
 # URL:      https://github.com/robertkrimen/otto
-# Standard: ES5, non-compliant regex
+# Standard: ES5
+#   * non-compliant regex engine from Go
 # Tech:     tree-walker
 # Language: Go
 # License:  MIT

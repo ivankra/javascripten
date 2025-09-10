@@ -2,7 +2,7 @@
 # Fails checksum in RegExp test.
 #
 # URL:      https://nginx.org/en/docs/njs/index.html
-# Standard: ES5, some ES6+
+# Standard: ES6+ (partial)
 # Tech:     register VM, PCRE2
 # Language: C
 # License:  BSD-2-Clause

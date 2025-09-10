@@ -1,7 +1,7 @@
-# Facebook's JavaScript engine optimized for running mobile React Native apps.
+# Facebook's engine optimized for running mobile React Native apps.
 #
 # URL:      https://hermesengine.dev/
-# Standard: ES6 with some exceptions
+# Standard: ES6 (partial)
 # Tech:     register VM, optimizing AOT compiler, SSA IR, generational GC
 # Language: C++
 # License:  MIT

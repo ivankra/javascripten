@@ -1,7 +1,7 @@
 # JavaScript engine in pure Go.
 #
 # URL:      https://github.com/dop251/goja
-# Standard: ES5, some ES6
+# Standard: ES6 (partial)
 # Tech:     stack VM
 # Language: Go
 # License:  MIT

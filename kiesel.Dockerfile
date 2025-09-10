@@ -1,7 +1,7 @@
 # JavaScript engine written in Zig.
 #
 # URL:      https://kiesel.dev/
-# Standard: partially ES6+
+# Standard: ES6+ (partial)
 # Tech:     stack VM
 # Language: Zig
 # License:  MIT

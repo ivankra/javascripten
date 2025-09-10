@@ -1,5 +1,4 @@
-# Lightweight embeddable JavaScript interpreter, used in MuPDF.
-# Fails checksum in RegExp test.
+# Embeddable JavaScript engine from MuPDF.
 #
 # URL:      https://codeberg.org/ccxvii/mujs
 # Standard: ES5

@@ -1,7 +1,7 @@
 # JavaScript engine from Mozilla for the Java platform, bundled with JDK 6-7.
 #
 # URL:      https://rhino.github.io/
-# Standard: ES5, some ES6+
+# Standard: ES6+ (partial)
 # Tech:     JVM, tree-walker / compiler to unoptimized JVM bytecode
 # Language: Java
 # License:  MPL-2.0

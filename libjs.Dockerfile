@@ -5,7 +5,6 @@
 # Tech:     register VM
 # Language: C++
 # License:  BSD-2-Clause
-# Org:      SerenityOS
 # LOC:      72562 (cloc --not_match_d="(?i)(test)" Libraries/LibJS)
 # Timeline: 2020-
 

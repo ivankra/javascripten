@@ -1,8 +1,8 @@
-# High-performance JavaScript engine for GraalVM/JVM.
+# High-performance JavaScript engine for GraalVM.
 #
 # URL:      https://www.graalvm.org/javascript/
 # Standard: ESnext
-# Tech:     JVM, 2-tier JIT (HotSpot/Graal), AST interpreter using Truffle framework
+# Tech:     JVM, 2-tier JIT (HotSpot/Graal), Truffle framework
 # Language: Java
 # License:  UPL-1.0
 # Org:      Oracle

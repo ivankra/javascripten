@@ -7,9 +7,9 @@
 # License:  LGPL-2.1
 # Org:      KDE
 # LOC:      42352 (cloc src)
-# Timeline: 1998-2024
+# Timeline: 1998-2023
 #   * Forked by Apple in 2001.
-#   * Most dead already by KDE 5 (2014), dropped from KDE 6 (2024)
+#   * Most dead by KDE 5 (2014), dropped from KDE 6 (2024)
 
 FROM javascripten-debian:stable
 
