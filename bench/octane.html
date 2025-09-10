@@ -164,7 +164,7 @@ th input[type="checkbox"] {
       <th data-col="language" title="Main programming language">Lang</th>
       <th data-col="standard" title="ECMAScript standard (targeted/mostly compliant with)">Standard</th>
       <th data-col="jit">JIT</th>
-      <th data-col="timeline">Years</th>
+      <th data-col="years">Years</th>
       <th data-col="org">Org</th>
       <th data-col="license">License</th>
       <th data-col="description" class="description-cell">Description</th>
@@ -290,8 +290,8 @@ function renderCell(th, row) {
     td.title = `${row.license}`
   } else if (col === 'standard' && row.standard) {
     td.innerHTML = row.standard.replace(/ /, '<br>');
-  } else if (col === 'timeline' && row.timeline) {
-    td.innerHTML = row.timeline.replace(/-/, '-<br>');
+  } else if (col === 'years' && row.years) {
+    td.innerHTML = row.years.replace(/-/, '-<br>');
   } else if (col === 'jit') {
     td.innerHTML = row.jit ? 'Y' : '';
   } else if (col === 'description') {
@@ -1497,7 +1497,7 @@ const kMetadataX64 = (
     "years": "2009-2020",
     "license": "LGPL-2.1",
     "loc": "57192",
-    "binarySize": "",
+    "binarySize": 2040192,
     "description": "JIT-enabled ES5 engine written in Object Pascal."
   },
   "boa": {
@@ -1511,14 +1511,14 @@ const kMetadataX64 = (
     "years": "2018-",
     "license": "MIT, Unlicense",
     "loc": "144032",
-    "binarySize": "",
+    "binarySize": 26731808,
     "description": "Embeddable Javascript engine written in Rust."
   },
   "chakracore-jitless": {
     "version": "36becec4",
     "revision": "36becec43348f259e8bee08cf2fcd171bfe56f42",
     "repo": "https://github.com/chakra-core/ChakraCore.git",
-    "binarySize": "",
+    "binarySize": 9233312,
     "description": "JIT-less build of ChakraCore"
   },
   "chakracore": {
@@ -1533,7 +1533,7 @@ const kMetadataX64 = (
     "org": "Microsoft",
     "license": "MIT",
     "loc": "769731",
-    "binarySize": "",
+    "binarySize": 12707112,
     "description": "JavaScript engine of Microsoft Edge Legacy."
   },
   "duktape": {
@@ -1547,7 +1547,7 @@ const kMetadataX64 = (
     "years": "2013-",
     "license": "MIT",
     "loc": "130383",
-    "binarySize": "",
+    "binarySize": 580648,
     "description": "Embeddable Javascript engine with a focus on portability and compact footprint."
   },
   "escargot": {
@@ -1562,7 +1562,7 @@ const kMetadataX64 = (
     "org": "Samsung",
     "license": "LGPL-2.1",
     "loc": "110475",
-    "binarySize": "",
+    "binarySize": 5210768,
     "description": "Lightweight JavaScript engine by Samsung for mid-range devices like phones/TVs."
   },
   "goja": {
@@ -1576,7 +1576,7 @@ const kMetadataX64 = (
     "years": "2016-",
     "license": "MIT",
     "loc": "46141",
-    "binarySize": "",
+    "binarySize": 9779512,
     "description": "JavaScript engine in pure Go."
   },
   "graaljs": {
@@ -1605,14 +1605,14 @@ const kMetadataX64 = (
     "org": "Facebook",
     "license": "MIT",
     "loc": "169845",
-    "binarySize": "",
+    "binarySize": 4524032,
     "description": "Facebook's engine optimized for running mobile React Native apps."
   },
   "iv-lv5-jitless": {
     "version": "1.0.1-270-g64c3a9c7",
     "revision": "64c3a9c7c517063f29d90d449180ea8f6f4d946f",
     "repo": "https://github.com/Constellation/iv.git",
-    "binarySize": "",
+    "binarySize": 4997488,
     "description": "JIT-less build of iv-lv5."
   },
   "iv-lv5": {
@@ -1626,7 +1626,7 @@ const kMetadataX64 = (
     "years": "2009-2015",
     "license": "BSD-2-Clause",
     "loc": "69771",
-    "binarySize": "",
+    "binarySize": 6418096,
     "description": "JIT-enabled ES5 engine in C++."
   },
   "jerryscript": {
@@ -1642,14 +1642,14 @@ const kMetadataX64 = (
     "note": "Built with --mem-heap=10240 (10MiB)",
     "license": "Apache-2.0",
     "loc": "108762",
-    "binarySize": "",
+    "binarySize": 445088,
     "description": "Lightweight JavaScript engine for microcontrollers."
   },
   "jsc-jitless": {
     "version": "eda07530",
     "revision": "eda075300659c3ff4f1164a89a5077be394cdbc6",
     "repo": "https://github.com/WebKit/WebKit.git",
-    "binarySize": "",
+    "binarySize": 13715912,
     "description": "JIT-less build of JavaScriptCore."
   },
   "jsc": {
@@ -1664,7 +1664,7 @@ const kMetadataX64 = (
     "org": "Apple",
     "license": "LGPL-2.1",
     "loc": "770374",
-    "binarySize": "",
+    "binarySize": 28518856,
     "description": "JavaScript engine of Safari/WebKit."
   },
   "kiesel": {
@@ -1678,7 +1678,7 @@ const kMetadataX64 = (
     "years": "2023-",
     "license": "MIT",
     "loc": "59328",
-    "binarySize": "",
+    "binarySize": 13465624,
     "description": "JavaScript engine written in Zig."
   },
   "kjs": {
@@ -1693,7 +1693,7 @@ const kMetadataX64 = (
     "org": "KDE",
     "license": "LGPL-2.1",
     "loc": "42352",
-    "binarySize": "",
+    "binarySize": 1209752,
     "description": "Original JavaScript engine of KDE's Konqueror browser."
   },
   "libjs": {
@@ -1707,7 +1707,7 @@ const kMetadataX64 = (
     "years": "2020-",
     "license": "BSD-2-Clause",
     "loc": "72562",
-    "binarySize": "",
+    "binarySize": 47970928,
     "description": "JavaScript engine of Ladybird browser and SerenityOS."
   },
   "mujs": {
@@ -1721,7 +1721,7 @@ const kMetadataX64 = (
     "years": "2013-",
     "license": "ISC",
     "loc": "18490",
-    "binarySize": "",
+    "binarySize": 384304,
     "description": "Embeddable JavaScript engine from MuPDF."
   },
   "nashorn": {
@@ -1751,7 +1751,7 @@ const kMetadataX64 = (
     "org": "Nginx",
     "license": "BSD-2-Clause",
     "loc": "58962",
-    "binarySize": "",
+    "binarySize": 850528,
     "description": "Lightweight embeddable JavaScript engine for use in nginx."
   },
   "nova": {
@@ -1765,7 +1765,7 @@ const kMetadataX64 = (
     "years": "2022-",
     "license": "MPL-2.0",
     "loc": "102297",
-    "binarySize": "",
+    "binarySize": 9176056,
     "description": "Experimental JavaScript engine written in Rust with a cache-friendly data-oriented design."
   },
   "otto": {
@@ -1779,7 +1779,7 @@ const kMetadataX64 = (
     "years": "2012-",
     "license": "MIT",
     "loc": "26462",
-    "binarySize": "",
+    "binarySize": 4890648,
     "description": "JavaScript engine in pure Go"
   },
   "quickjs-ng": {
@@ -1793,7 +1793,7 @@ const kMetadataX64 = (
     "years": "2023-",
     "license": "MIT",
     "loc": "74458",
-    "binarySize": "",
+    "binarySize": 1224248,
     "description": "Community-oriented fork of QuickJS."
   },
   "quickjs": {
@@ -1807,14 +1807,14 @@ const kMetadataX64 = (
     "years": "2019-",
     "license": "MIT",
     "loc": "73590",
-    "binarySize": "",
+    "binarySize": 990496,
     "description": "Lightweight embeddable JavaScript engine by Fabrice Bellard and Charlie Gordon."
   },
   "qv4-jitless": {
     "version": "6.9.1",
     "revision": "a99aafab4cfbbf650493c9a4feb5a1bb4a09d1d2",
     "repo": "https://code.qt.io/qt/qt5.git",
-    "binarySize": "",
+    "binarySize": 12846248,
     "description": "JIT-less build of QV4."
   },
   "qv4": {
@@ -1829,7 +1829,7 @@ const kMetadataX64 = (
     "org": "Qt",
     "license": "LGPL, GPL, Qt",
     "loc": "50221",
-    "binarySize": "",
+    "binarySize": 13132968,
     "description": "JavaScript engine of Qt's QML framework."
   },
   "rhino": {
@@ -1850,7 +1850,7 @@ const kMetadataX64 = (
     "version": "142.0.2",
     "revision": "f88de4141d59b647756e7917c7a97c3e64b88289",
     "repo": "https://github.com/mozilla-firefox/firefox",
-    "binarySize": "",
+    "binarySize": 14311952,
     "description": "JIT-less build of SpiderMonkey"
   },
   "spidermonkey": {
@@ -1865,14 +1865,14 @@ const kMetadataX64 = (
     "org": "Mozilla",
     "license": "MPL-2.0",
     "loc": "1028123",
-    "binarySize": "",
+    "binarySize": 16949328,
     "description": "JavaScript engine of Firefox."
   },
   "v8-jitless": {
     "version": "14.2.3",
     "revision": "345212d2fd3d41e7186580b42b935e1b6b518739",
     "repo": "https://chromium.googlesource.com/v8/v8.git",
-    "binarySize": "",
+    "binarySize": 13218440,
     "description": "JIT-less build of V8."
   },
   "v8": {
@@ -1887,7 +1887,7 @@ const kMetadataX64 = (
     "org": "Google",
     "license": "BSD-3-Clause",
     "loc": "1323810",
-    "binarySize": "",
+    "binarySize": 21254792,
     "description": "JavaScript engine of Chrome, Node.js etc."
   },
   "xs": {
@@ -1901,7 +1901,7 @@ const kMetadataX64 = (
     "years": "2016-",
     "license": "LGPL-3.0+, Apache-2.0",
     "loc": "129071",
-    "binarySize": "",
+    "binarySize": 2083920,
     "description": "Lightweight engine for microcontrollers."
   }
 }
