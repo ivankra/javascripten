@@ -61,7 +61,7 @@ v9.js: octane/zlib.js
 	# Fix for kiesel
 	sed -i -e 's/this.RTCHours -= 24$$/this.RTCHours -= 24;/' _gbemu-part2.js
 	# Fix for duktape
-	sed -i -e 's/if(typeof require === "function") {/if(typeof require === "function" && false) {/' _typescript-compiler.js
+	sed -i -e 's/if(typeof require === "function") {/if(typeof require === "function" \&\& false) {/' _typescript-compiler.js
 	# Generate self-contained single tests
 	for x in richards.js deltablue.js crypto.js raytrace.js earley-boyer.js regexp.js splay.js navier-stokes.js pdfjs.js mandreel.js code-load.js box2d.js; do \
 	  cat head.js "_$$x" tail.js >"$$x"; \

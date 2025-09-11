@@ -1,12 +1,13 @@
 # Low-footprint JavaScript interpreter for microcontrollers.
-# Toy interpreter that can hardly run any JavaScript: `'var' not implemented`.
+# Toy interpreter that can hardly run any JavaScript.
 #
 # URL:      https://github.com/cesanta/elk
-# Standard: non-compliant
+# Standard: no
 # Tech:     interprets from source
 # Language: C
-# Timeline: 2019-
 # License:  AGPL
+# LOC:      1247 (cloc elk.c elk.h)
+# Timeline: 2019-
 
 FROM javascripten-debian:stable
 

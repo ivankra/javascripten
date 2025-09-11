@@ -123,7 +123,7 @@ def main():
                 'time_avg': round(avg_wall_time, 2),
                 'scores': scores,
             }
-            print(f"'{test_name}': {res}")
+            print(f"'{test_name}': {res},")
             sys.stdout.flush()
             results[test_name] = res
 
@@ -140,11 +140,15 @@ def print_warning(msg):
 
 def extract_scores(output):
     scores = []
-    matches = re.findall(r'([A-Zz][a-zA-Z0-9]+|Score [(]version .[)]): (\d+)', output)
+    matches = re.findall(r'([A-Zz][a-zA-Z0-9]+|Score [(]version .[)]): ([-+.e0-9]+)', output)
     for name, score in matches:
         if name == 'LEAK': continue
         name = name.replace(' (version ', 'V').replace(')', '')
-        scores.append((name, int(score)))
+        try:
+            score = int(score)
+        except:
+            score = float(score)
+        scores.append((name, score))
     return scores
 
 def interquartile_mean(values):

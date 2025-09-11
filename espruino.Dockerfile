@@ -1,13 +1,13 @@
-# JavaScript interpreter for some microcontrollers.
-# Awfully slow, no var/func hoisting.
+# JavaScript interpreter for Espruino microcontrollers.
 #
 # URL:      https://www.espruino.com/
-# Standard: non-compliant
+# Standard: no
 # Tech:     interprets from source
 # Language: C
 # License:  MPL-2.0
 # LOC:      28352 (cloc src)
 # Timeline: 2013-
+# Note:     Awfully slow, no var/func hoisting.
 
 FROM javascripten-debian:stable
 

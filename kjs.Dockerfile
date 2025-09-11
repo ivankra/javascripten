@@ -28,4 +28,5 @@ RUN cmake -B build -S . -G Ninja -DKJS_FORCE_DISABLE_PCRE=true -DBUILD_SHARED_LI
     cmake --build build
 
 ENV JS_BINARY=/work/kjs/build/bin/kjs5
+RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >version
 CMD ${JS_BINARY}

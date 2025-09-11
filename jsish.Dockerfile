@@ -1,12 +1,13 @@
 # Small embeddable JavaScript interpreter.
-# Can't run tests: buggy (ASI, !=), no Date.
 #
 # URL:      https://github.com/pcmacdon/jsish
-# Standard: non-compliant
+# Standard: no
 # Tech:     stack-based VM
 # Language: C
-# Timeline: 2020-2022
 # License:  MIT
+# LOC:      50896 (cloc src)
+# Timeline: 2020-2022
+# Note:     Can't run test suite - bugs in ASI, != operator, no Date class.
 
 FROM javascripten-debian:stable
 

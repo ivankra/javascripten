@@ -6,6 +6,8 @@ blocks = {}
 lines = []
 ref = None
 
+os.chdir(os.path.dirname(__file__))
+
 for line in open('octane.html'):
     if line.startswith('// BEGIN '):
         assert ref is None

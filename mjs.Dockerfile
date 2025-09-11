@@ -1,12 +1,13 @@
 # JavaScript engine for microcontrollers.
-# Unfinished: `[var] is not implemented`.
 #
 # URL:      https://github.com/cesanta/mjs
-# Standard: non-compliant
-# Tech:     stack-based VM
+# Standard: no
+# Tech:     stack VM
 # Language: C
-# Timeline: 2016-
 # License:  GPL-2.0
+# LOC:      33845 (cloc src)
+# Timeline: 2016-
+# Note:     Can't run test suite: '[var] is not implemented'.
 
 FROM javascripten-debian:stable
 
