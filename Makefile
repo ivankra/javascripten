@@ -117,20 +117,23 @@ metadata: .PHONY
 	  size=`[[ $$(file -b --mime-type bin/$$e 2>/dev/null) == */*-executable ]] && \
 	        [[ $$e != graaljs ]] && \
 	        ls -l bin/$$e 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' '`; \
+	  repo=`sed -Ene 's/ARG JS_REPO=(.*)/\1/p' "$${df}" 2>/dev/null || \
+	        sed -Ene 's/# Repository: *(.*)/\1/p' $$f`; \
+	  url=`sed -Ene 's/# URL: *(.*)/\1/p' $$f`; \
+	  if [[ -z "$$url" && -n "$$repo" ]]; then url=$${repo%.git}; fi; \
 	  if [[ -f "$$e.md" ]]; then \
 	    desc=`sed -Ene 's/. Summary: *(.*)/\1/p' $$e.md`; \
 	  else \
-	    desc=`sed -Ene '/^[^#]/q; /^#?$$/q; s/# (.*)/\1/p' $$f | \
-	          tr '\n' ' ' | sed -e "s/  */ /g; s/ $$//; s/'/\\\\\\'/g"`; \
+	    desc=`sed -Ene '/^[^#]/q; /^#?$$/q; s/# (.*)/\1/p' $$f`; \
 	  fi; \
+	  desc=`echo "$$desc" | tr '\n' ' ' | sed -e "s/  */ /g; s/ $$//; s/'/\\\\\\'/g"`; \
 	  echo \
 	    "'$$e': {" \
 	    "'version':  '`cat .meta/version 2>/dev/null || true`'," \
 	    "'revision': '`cat .meta/revision 2>/dev/null || true`'," \
 	    "'revisionDate': '`cat .meta/revisionDate 2>/dev/null || true`'," \
-	    "'repo':     '`sed -Ene 's/ARG JS_REPO=(.*)/\1/p' "$${df}" 2>/dev/null || \
-	                   sed -Ene 's/# Repository: *(.*)/\1/p' $$f`'," \
-	    "'url':      '`sed -Ene 's/# URL: *(.*)/\1/p'      $$f`'," \
+	    "'repo':     '$${repo}'," \
+	    "'url':      '$${url}'," \
 	    "'standard': '`sed -Ene 's/# Standard: *(.*)/\1/p' $$f`'," \
 	    "'tech':     '`sed -Ene 's/# Tech: *(.*)/\1/p'     $$f`'," \
 	    "'language': '`sed -Ene 's/# Language: *(.*)/\1/p' $$f`'," \
@@ -146,6 +149,6 @@ metadata: .PHONY
 	done
 	node -e "let j=require('fs').readFileSync('metadata.tmp'); j=eval('({'+j+'})'); console.log(JSON.stringify(j, null, 2))" >metadata.json
 	mv -f metadata.json "bench/metadata-$$(uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/').json"
-	@rm -f metadata.tmp
+	rm -f metadata.tmp
 
 .PHONY:

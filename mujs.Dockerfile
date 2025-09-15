@@ -1,13 +1,3 @@
-# Embeddable JavaScript engine from MuPDF.
-#
-# URL:      https://codeberg.org/ccxvii/mujs
-# Standard: ES5
-# Tech:     stack VM
-# Language: C
-# License:  ISC
-# LOC:      18490 (cloc *.c *.h)
-# Timeline: 2013-
-
 FROM javascripten-debian:stable
 
 # https://github.com/ccxvii/mujs

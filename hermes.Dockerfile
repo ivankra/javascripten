@@ -1,14 +1,3 @@
-# Facebook's engine optimized for running mobile React Native apps.
-#
-# URL:      https://hermesengine.dev/
-# Standard: ES6 (partial)
-# Tech:     register VM, optimizing AOT compiler, SSA IR, generational GC
-# Language: C++
-# License:  MIT
-# Org:      Facebook
-# LOC:      169845 (cloc include lib tools/hermes)
-# Timeline: 2019-
-
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/facebook/hermes.git

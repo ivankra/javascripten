@@ -1,13 +1,3 @@
-# JavaScript engine for microcontrollers.
-#
-# URL:      https://github.com/cesanta/v7
-# Standard: ES5 (subset)
-# Tech:     stack VM
-# Language: C
-# License:  GPL-2.0
-# LOC:      24811 (cloc v7.c v7.h)
-# Timeline: 2013-2017
-
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/cesanta/v7.git

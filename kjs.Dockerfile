@@ -1,16 +1,3 @@
-# Original JavaScript engine of KDE's Konqueror browser.
-#
-# URL:      https://invent.kde.org/frameworks/kjs
-# Standard: ES5
-# Tech:     tree-walker / register VM (2008)
-# Language: C++
-# License:  LGPL-2.1
-# Org:      KDE
-# LOC:      42352 (cloc src)
-# Timeline: 1998-2023
-#   * Forked by Apple in 2001.
-#   * Most dead by KDE 5 (2014), dropped from KDE 6 (2024)
-
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/KDE/kjs.git

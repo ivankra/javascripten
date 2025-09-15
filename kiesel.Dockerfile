@@ -1,13 +1,3 @@
-# JavaScript engine written in Zig.
-#
-# URL:      https://kiesel.dev/
-# Standard: ES6+ (partial)
-# Tech:     stack VM
-# Language: Zig
-# License:  MIT
-# LOC:      59328 (cloc src)
-# Timeline: 2023-
-
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://codeberg.org/kiesel-js/kiesel.git

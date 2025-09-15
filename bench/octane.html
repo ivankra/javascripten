@@ -5,7 +5,7 @@
 <title>JavaScript engines zoo</title>
 <style>
 body {
-  font-family: /*'Roboto Condensed',*/ -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
   font-size: 14px;
   background-color: #ffffff;
 }
@@ -21,13 +21,18 @@ th, td {
   border: 1px solid #d1d9e0b3;
   vertical-align: center;
 }
+
+th.benchmark {
+  padding: 3px 2px 3px 2px;
+}
+
 td {
   vertical-align: top;
 }
 
 th {
   background-color: #eaecf0;
-  font-weight: 600;
+  font-weight: 500;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -84,7 +89,7 @@ th.sort-desc:not(.benchmark)::after, th.sort-desc div::after {
 }
 
 .engine-name {
-  font-weight: 600;
+  font-weight: 500;
   color: #0066cc;
   text-decoration: none;
 }
@@ -116,8 +121,13 @@ th.sort-desc:not(.benchmark)::after, th.sort-desc div::after {
 .numeric {
   text-align: right;
 }
+
 td.numeric {
   color: #0066ff;
+}
+
+td.benchmark {
+  font-family: 'Roboto Condensed', Roboto;
 }
 
 th.benchmark div {
@@ -131,7 +141,7 @@ th.benchmark div {
 th input[type="checkbox"] {
   margin: 0px;
   padding: 0px;
-  transform: scale(0.66);
+  transform: scale(0.7);
 }
 
 .excluded-column {
@@ -145,6 +155,10 @@ th input[type="checkbox"] {
 .hidden {
   display: none;
 }
+
+.discontinued {
+  color: #ff0000;
+}
 </style>
 </head>
 <body>
@@ -154,8 +168,8 @@ th input[type="checkbox"] {
     <option value="arm64" selected>arm64: Mac M4 4.5GHz - Linux VM</option>
     <option value="x64">x64: i9-10900K 3.7GHz - Linux</option>
   </select>
-  <input id="controlJitless" type="checkbox" class="control" /><label for="controlJitless">Show JIT-less runs</label>
-  │<input id="controlV8V7" type="checkbox" class="control" /><label for="controlV8V7">Only v8-v7 subtests</label>
+  <input id="controlJitless" type="checkbox" class="control" /><label for="controlJitless">Show JIT-less variants</label>
+  │<input id="controlV8V7" type="checkbox" class="control" /><label for="controlV8V7">Only v8-v7 benchmarks</label>
   <!-- │<input id="controlBaseline" type="checkbox" class="control" /><label for="controlBaseline">Show baseline JIT</label>-->
   <!-- │ Score aggregation:
   <select id="controlAgg" class="control">
@@ -168,14 +182,14 @@ th input[type="checkbox"] {
   <thead id="jshead">
     <tr>
       <th data-col="engine" class="engine-cell">Engine</th>
-      <th data-col="totalScore" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better, inversely proportional to runtime.">Score</th>
+      <th data-col="totalScore" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime).">Score</th>
       <th data-col="binarySize" class="numeric" title="Binary size">Binary</th>
-      <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests, third-party code">LoC</th>
+      <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests and third-party code">LoC</th>
       <th data-col="language" title="Main programming language">Lang</th>
       <th data-col="standard" title="ECMAScript standard (targeted/mostly compliant with)">Standard</th>
       <th data-col="jit" title="Just-in-time compilation">JIT</th>
-      <th data-col="years" title="Development timeline">Years</th>
-      <th data-col="org">Org</th>
+      <th data-col="years" title="Years of active development">Years</th>
+      <th data-col="org" title="Corporate backer">Org</th>
       <th data-col="license" class="license-cell">License</th>
       <th data-col="description" class="description-cell">Description</th>
       <th data-col="Richards" class="numeric benchmark" title="Object property access benchmark"></th>
@@ -203,7 +217,13 @@ th input[type="checkbox"] {
 <script>
 let selectedBenchmarks = new Set(Array.from(
   document.querySelectorAll('#jshead th.benchmark')).map(th => th.dataset.col));
-let sortState = { col: 'totalScore', dir: 'desc' };
+
+let sortState = [
+  { col: 'totalScore', dir: 'desc' },  // main sort criterion
+  { col: 'language', dir: 'asc' },
+  { col: 'engine', dir: 'asc' },
+];
+
 let processedData = null;
 
 window.addEventListener('load', () => {
@@ -221,11 +241,16 @@ window.addEventListener('load', () => {
   document.querySelectorAll('#jshead th').forEach(th => {
     th.addEventListener('click', (e) => {
       if (e.target.tagName.toUpperCase() === 'INPUT') return false;
-      if (sortState.col === th.dataset.col) {
-        sortState.dir = sortState.dir === 'desc' ? 'asc' : 'desc';
+      if (sortState[0].col === th.dataset.col) {
+        sortState[0].dir = sortState[0].dir === 'desc' ? 'asc' : 'desc';
       } else {
-        sortState.col = th.dataset.col;
-        sortState.dir = th.classList.contains('numeric') ? 'desc' : 'asc';
+        sortState = [
+          {
+            col: th.dataset.col,
+            dir: th.classList.contains('numeric') ? 'desc' : 'asc',
+          },
+          ...sortState
+        ];
       }
       renderTable();
     });
@@ -247,13 +272,13 @@ function renderTable(recompute=false) {
   if (processedData === null || recompute) {
     processedData = processRawData();
   }
-  processedData.sort(rowCmp);
+  processedData.sort(sortComparator);
 
   document.querySelectorAll('#jshead th').forEach(th => {
     th.classList.remove('sort-asc','sort-desc','sorted-column');
   });
-  const th = document.querySelector(`#jshead th[data-col="${sortState.col}"]`);
-  th?.classList?.add(sortState.dir === 'asc' ? 'sort-asc' : 'sort-desc', 'sorted-column');
+  const th = document.querySelector(`#jshead th[data-col="${sortState[0].col}"]`);
+  th?.classList?.add(sortState[0].dir === 'asc' ? 'sort-asc' : 'sort-desc', 'sorted-column');
 
   const jshead = document.getElementById('jshead');
   jshead.querySelectorAll('.benchmark').forEach(th => {
@@ -287,7 +312,8 @@ function renderCell(th, row) {
   const td = document.createElement('td');
   td.className = th.className;
   if (col === 'engine') {
-    let revLink = row.repo
+    let ver = (row.version ?? '').replace(/^nightly$/, '');
+    let revLink = row.repo;
     if (row.revision && row.repo) {
       if (row.repo.match(/github.com/)) {
         revLink = `${row.repo.replace('.git','')}/tree/${row.revision}`;
@@ -297,12 +323,16 @@ function renderCell(th, row) {
         revLink = `https://github.com/v8/v8/tree/${row.revision}`;
       }
     }
-    let revDate = '';
     if (row.revisionDate) {
-      revDate = `title="${row.revisionDate}"`;
-    }
-    if (revLink) {
-      revLink = `<a class="engine-version" href="${revLink}" target="_blank" ${revDate}>${row.version ?? ''}</a>`;
+      if (!ver || ver.includes(row.revision.slice(0, 7))) {
+        revLink = `<a class="engine-version" href="${revLink}" title="${row.version}" target="_blank"}>${row.revisionDate}</a>`;
+      } else {
+        revLink = `<a class="engine-version" href="${revLink}" title="${row.version}" target="_blank"}>${row.revisionDate} (${ver})</a>`;
+      }
+    } else if (ver) {
+      revLink = `<a class="engine-version" href="${revLink}" target="_blank">${ver}</a>`;
+    } else {
+      revLink = '';
     }
     // TODO show date instead of commit hash
     td.innerHTML = `
@@ -321,15 +351,34 @@ function renderCell(th, row) {
     td.innerHTML = size.toFixed(size < 20 ? 1 : 0) + suf[i];
     td.title = `${row.binarySize} bytes`;
   } else if (col === 'license' && row.license) {
-    let s = '<nobr>' + row.license.split(/ /).join('</nobr> <nobr>') + '</nobr>';
-    s = s.replace('-Clause', '');
-    //s = s.replace(/(Apache|MPL|UPL)-[0-9.]+/, '$1');
+    let s = row.license
+      //.replace(/(Apache|MPL|UPL)-[0-9.]+/, '$1')
+      .replace('-Clause', '')
+      .replace('-or-later', '+')
+      .replace('-only', '')
+      .replace(/ with[^,]*/i, '<sup>*</sup>');
+    if (row.license === 'UPL-1.0') {
+      td.title = 'Universal Permissive License 1.0';
+    } else if (row.license === 'BSL-1.0') {
+      td.title = 'Boost Software License 1.0';
+    } else if (s != row.license) {
+      td.title = row.license;
+    }
+    s = '<nobr>' + s.split(/ /).join('</nobr> <nobr>') + '</nobr>';
     td.innerHTML = s;
-    td.title = `${row.license}`
   } else if (col === 'standard' && row.standard) {
-    td.innerHTML = row.standard.replace(/ /, '<br>');
+    td.innerHTML = row.standard.replace(/ \(/, '<br>(');
+  } else if (col === 'language' && row.language) {
+    let s = row.language.replace('JavaScript', 'JS').replace('TypeScript', 'TS')
+    td.innerHTML = s;
+    if (s != row.language) {
+      td.title = row.language;
+    }
   } else if (col === 'years' && row.years) {
     td.innerHTML = row.years.replace(/-/, '-<br>');
+    if (!row.years.endsWith('-')) {
+      td.classList += ' discontinued';
+    }
   } else if (col === 'jit') {
     td.innerHTML = row.jit ? 'Y' : '';
   } else if (col === 'description') {
@@ -406,26 +455,46 @@ function processRawData() {
   return rows;
 }
 
-function rowCmp(row1, row2) {
-  let a = row1[sortState.col] ?? '';
-  let b = row2[sortState.col] ?? '';
-  if (typeof a === 'object' && 'value' in a) a = a.value;
-  if (typeof b === 'object' && 'value' in b) b = b.value;
-  // version sort
-  a = String(a).trim().replace(/([0-9]+)/g, (g) => g.padStart(4, '0'));
-  b = String(b).trim().replace(/([0-9]+)/g, (g) => g.padStart(4, '0'));
-  if (a === b) return 0;
-  if (sortState.col === 'standard') {
-    a = a.replace('no', 'ES0000');
-    b = b.replace('no', 'ES0000');
+function sortComparator(row1, row2) {
+  let res = 0;
+  for (let i = 0; i < sortState.length && res === 0; i++) {
+    const col = sortState[i].col;
+    const a = sortCollate(row1[col], col);
+    const b = sortCollate(row2[col], col);
+    if (a === b) continue;
+    if (a === '' || b === '') {
+      return a === '' ? 1 : -1;  // nulls always last
+    }
+    if (!isNaN(Number(a)) && !isNaN(Number(b))) {
+      res = Number(a) - Number(b);
+    } else {
+      res = String(a).localeCompare(String(b));
+    }
+    res *= (sortState[i].dir === 'asc' ? 1 : -1);
   }
-  // sort nulls last
-  if (a === '' || b === '') return a === '' ? 1 : -1;
-  if (!isNaN(Number(a)) && !isNaN(Number(b))) {
-    return (sortState.dir === 'asc' ? 1 : -1) * (Number(a) - Number(b));
-  } else {
-    return (sortState.dir === 'asc' ? 1 : -1) * String(a).localeCompare(String(b));
+  return res;
+}
+
+function sortCollate(val, col) {
+  val = val ?? '';
+  if (typeof val === 'object' && 'value' in val) {
+    val = val.value;
   }
+  val = String(val).trim()
+  if (col === 'standard') {
+    val = val.replace('ESnext', 'ES9999');
+    val = val.replace(/([0-9]+)/g, (g) => g.padStart(4, '0'));
+    val = val.replace('+', '9');
+    val = val.replace(' (partial)', '0');
+    val = val.replace(/([0-9]+)/g, (g) => g.padEnd(5, '5'));
+  }
+  if (col === 'years') {
+    val = val.replace('x', '9');
+  }
+  if (col === 'language') {
+    val = val.replace('#', '++#');
+  }
+  return val;
 }
 
 function dropEmptyKeys(obj) {
@@ -518,7 +587,6 @@ const kMetadataARM64 = (
     "revisionDate": "2025-06-05",
     "repo": "https://github.com/cesanta/elk.git",
     "url": "https://github.com/cesanta/elk",
-    "standard": "no",
     "tech": "interprets from source",
     "language": "C",
     "years": "2019-",
@@ -526,7 +594,7 @@ const kMetadataARM64 = (
     "license": "AGPL",
     "loc": "1247",
     "binarySize": 67800,
-    "description": "Low-footprint JavaScript interpreter for microcontrollers. Toy interpreter that can hardly run any JavaScript."
+    "description": "Toy interpreter for microcontrollers that can hardly run any JavaScript."
   },
   "escargot": {
     "version": "4.3.0-5-g52bbc7a9",
@@ -551,11 +619,10 @@ const kMetadataARM64 = (
     "revisionDate": "2025-08-26",
     "repo": "https://github.com/espruino/Espruino.git",
     "url": "https://www.espruino.com/",
-    "standard": "no",
     "tech": "interprets from source",
     "language": "C",
     "years": "2013-",
-    "note": "Awfully slow, no var/func hoisting.",
+    "note": "Awfully slow, various bugs/compliance issues.",
     "license": "MPL-2.0",
     "loc": "28352",
     "binarySize": 1183488,
@@ -600,7 +667,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/facebook/hermes.git",
     "url": "https://hermesengine.dev/",
     "standard": "ES6 (partial)",
-    "tech": "register VM, optimizing AOT compiler, SSA IR, generational GC",
+    "tech": "register VM, optimizing compiler with SSA IR, gen GC",
     "language": "C++",
     "years": "2019-",
     "org": "Facebook",
@@ -608,7 +675,7 @@ const kMetadataARM64 = (
     "license": "MIT",
     "loc": "169845",
     "binarySize": 4073424,
-    "description": "Facebook's engine optimized for running mobile React Native apps."
+    "description": "JavaScript engine from Facebook optimized for running mobile React Native apps."
   },
   "iv-lv5": {
     "version": "1.0.1-270-g64c3a9c7",
@@ -648,6 +715,7 @@ const kMetadataARM64 = (
     "revision": "f5b129fe96a89a4a8ce8e1169bfa3914a0c8405d",
     "revisionDate": "2025-08-27",
     "repo": "https://github.com/WebKit/WebKit.git",
+    "url": "https://github.com/WebKit/WebKit",
     "note": "",
     "binarySize": 13437240,
     "description": "JIT-less build of JavaScriptCore."
@@ -664,7 +732,7 @@ const kMetadataARM64 = (
     "years": "2001-",
     "org": "Apple",
     "note": "",
-    "license": "LGPL-2.1",
+    "license": "LGPL-2.0-only",
     "loc": "770374",
     "binarySize": 26741048,
     "description": "JavaScript engine of Safari/WebKit."
@@ -675,11 +743,10 @@ const kMetadataARM64 = (
     "revisionDate": "2022-08-23",
     "repo": "https://github.com/pcmacdon/jsish.git",
     "url": "https://github.com/pcmacdon/jsish",
-    "standard": "no",
-    "tech": "stack-based VM",
+    "tech": "stack VM",
     "language": "C",
     "years": "2020-2022",
-    "note": "Can't run test suite - bugs in ASI, != operator, no Date class.",
+    "note": "Can't run test suite: bugs in ASI, != operator, no Date class.",
     "license": "MIT",
     "loc": "50896",
     "binarySize": 2422304,
@@ -708,12 +775,12 @@ const kMetadataARM64 = (
     "repo": "https://github.com/KDE/kjs.git",
     "url": "https://invent.kde.org/frameworks/kjs",
     "standard": "ES5",
-    "tech": "tree-walker / register VM (2008)",
+    "tech": "AST walker / register VM (2008)",
     "language": "C++",
     "years": "1998-2023",
     "org": "KDE",
     "note": "",
-    "license": "LGPL-2.1",
+    "license": "LGPL-2.0-or-later",
     "loc": "42352",
     "binarySize": 1262680,
     "description": "Original JavaScript engine of KDE's Konqueror browser."
@@ -740,15 +807,14 @@ const kMetadataARM64 = (
     "revisionDate": "2025-08-06",
     "repo": "https://github.com/cesanta/mjs.git",
     "url": "https://github.com/cesanta/mjs",
-    "standard": "no",
     "tech": "stack VM",
     "language": "C",
     "years": "2016-",
-    "note": "Can't run test suite: '[var] is not implemented'.",
-    "license": "GPL-2.0",
+    "note": "Can't run test suite: '[var] is not implemented' and other bugs/compliance issues.",
+    "license": "GPL-2.0-only",
     "loc": "33845",
     "binarySize": 133976,
-    "description": "JavaScript engine for microcontrollers."
+    "description": "JavaScript interpreter for microcontrollers."
   },
   "mujs": {
     "version": "1.3.7",
@@ -778,7 +844,7 @@ const kMetadataARM64 = (
     "years": "2011-",
     "org": "Oracle",
     "note": "",
-    "license": "GPL-2.0",
+    "license": "GPL-2.0-only with Classpath-exception-2.0",
     "loc": "89134",
     "binarySize": "",
     "description": "JavaScript engine of JDK 8-14 (2014-2020)."
@@ -798,7 +864,7 @@ const kMetadataARM64 = (
     "license": "BSD-2-Clause",
     "loc": "58962",
     "binarySize": 842680,
-    "description": "Lightweight embeddable JavaScript engine for use in nginx. Fails checksum in RegExp test."
+    "description": "Lightweight embeddable JavaScript engine for use in nginx."
   },
   "nova": {
     "version": "b6b295cc",
@@ -822,8 +888,8 @@ const kMetadataARM64 = (
     "revisionDate": "2025-06-13",
     "repo": "https://github.com/robertkrimen/otto.git",
     "url": "https://github.com/robertkrimen/otto",
-    "standard": "ES5",
-    "tech": "tree-walker",
+    "standard": "ES5 (partial)",
+    "tech": "AST walker",
     "language": "Go",
     "years": "2012-",
     "note": "",
@@ -869,6 +935,7 @@ const kMetadataARM64 = (
     "revision": "a99aafab4cfbbf650493c9a4feb5a1bb4a09d1d2",
     "revisionDate": "2025-05-29",
     "repo": "https://code.qt.io/qt/qt5.git",
+    "url": "https://code.qt.io/qt/qt5",
     "note": "",
     "binarySize": 12423640,
     "description": "JIT-less build of QV4."
@@ -888,7 +955,7 @@ const kMetadataARM64 = (
     "license": "LGPL, GPL, Qt",
     "loc": "50221",
     "binarySize": 12751320,
-    "description": "JavaScript engine of Qt's QML framework. Fails checksum in NavierStokes test."
+    "description": "JavaScript engine of Qt's QML framework."
   },
   "rhino": {
     "version": "1.7.15-1",
@@ -896,7 +963,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/mozilla/rhino",
     "url": "https://rhino.github.io/",
     "standard": "ES6+ (partial)",
-    "tech": "JVM, tree-walker / compiler to unoptimized JVM bytecode",
+    "tech": "AST walker / compiler to unoptimized JVM bytecode",
     "language": "Java",
     "years": "1997-",
     "org": "Mozilla",
@@ -911,6 +978,7 @@ const kMetadataARM64 = (
     "revision": "f88de4141d59b647756e7917c7a97c3e64b88289",
     "revisionDate": "2025-08-27",
     "repo": "https://github.com/mozilla-firefox/firefox",
+    "url": "https://github.com/mozilla-firefox/firefox",
     "note": "",
     "binarySize": 13357608,
     "description": "JIT-less build of SpiderMonkey"
@@ -943,7 +1011,7 @@ const kMetadataARM64 = (
     "language": "C",
     "years": "2013-2017",
     "note": "",
-    "license": "GPL-2.0",
+    "license": "GPL-2.0-only",
     "loc": "24811",
     "binarySize": 399904,
     "description": "JavaScript engine for microcontrollers."
@@ -953,6 +1021,7 @@ const kMetadataARM64 = (
     "revision": "345212d2fd3d41e7186580b42b935e1b6b518739",
     "revisionDate": "2025-09-01",
     "repo": "https://chromium.googlesource.com/v8/v8.git",
+    "url": "https://chromium.googlesource.com/v8/v8",
     "note": "",
     "binarySize": 12136976,
     "description": "JIT-less build of V8."
@@ -979,16 +1048,30 @@ const kMetadataARM64 = (
     "revision": "2ffd29ab24ea9778c94397965448ef96f6be347c",
     "revisionDate": "2025-08-18",
     "repo": "https://github.com/Moddable-OpenSource/moddable.git",
-    "url": "https://github.com/Moddable-OpenSource/moddable/",
+    "url": "https://github.com/Moddable-OpenSource/moddable",
     "standard": "ESnext",
     "tech": "stack VM",
     "language": "C",
     "years": "2016-",
     "note": "",
-    "license": "LGPL-3.0+, Apache-2.0",
+    "license": "LGPL-3.0-or-later, Apache-2.0",
     "loc": "129071",
     "binarySize": 2034712,
     "description": "Lightweight engine for microcontrollers."
+  },
+  "awebjs": {
+    "revisionDate": "",
+    "repo": "https://github.com/mirq/aweb.git",
+    "url": "https://web.archive.org/web/20090225194604/http://aweb.sunsite.dk/",
+    "standard": "ES3",
+    "tech": "AST walker",
+    "language": "C",
+    "years": "2002-2007",
+    "note": "",
+    "license": "AWebPL",
+    "loc": "21440",
+    "binarySize": "",
+    "description": "JavaScript engine of AWeb, a web browser for Amiga."
   },
   "bali": {
     "version": "0.8.0-5-g70ae6ad",
@@ -996,7 +1079,6 @@ const kMetadataARM64 = (
     "revisionDate": "2025-09-10",
     "repo": "https://github.com/ferus-web/bali.git",
     "url": "https://bali.xtrayambak.xyz/",
-    "standard": "no",
     "tech": "bytecode VM, JIT (x64)",
     "language": "Nim",
     "years": "2024-",
@@ -1005,6 +1087,20 @@ const kMetadataARM64 = (
     "loc": "12526",
     "binarySize": "",
     "description": "JavaScript engine written in Nim."
+  },
+  "carakan": {
+    "revisionDate": "",
+    "repo": "https://web.archive.org/web/20170113134110/https://github.com/prestocore/browser",
+    "url": "https://web.archive.org/web/20170113134110/https://github.com/prestocore/browser",
+    "standard": "ES5",
+    "tech": "register VM, JIT",
+    "language": "C++",
+    "years": "2010-2013",
+    "note": "",
+    "license": "Proprietary",
+    "loc": "128103",
+    "binarySize": "",
+    "description": "JavaScript engine of Opera 10.50–12.18."
   },
   "chakracore": {
     "revisionDate": "",
@@ -1021,13 +1117,264 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript engine of Microsoft Edge Legacy."
   },
+  "cl-javascript": {
+    "revisionDate": "",
+    "repo": "https://github.com/akapav/js.git",
+    "url": "https://marijnhaverbeke.nl/cl-javascript/",
+    "standard": "ES3",
+    "language": "Lisp",
+    "years": "2009-2012",
+    "note": "",
+    "license": "MIT",
+    "loc": "3390",
+    "binarySize": "",
+    "description": "JavaScript to Common Lisp compiler."
+  },
+  "dmdscript": {
+    "revisionDate": "",
+    "repo": "https://github.com/DigitalMars/DMDScript",
+    "url": "https://www.digitalmars.com/dscript/",
+    "standard": "ES3",
+    "tech": "register VM",
+    "language": "D",
+    "years": "2002-",
+    "note": "",
+    "license": "BSL-1.0",
+    "loc": "18013",
+    "binarySize": "",
+    "description": "ECMAScript implementation by Digital Mars written in D."
+  },
+  "echojs": {
+    "revisionDate": "",
+    "repo": "https://github.com/toshok/echojs.git",
+    "url": "https://github.com/toshok/echojs",
+    "standard": "ES6",
+    "tech": "LLVM",
+    "language": "C++, JavaScript",
+    "years": "2012-2023",
+    "note": "",
+    "license": "MIT",
+    "loc": "38883",
+    "binarySize": "",
+    "description": "Ahead of time compiler and runtime for ES6"
+  },
+  "flathead": {
+    "revisionDate": "",
+    "repo": "https://github.com/ndreynolds/flathead.git",
+    "url": "https://github.com/ndreynolds/flathead",
+    "tech": "AST walker, YACC-based parser",
+    "language": "C",
+    "years": "2012-2017",
+    "note": "",
+    "license": "MIT",
+    "loc": "7075",
+    "binarySize": "",
+    "description": "Toy JavaScript interpreter written in C."
+  },
+  "guile": {
+    "revisionDate": "",
+    "repo": "https://git.savannah.gnu.org/git/guile.git",
+    "url": "https://wingolog.org/archives/2009/02/22/ecmascript-for-guile",
+    "standard": "ES3 (partial)",
+    "language": "C",
+    "years": "2009",
+    "note": "Run `guile --language=ecmascript` to start ECMAScript REPL.",
+    "license": "LGPL-3.0-or-later",
+    "loc": "1713",
+    "binarySize": "",
+    "description": "Features an unfinished ECMAScript interpreter as of version 1.9."
+  },
+  "hako": {
+    "revisionDate": "",
+    "repo": "https://github.com/andrewmd5/hako.git",
+    "url": "https://github.com/andrewmd5/hako",
+    "standard": "ES2019",
+    "tech": "PrimJS compiled to WASM",
+    "language": "C++, TypeScript",
+    "years": "2025-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "18306",
+    "binarySize": "",
+    "description": "Embeddable WASM-sandboxed PrimJS fork."
+  },
+  "janet": {
+    "revisionDate": "",
+    "url": "https://web.archive.org/web/20050404081554/http://janet-js.sourceforge.net/",
+    "standard": "ES1, JS1.4",
+    "language": "C#",
+    "years": "2001",
+    "note": "",
+    "license": "GPL",
+    "binarySize": "",
+    "description": "JavaScript implementation for .NET by Steve Newman (of Writely)."
+  },
+  "jawsm": {
+    "revisionDate": "",
+    "repo": "https://github.com/drogus/jawsm.git",
+    "url": "https://github.com/drogus/jawsm",
+    "language": "Rust",
+    "years": "2024-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "11971",
+    "binarySize": "",
+    "description": "JavaScript to WASM compiler."
+  },
+  "jint": {
+    "revisionDate": "",
+    "repo": "https://github.com/sebastienros/jint.git",
+    "url": "https://github.com/sebastienros/jint",
+    "standard": "ESnext (partial)",
+    "tech": "AST walker",
+    "language": "C#",
+    "years": "2013-",
+    "note": "",
+    "license": "BSD-2-Clause",
+    "loc": "53487",
+    "binarySize": "",
+    "description": "JavaScript interpreter for .NET."
+  },
+  "jispy": {
+    "revisionDate": "",
+    "repo": "https://github.com/polydojo/jispy.git",
+    "url": "https://github.com/polydojo/jispy",
+    "tech": "AST walker",
+    "language": "Python",
+    "years": "2014-2017",
+    "note": "",
+    "license": "MPL-2.0",
+    "loc": "1182",
+    "binarySize": "",
+    "description": "Interpreter for a JavaScript subset written in Python."
+  },
+  "js2py": {
+    "revisionDate": "",
+    "repo": "https://github.com/PiotrDabkowski/Js2Py.git",
+    "url": "https://github.com/PiotrDabkowski/Js2Py",
+    "tech": "stack VM",
+    "language": "Python",
+    "years": "2014-2022",
+    "note": "",
+    "license": "MIT",
+    "loc": "69402",
+    "binarySize": "",
+    "description": "JavaScript interpreter written in Python."
+  },
+  "jurassic": {
+    "revisionDate": "",
+    "repo": "https://github.com/paulbartrum/jurassic.git",
+    "url": "https://github.com/paulbartrum/jurassic",
+    "standard": "ES5, ES6 (partial)",
+    "tech": "compiler to .NET IL",
+    "language": "C#",
+    "years": "2010-",
+    "note": "",
+    "license": "MIT",
+    "loc": "34639",
+    "binarySize": "",
+    "description": "JavaScript engine for .NET."
+  },
+  "langjs": {
+    "revisionDate": "",
+    "repo": "https://github.com/progval/rpython-langjs",
+    "url": "https://github.com/progval/rpython-langjs",
+    "tech": "stack VM",
+    "language": "Python",
+    "years": "2009-2013",
+    "note": "",
+    "loc": "7189",
+    "binarySize": "",
+    "description": "JavaScript interpreter written in Python for RPython (PyPy)"
+  },
+  "microvium": {
+    "revisionDate": "",
+    "repo": "https://github.com/coder-mike/microvium.git",
+    "url": "https://github.com/coder-mike/microvium",
+    "tech": "stack VM in C, separate AOT compiler in TypeScript",
+    "language": "C, TypeScript",
+    "years": "2020-2023",
+    "note": "",
+    "license": "MIT",
+    "loc": "20608",
+    "binarySize": "",
+    "description": "Embeddable engine for microcontrollers."
+  },
+  "ngs": {
+    "revisionDate": "",
+    "repo": "https://github.com/markkurossi/js",
+    "url": "https://web.archive.org/web/20000817004334/http://www.ngs.fi/js/",
+    "standard": "ES1, JS1.4",
+    "tech": "stack VM",
+    "language": "C",
+    "years": "1998-1999",
+    "note": "",
+    "license": "LGPL-2.0-only",
+    "loc": "36390",
+    "binarySize": "",
+    "description": "An independent implementation of JavaScript from late 1990s."
+  },
+  "niljs": {
+    "revisionDate": "",
+    "repo": "https://github.com/nilproject/NiL.JS.git",
+    "url": "https://github.com/nilproject/NiL.JS",
+    "standard": "ES6",
+    "tech": "AST walker",
+    "language": "C#",
+    "years": "2013-",
+    "note": "",
+    "license": "BSD-3-Clause",
+    "loc": "42214",
+    "binarySize": "",
+    "description": "JavaScript interpreter for .NET."
+  },
+  "primjs": {
+    "revisionDate": "",
+    "repo": "https://github.com/lynx-family/primjs.git",
+    "url": "https://github.com/lynx-family/primjs",
+    "standard": "ES2019",
+    "tech": "stack VM",
+    "language": "C++",
+    "years": "2024-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "292098",
+    "binarySize": "",
+    "description": "QuickJS-based engine from ByteDance for their cross-platform mobile apps framework Lynx."
+  },
+  "quad-wheel": {
+    "revisionDate": "",
+    "repo": "https://github.com/radare/quad-wheel.git",
+    "url": "https://code.google.com/archive/p/quad-wheel/",
+    "standard": "ES3",
+    "tech": "stack VM, YACC-based parser",
+    "language": "C",
+    "years": "2010",
+    "note": "",
+    "license": "MIT",
+    "loc": "7917",
+    "binarySize": "",
+    "description": "ES3 engine written in ANSI C."
+  },
+  "reeva": {
+    "revisionDate": "",
+    "repo": "https://github.com/ReevaJS/reeva.git",
+    "url": "https://github.com/ReevaJS/reeva",
+    "tech": "stack VM",
+    "language": "Kotlin",
+    "years": "2020-",
+    "note": "",
+    "license": "BSD-2-Clause",
+    "loc": "25566",
+    "binarySize": "",
+    "description": "JavaScript interpreter for JVM written in Kotlin."
+  },
   "starlight": {
     "version": "nightly",
     "revision": "503e789b9ef53594aee30c45a621018e855dcc17",
     "revisionDate": "2021-10-31",
     "repo": "https://github.com/Starlight-JS/starlight.git",
     "url": "https://github.com/Starlight-JS/starlight",
-    "standard": "no",
     "tech": "bytecode VM, PIC",
     "language": "Rust",
     "years": "2021",
@@ -1036,6 +1383,114 @@ const kMetadataARM64 = (
     "loc": "27826",
     "binarySize": "",
     "description": "JavaScript engine written in Rust."
+  },
+  "tamarin": {
+    "revisionDate": "",
+    "repo": "https://github.com/adobe/avmplus",
+    "url": "https://github.com/adobe/avmplus",
+    "standard": "ES3, ES4 (draft)",
+    "tech": "JIT",
+    "language": "C++",
+    "years": "2006-2013",
+    "org": "Adobe",
+    "note": "",
+    "license": "MPL-2.0",
+    "loc": "192611",
+    "binarySize": "",
+    "description": "JavaScript engine of Adobe Flash Player 9+."
+  },
+  "tiny-js": {
+    "revisionDate": "",
+    "repo": "https://github.com/gfwilliams/tiny-js",
+    "url": "https://github.com/gfwilliams/tiny-js",
+    "tech": "interpreters from source",
+    "language": "C++",
+    "years": "2009-2012",
+    "note": "",
+    "license": "MIT",
+    "loc": "2656",
+    "binarySize": "",
+    "description": "Primitive JavaScript interpreter."
+  },
+  "topaz": {
+    "revisionDate": "",
+    "repo": "https://github.com/koculu/Topaz.git",
+    "url": "https://github.com/koculu/Topaz",
+    "standard": "ES6",
+    "tech": "AST walker",
+    "language": "C#",
+    "years": "2021-",
+    "note": "",
+    "license": "MIT",
+    "loc": "21794",
+    "binarySize": "",
+    "description": "Multithreaded JavaScript engine for .NET."
+  },
+  "toyjs": {
+    "revisionDate": "",
+    "repo": "https://github.com/DelSkayn/toyjs.git",
+    "url": "https://github.com/DelSkayn/toyjs",
+    "tech": "register VM",
+    "language": "Rust",
+    "years": "2020-2024",
+    "note": "",
+    "loc": "18576",
+    "binarySize": "",
+    "description": "Toy JavaScript interpreter written in Rust"
+  },
+  "twostroke": {
+    "revisionDate": "",
+    "repo": "https://github.com/haileys/twostroke.git",
+    "url": "https://news.ycombinator.com/item?id=3460224",
+    "tech": "stack VM",
+    "language": "Ruby",
+    "years": "2011-2012",
+    "note": "",
+    "license": "MIT",
+    "loc": "4723",
+    "binarySize": "",
+    "description": "JavaScript interpreter written in Ruby."
+  },
+  "voyager": {
+    "revisionDate": "",
+    "repo": "https://github.com/zapek/Voyager.git",
+    "url": "https://zapek.com/software/voyager/",
+    "standard": "ES3",
+    "tech": "stack VM, YACC-based parser",
+    "language": "C",
+    "years": "199x-2002",
+    "note": "",
+    "license": "GPL-3.0",
+    "loc": "11922",
+    "binarySize": "",
+    "description": "JavaScript engine of Voyager, a web browser from late 1990s – early 2000s for Amiga."
+  },
+  "yantra": {
+    "revisionDate": "",
+    "repo": "https://github.com/yantrajs/yantra.git",
+    "url": "https://github.com/yantrajs/yantra",
+    "standard": "ES6",
+    "tech": "AST walker / compiler to .NET IL",
+    "language": "C#",
+    "years": "2020-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "54959",
+    "binarySize": "",
+    "description": "JavaScript engine for .NET."
+  },
+  "yavashark": {
+    "revisionDate": "",
+    "repo": "https://github.com/Sharktheone/yavashark.git",
+    "url": "https://github.com/Sharktheone/yavashark",
+    "tech": "AST walker",
+    "language": "Rust",
+    "years": "2024-",
+    "note": "",
+    "license": "MIT",
+    "loc": "177309",
+    "binarySize": "",
+    "description": "JavaScript/TypeScript engine written in Rust."
   }
 }
 // END metadata-arm64.json
@@ -1119,7 +1574,6 @@ const kOctaneRunsARM64 = {
     'zlib': {'max': 14168, 'time_avg': 12.52, 'scores': [12228, 12029, 12179, 11825, 12294, 12275, 12216, 11618, 12152, 14013, 13627, 12359, 12152, 12710, 12206, 12462, 12403, 12076, 11983, 12292, 12204, 12359, 12307, 13428, 12496, 12007, 12333, 12219, 12034, 12054, 12658, 12583, 11799, 11889, 11888, 11696, 12042, 12374, 12500, 13746, 12247, 12552, 12007, 12645, 12133, 12182, 12014, 12187, 12081, 11966, 12156, 12400, 12644, 11999, 13707, 11865, 11982, 12685, 12019, 12446, 12077, 12165, 12241, 12213, 12226, 12041, 12257, 12141, 12481, 13670, 12423, 11936, 11668, 12227, 12238, 12001, 11937, 11868, 11868, 11441, 11936, 11705, 11493, 11594, 11908, 12067, 12208, 12212, 12261, 12172, 14168, 12033, 12251, 12337, 12375, 12259, 12332, 12140, 12358, 12127]},
     'Typescript': {'max': 19214, 'time_avg': 7.78, 'scores': [19131, 15910, 19214, 15930, 15755, 18674, 15784, 19131, 15705, 18581, 15423, 15637, 18759, 15624, 18533, 15678, 18666, 15780, 15616, 18756, 15755, 18985, 15668, 18710, 15493, 15930, 18463, 15753, 18197, 15159, 15274, 18426, 15091, 18267, 14988, 14925, 17941, 15104, 18197, 15217, 18002, 14904, 14971, 17763, 14887, 17880, 17736, 15288, 17670, 14901, 17891, 18262, 14937, 18450, 15129, 18320, 15360, 15190, 18244, 15259, 18078, 15145, 15414, 18158, 15314, 18143, 15104, 15190, 18207, 15420, 18873, 15405, 19119, 15120, 15305, 19005, 15423, 18423, 15344, 18415, 15403, 15527, 18322, 15371, 18671, 15214, 15349, 18614, 15607, 18668, 15538, 18254, 15318, 15639, 18127, 15478, 18557, 15379, 15351, 19056]},
   },
-
   /*'v8-baseline': {  // ./v8 --no-turbofan --no-maglev
     'Richards': {'time_avg': 2.19, 'scores': [4257, 4286, 4286, 4310, 4317, 4321, 4324, 4328, 4335, 4342, 4342, 4353, 4353, 4363, 4363, 4374, 4377, 4381, 4381, 4385]},
     'DeltaBlue': {'time_avg': 2.21, 'scores': [4932, 4947, 4959, 4959, 4961, 4965, 4965, 4965, 4967, 4972, 4972, 4979, 4980, 4985, 4985, 4992, 4992, 5018, 5038, 5038]},
@@ -1329,20 +1783,20 @@ const kOctaneRunsARM64 = {
   },
   'quickjs-ng': {
     'note': 'PdfJS/Gameboy/CodeLoad run together - fails when run separately',
-    'Richards': {'time_avg': 2.17, 'scores': [248, 678, 687, 1569, 1576, 1576, 1578, 1578, 1578, 1580, 1582, 1583, 1585, 1587, 1596, 1599, 1599, 1601, 1606, 1615]},
-    'DeltaBlue': {'time_avg': 2.27, 'scores': [724, 730, 730, 1684, 1694, 1694, 1694, 1698, 1698, 1698, 1702, 1704, 1704, 1706, 1706, 1707, 1707, 1711, 1712, 1714]},
-    'Crypto': {'time_avg': 5.81, 'scores': [1205, 1515, 1606, 1617, 1633, 1658, 1915, 1963, 1965, 1977, 1977, 1981, 1982, 1983, 1983, 1984, 1992, 1994, 1995, 1995]},
-    'RayTrace': {'time_avg': 2.26, 'scores': [2632, 2730, 2732, 2741, 2743, 2751, 2757, 2765, 2770, 2773, 2779, 2779, 2781, 2784, 2787, 2787, 2790, 2790, 2790, 2806]},
-    'EarleyBoyer': {'time_avg': 6.63, 'scores': [2946, 2949, 2982, 3007, 3589, 3593, 3610, 3612, 3616, 3635, 3641, 3647, 3648, 3649, 3652, 3653, 3653, 3654, 3658, 3699]},
-    'RegExp': {'time_avg': 4.85, 'scores': [348, 351, 355, 504, 505, 506, 508, 508, 508, 509, 509, 512, 513, 514, 514, 525, 530, 538, 540, 543]},
-    'Splay': {'time_avg': 2.45, 'scores': [1308, 1479, 4930, 4938, 5039, 5047, 5069, 5096, 5101, 5104, 5113, 5121, 5126, 5137, 5150, 5158, 5167, 5170, 6128, 6161]},
-    'SplayLatency': {'time_avg': 2.45, 'scores': [728, 737, 747, 798, 17396, 17480, 17537, 17559, 17631, 17693, 17693, 17705, 17711, 17711, 17730, 17746, 17783, 17857, 17883, 17906]},
-    'NavierStokes': {'time_avg': 2.18, 'scores': [3118, 3121, 3124, 3142, 3148, 3151, 3154, 3157, 3161, 3170, 3176, 3176, 3176, 3179, 3182, 3182, 3185, 3198, 3198, 3204]},
-    'Mandreel': {'time_avg': 5.97, 'scores': [1152, 1154, 1155, 1168, 1171, 1174, 1182, 1494, 1496, 1497, 1501, 1503, 1506, 1510, 1516, 1519, 1521, 1523, 1525, 1529]},
-    'MandreelLatency': {'time_avg': 5.97, 'scores': [10071, 10133, 10174, 10279, 10300, 10300, 10321, 10343, 10343, 10386, 10429, 10429, 10429, 10451, 10473, 10495, 10517, 10540, 10562, 10607]},
-    'Box2D': {'time_avg': 1.14, 'scores': [2884, 6539, 6582, 6588, 6613, 6638, 6650, 6675, 6688, 6701, 6726, 6739, 6739, 6758, 6771, 6778, 6778, 6784, 6784, 6791]},
-    'Typescript': {'time_avg': 6.13, 'scores': [18901, 18951, 19031, 19036, 19068, 19079, 19113, 19249, 19264, 19293, 23460, 23595, 23696, 23704, 23704, 23784, 23900, 23949, 23985, 23990]},
-    'zlib': {'median': 3221, 'max': 3318, 'time_avg': 47.59, 'scores': [3318, 3188, 3276, 3171, 3274, 3196, 3291, 3060, 3138, 3221]},
+    'Richards': {'median': 1589, 'max': 1689, 'time_avg': 2.23, 'scores': [1689, 1684, 1652, 1661, 1559, 1652, 1633, 1585, 692, 1633, 1557, 1624, 1650, 1638, 1647, 1624, 1553, 1606, 1610, 1608, 697, 1612, 1573, 1620, 1601, 1596, 1614, 1624, 1617, 1610, 1610, 1613, 1610, 1594, 1592, 1596, 1605, 1606, 1606, 1589, 1557, 1504, 1606, 1536, 1576, 1589, 1592, 1582, 1527, 1580, 1571, 1585, 1582, 1585, 1576, 1580, 1576, 1548, 1555, 1569, 1574, 1541, 1555, 1552, 1550, 1580, 1567, 1552, 1555, 1566, 1539, 1546, 1591, 1538, 1578, 1585, 1592, 1580, 1525, 1567, 1585, 1539, 1583, 1574, 1591, 1592, 1585, 1600, 1603, 1557, 1538, 1596, 1598, 1601, 1596, 1598, 1596, 1598, 1601, 1601]},
+    'DeltaBlue': {'median': 1717, 'max': 1737, 'time_avg': 2.22, 'scores': [1722, 1722, 1716, 1731, 1729, 1719, 1714, 1714, 1731, 1722, 1721, 1673, 1714, 1716, 1729, 1717, 1716, 1643, 1729, 1698, 1724, 1722, 1716, 1734, 1726, 1717, 1716, 1717, 1717, 1729, 1726, 1701, 1716, 1724, 1724, 1721, 1719, 1714, 1709, 1737, 1729, 1726, 1719, 1698, 1668, 1721, 1719, 1717, 1709, 1729, 1727, 1724, 1706, 1711, 1717, 1729, 1717, 1714, 1615, 1726, 1726, 1727, 1709, 1706, 1706, 1729, 1712, 1722, 1719, 1706, 1716, 1714, 1726, 1714, 1716, 1722, 1719, 1722, 1717, 1712, 1724, 1724, 1716, 1711, 1714, 1716, 1704, 1722, 1711, 1698, 1719, 1726, 1719, 1721, 1709, 1709, 1722, 1731, 1712, 1711]},
+    'Crypto': {'median': 2005, 'max': 2022, 'time_avg': 5.74, 'scores': [1716, 2008, 1140, 2015, 1632, 2013, 1501, 2010, 2016, 1248, 2018, 1525, 2017, 2017, 2008, 2000, 1975, 2011, 1662, 2002, 2013, 2019, 2021, 2015, 2014, 1537, 1876, 1970, 2015, 1999, 1997, 2001, 1531, 1912, 2002, 1225, 2015, 1539, 2021, 2015, 2013, 1998, 2014, 2016, 1640, 2017, 2011, 2013, 1993, 2008, 2016, 1538, 2010, 2022, 1209, 1997, 1522, 2014, 2022, 2015, 2013, 2015, 1719, 1656, 1882, 1662, 2009, 2018, 2012, 2013, 1974, 1988, 1519, 1996, 2010, 1217, 2007, 1545, 2015, 2019, 2017, 1929, 1224, 1992, 1511, 1995, 1659, 2005, 2011, 2010, 2010, 1909, 2017, 1659, 1992, 1607, 2006, 2016, 1712, 1909]},
+    'RayTrace': {'median': 2798, 'max': 2838, 'time_avg': 2.24, 'scores': [1590, 2818, 2812, 2806, 2812, 2818, 2827, 2835, 2806, 2795, 2809, 2812, 2787, 2816, 2818, 2812, 2812, 2798, 2838, 2821, 2809, 2787, 2813, 2738, 2757, 2741, 2790, 2757, 2779, 2787, 2818, 2798, 2787, 2749, 2749, 2806, 2781, 2770, 2787, 2773, 2765, 2798, 2812, 2787, 2705, 2809, 2824, 2812, 2795, 2806, 2809, 2795, 2809, 2816, 2812, 2816, 2813, 2792, 2809, 2798, 2813, 2765, 2776, 2790, 2773, 2674, 2719, 2645, 2727, 2762, 2798, 2781, 2730, 2792, 2835, 2812, 2813, 2795, 2792, 2809, 2787, 2812, 2813, 2790, 2816, 2792, 2795, 2824, 2818, 2801, 2776, 2792, 2813, 2809, 2829, 2829, 2738, 2619, 2700, 2722]},
+    'EarleyBoyer': {'median': 3805, 'max': 3881, 'time_avg': 5.76, 'scores': [3128, 3779, 3794, 3881, 3834, 3862, 3809, 3174, 3868, 3868, 3881, 3855, 3721, 3717, 3073, 3874, 3771, 3705, 3680, 3831, 3781, 3029, 3808, 3808, 3666, 3789, 3831, 3864, 3212, 3844, 3880, 3849, 3826, 3705, 3777, 3160, 3831, 3841, 3757, 3855, 3699, 3741, 3111, 3799, 3740, 3861, 3756, 3842, 3856, 3161, 3857, 2941, 3697, 3743, 2218, 3758, 3117, 3816, 3069, 3722, 3864, 3842, 3786, 3835, 3654, 3176, 3834, 3162, 3869, 3843, 3877, 3863, 3873, 3830, 3199, 3857, 3805, 3829, 3867, 3860, 3871, 3195, 3853, 3835, 3843, 3858, 3806, 3813, 3084, 3805, 3776, 3728, 3822, 3757, 3777, 3111, 3825, 3788, 3765, 3707]},
+    'RegExp': {'median': 509, 'max': 549, 'time_avg': 4.88, 'scores': [357, 498, 513, 333, 508, 518, 506, 492, 356, 507, 536, 342, 511, 521, 360, 505, 510, 526, 520, 516, 524, 509, 370, 513, 525, 355, 531, 511, 509, 506, 356, 524, 511, 355, 513, 510, 349, 515, 509, 512, 518, 362, 523, 505, 345, 511, 498, 350, 505, 500, 521, 500, 370, 512, 542, 366, 512, 507, 341, 514, 508, 515, 511, 364, 506, 502, 379, 513, 506, 511, 504, 361, 499, 521, 359, 502, 516, 357, 521, 547, 511, 532, 362, 501, 509, 352, 514, 515, 347, 512, 514, 513, 518, 365, 528, 519, 367, 549, 501, 375]},
+    'Splay': {'median': 5134, 'max': 6373, 'time_avg': 2.43, 'scores': [4849, 4816, 4881, 1663, 5167, 5251, 5224, 5039, 4982, 6014, 5134, 5215, 5183, 5191, 1345, 5199, 5085, 5134, 5248, 5015, 6022, 5101, 5183, 5126, 4947, 1291, 5175, 5064, 4841, 4909, 5153, 6120, 4849, 5248, 5134, 4893, 1259, 5183, 5069, 4686, 5007, 4604, 6373, 4881, 4873, 5183, 4938, 1202, 5235, 5207, 5240, 4987, 5134, 6210, 5101, 4999, 5158, 4982, 1243, 5061, 5088, 5044, 5191, 5240, 6120, 5281, 5215, 5167, 5199, 1234, 5215, 5167, 5142, 4922, 5031, 6055, 4771, 4950, 5104, 4971, 1279, 5175, 5240, 5134, 5118, 5207, 6269, 5175, 5023, 5056, 5275, 1315, 5145, 5224, 5113, 5235, 5142, 6169, 5113, 4930]},
+    'SplayLatency': {'median': 17388, 'max': 18110, 'time_avg': 2.43, 'scores': [17183, 16833, 17020, 827, 17972, 17771, 17552, 17525, 17464, 703, 17765, 17562, 17819, 17988, 777, 17817, 17611, 17679, 17839, 17859, 719, 17544, 17788, 17757, 17371, 778, 17335, 17460, 16700, 17106, 17962, 726, 17121, 17317, 16306, 17273, 775, 17569, 17143, 16280, 16135, 16795, 714, 16961, 16724, 17885, 17135, 788, 17470, 17659, 17965, 17760, 17578, 696, 17361, 17293, 17230, 17034, 780, 16679, 17191, 17605, 17500, 17752, 733, 17854, 17972, 17588, 17761, 740, 17681, 17612, 17675, 17152, 17043, 696, 16987, 16612, 17388, 17308, 803, 17156, 18110, 17567, 17802, 17430, 696, 17388, 17058, 17919, 18053, 787, 17652, 17999, 17853, 17652, 17442, 744, 17694, 17210]},
+    'NavierStokes': {'median': 3101, 'max': 3173, 'time_avg': 2.22, 'scores': [3086, 3127, 3157, 3133, 3154, 3148, 3170, 3064, 3043, 2901, 3086, 3116, 3082, 3151, 3070, 2962, 3154, 3115, 3034, 3110, 3034, 3101, 3020, 3023, 3145, 3136, 3073, 3020, 3058, 3052, 3055, 3079, 3104, 3095, 3026, 3136, 2916, 3124, 3113, 3124, 3079, 3157, 3089, 3037, 3049, 3086, 3142, 3026, 3127, 3124, 3116, 3040, 2965, 3014, 3124, 3104, 3173, 3157, 3101, 3136, 3133, 3142, 3029, 2991, 3034, 3104, 3154, 3086, 3011, 3079, 3076, 3079, 3095, 3061, 3076, 3121, 3086, 3058, 3040, 2898, 3136, 3017, 3101, 3136, 3148, 3161, 3124, 3017, 3110, 3101, 3113, 3116, 3116, 3064, 3064, 3173, 3164, 3110, 3116, 3034]},
+    'Mandreel': {'median': 1458, 'max': 1519, 'time_avg': 6.11, 'scores': [1508, 1505, 1509, 1491, 1139, 1424, 1110, 1447, 1131, 1472, 1146, 1456, 1012, 1458, 1147, 1466, 1432, 1486, 1479, 1130, 1467, 1129, 1442, 1146, 1473, 1090, 1458, 1143, 1509, 1449, 1516, 1514, 1140, 1471, 1170, 1503, 1149, 1519, 1152, 1503, 1476, 1485, 1495, 1145, 1477, 1163, 1430, 1116, 1517, 1153, 1340, 1157, 1514, 1513, 1170, 1462, 1147, 1483, 1153, 1449, 1106, 1474, 1149, 1511, 1497, 1356, 1489, 1172, 1510, 1154, 1463, 1123, 1470, 1115, 1459, 1483, 1474, 1491, 1170, 1494, 1040, 1505, 1154, 1337, 1069, 1472, 1159, 1489, 1148, 1516, 1489, 1172, 1491, 1171, 1505, 1153, 1503, 1165, 1499, 1486]},
+    'MandreelLatency': {'median': 10174, 'max': 10584, 'time_avg': 6.11, 'scores': [10279, 10343, 10237, 10343, 9756, 9587, 9737, 9872, 9643, 9852, 9990, 9891, 9813, 9718, 9891, 9970, 9680, 9970, 10153, 10112, 10091, 9833, 10051, 9737, 10174, 9371, 9661, 10010, 10174, 9794, 10216, 10279, 10031, 9990, 10195, 10153, 10386, 10195, 10174, 10051, 10010, 10174, 10279, 10153, 9911, 10408, 9624, 9699, 10451, 10343, 10300, 10091, 10408, 10408, 10279, 10216, 10386, 9931, 10300, 9680, 9970, 9718, 10051, 10195, 10408, 10364, 10279, 10584, 10386, 9990, 10195, 9970, 10051, 9931, 9852, 10237, 9852, 10279, 10300, 10321, 10364, 10386, 10258, 10300, 10153, 10133, 10343, 10195, 10279, 10364, 10451, 10386, 10451, 10540, 10195, 10343, 10343, 10451, 10343, 10237]},
+    'Box2D': {'median': 6594, 'max': 6726, 'time_avg': 1.21, 'scores': [6474, 6613, 6694, 6607, 6613, 6675, 6594, 6638, 6594, 6607, 6503, 2915, 6701, 6582, 6601, 6493, 6714, 6503, 6521, 6669, 6233, 6588, 3097, 6398, 6342, 6519, 6197, 6287, 6455, 6373, 6423, 6527, 6404, 3346, 6515, 6588, 6432, 6398, 6570, 6564, 6546, 6632, 6625, 6675, 3081, 6650, 6657, 6607, 6638, 6594, 6701, 6688, 6675, 6588, 6701, 3114, 6497, 6657, 6669, 6632, 6669, 6564, 6601, 6558, 6500, 6657, 3092, 6564, 6669, 6607, 6650, 6533, 6455, 6564, 6688, 6558, 6336, 3062, 6506, 6513, 6650, 6688, 6619, 6632, 6657, 6582, 6675, 6682, 3307, 6669, 6726, 6707, 6613, 6701, 6607, 6682, 6688, 6493, 6657, 3296]},
+    'zlib': {'median': 3202, 'max': 3339, 'time_avg': 48.03, 'scores': [3270, 3196, 3279, 3206, 3287, 3197, 3241, 3179, 3303, 3225, 3184, 3235, 3193, 3297, 2962, 3235, 3303, 3179, 3273, 3187, 3291, 3209, 3259, 3202, 2947, 3308, 3206, 3265, 3102, 3083, 2937, 3019, 3043, 2765, 3170, 3006, 3258, 3095, 3278, 3180, 3176, 3280, 3194, 3278, 3208, 3128, 3217, 3303, 3130, 3217, 3253, 3240, 3308, 2642, 3119, 3209, 3304, 3203, 3310, 3158, 3268, 3225, 3320, 3142, 3289, 3189, 3324, 3196, 3339, 3222, 2994, 3246, 3167, 3141, 3260, 3167, 3141, 3190, 3121, 3231, 3154, 3209, 3113, 3190, 3250, 2898, 3190, 3202, 3147, 3279, 3179, 3146, 3151, 3175, 3264, 3187, 3163, 3271, 3068, 3244]},
+    'Typescript': {'median': 22315, 'max': 23564, 'time_avg': 6.35, 'scores': [18565, 22757, 17956, 21553, 18649, 23032, 18579, 23221, 18104, 23447, 18762, 23032, 18365, 22656, 22941, 22953, 22315, 17833, 23512, 18690, 23032, 18439, 22806, 18370, 22736, 18614, 22133, 16574, 16040, 16326, 22684, 17845, 22295, 18506, 22732, 18828, 23128, 18506, 23141, 18655, 22704, 18246, 21703, 18351, 22524, 18636, 23145, 18474, 23132, 23158, 18423, 23250, 18907, 23564, 18723, 23103, 18685, 23141, 18652, 23174, 18660, 23158, 18828, 23045, 23242, 18853, 22627, 18362, 23162, 18466, 22535, 18795, 23170, 18636, 23107, 18770, 23132, 18784, 22904, 23099, 23174, 23272, 18562, 23234, 18442, 23212, 18693, 23451, 18765, 23439, 18784, 23003, 18787, 23486, 22806, 23242, 22551, 18106, 22949, 18696]},
     'PdfJS': {'max': 7330, 'time_avg': 10.98, 'scores': [7265, 7330, 7059, 3001, 7291, 7317, 7239, 7291, 3038, 7291, 7284, 7265, 7174, 6731, 3840, 7245, 7200, 7194, 7258, 7252]},
     'Gameboy': {'max': 12530, 'time_avg': 10.98, 'scores': [7112, 12518, 12506, 12400, 12412, 12530, 12447, 12447, 12424, 12435, 12530, 6778, 11361, 11312, 12389, 12261, 11938, 12424, 12307, 12204]},
     'CodeLoad': {'max': 31600, 'time_avg': 10.98, 'scores': [30996, 20043, 30770, 31209, 30441, 30289, 7769, 31109, 31600, 30788, 31435, 28210, 18341, 28673, 31120, 29909, 30511, 30680, 17754, 30873]},
@@ -1367,27 +1821,27 @@ const kOctaneRunsARM64 = {
     'MandreelLatency': {'median': 90, 'max': 91, 'time_avg': 428.88, 'scores': [90, 90, 90, 89, 91]},
   },
   'escargot': {
-    'Box2D': {'time_avg': 1.13, 'scores': [2901, 3469, 10230, 10328, 10518, 10559, 10580, 10590, 10601, 10611, 10621, 10621, 10642, 10642, 10663, 10673, 10673, 10684, 10694, 10694]},
-    'CodeLoad': {'time_avg': 2.21, 'scores': [22124, 22200, 23311, 28172, 33815, 40103, 40383, 40701, 40829, 40888, 41076, 41084, 41322, 41356, 41577, 41683, 41684, 41785, 41809, 41818]},
-    'Crypto': {'time_avg': 4.45, 'scores': [2706, 3159, 3164, 3170, 3195, 3210, 3231, 4879, 4899, 4911, 4918, 4919, 4933, 4936, 4938, 4939, 4939, 4942, 4950, 4968]},
-    'DeltaBlue': {'time_avg': 2.2, 'scores': [1186, 1197, 1228, 2745, 2748, 2754, 2774, 2781, 2787, 2803, 2811, 2814, 2814, 2814, 2823, 2827, 2860, 2860, 2876, 2943]},
-    'EarleyBoyer': {'time_avg': 5.61, 'scores': [4321, 4372, 5089, 5114, 5128, 6632, 6674, 6676, 6696, 6696, 6730, 6735, 6742, 6742, 6744, 6750, 6785, 6791, 6792, 6829]},
-    'Gameboy': {'time_avg': 1.15, 'scores': [9333, 18947, 19015, 19067, 19618, 19637, 19859, 19915, 19972, 20010, 20106, 20183, 20202, 20222, 20300, 20498, 20598, 20618, 20639, 20947]},
-    'Mandreel': {'time_avg': 3.35, 'scores': [2632, 2727, 2728, 2734, 2736, 2745, 2749, 2750, 2762, 2767, 2771, 2773, 2773, 2775, 2776, 2778, 2781, 2782, 2783, 2791]},
-    'MandreelLatency': {'time_avg': 3.35, 'scores': [2311, 2374, 2398, 2428, 2591, 17741, 17868, 18062, 18128, 18128, 18194, 18194, 18194, 18194, 18261, 18261, 18328, 18396, 18396, 18396]},
-    'NavierStokes': {'time_avg': 2.23, 'scores': [5326, 5342, 5362, 5362, 5388, 5399, 5415, 5426, 5453, 5453, 5458, 5463, 5463, 5463, 5463, 5480, 5480, 5480, 5485, 5512]},
-    'PdfJS': {'time_avg': 1.29, 'scores': [5417, 6272, 12955, 12955, 13110, 13113, 13123, 13137, 13149, 13161, 13211, 13285, 13297, 13322, 13322, 13398, 13398, 13436, 13436, 13449]},
-    'RayTrace': {'time_avg': 2.19, 'scores': [1679, 1969, 2015, 4736, 4762, 4796, 4800, 4810, 4816, 4821, 4831, 4831, 4845, 4845, 4860, 4879, 4894, 4904, 4958, 5007]},
-    'RegExp': {'time_avg': 3.56, 'scores': [482, 503, 532, 768, 793, 804, 805, 807, 818, 818, 819, 819, 819, 821, 821, 822, 826, 828, 829, 835]},
-    'Richards': {'time_avg': 2.22, 'scores': [2676, 2849, 2870, 2877, 2877, 2895, 2898, 2898, 2902, 2905, 2912, 2916, 2916, 2919, 2930, 2930, 2937, 2937, 2948, 2951]},
-    'Splay': {'time_avg': 2.52, 'scores': [304, 784, 2819, 2821, 2855, 2859, 2860, 2881, 2884, 2892, 2900, 2901, 2933, 2947, 2966, 2968, 2974, 2997, 3004, 3056]},
-    'SplayLatency': {'time_avg': 2.52, 'scores': [571, 582, 614, 687, 3923, 3941, 3948, 3955, 3964, 3968, 3976, 3989, 3999, 4011, 4021, 4029, 4042, 4044, 4052, 4130]},
-    'Typescript': {'time_avg': 5.6, 'scores': [19628, 20061, 20162, 20194, 20217, 20368, 20457, 20460, 25359, 25400, 25547, 25676, 25842, 25879, 25895, 25905, 25921, 25926, 26059, 26080]},
-    'zlib': {'time_avg': 28.8, 'scores': [4990, 5138, 5140, 5245, 5291, 5293, 5332, 5332, 5341, 5348, 5349, 5362, 5372, 5376, 5377, 5379, 5381, 5382, 5383, 5390]},
+    'Richards': {'median': 2923, 'max': 3093, 'time_avg': 2.21, 'scores': [3093, 3092, 2990, 3001, 2930, 2994, 2923, 3001, 3001, 3008, 3001, 2966, 2983, 2863, 2958, 2944, 2965, 2983, 2979, 2874, 2877, 2958, 2958, 2912, 2948, 2930, 2856, 2931, 2923, 2966, 2891, 2863, 2923, 2919, 2909, 2927, 2944, 2934, 2938, 2859, 2912, 2870, 2912, 2870, 2849, 2852, 2863, 2874, 2919, 2941, 2732, 2708, 2849, 2799, 2888, 2909, 2792, 2934, 2729, 2923, 2927, 2958, 2860, 2931, 2941, 2910, 2856, 2916, 2874, 2941, 2849, 2951, 2930, 2867, 2927, 2916, 2944, 2941, 2927, 2937, 2888, 2923, 2895, 1255, 2906, 2937, 2917, 2944, 2927, 2902, 2814, 2828, 2916, 2923, 2930, 2814, 2920, 2909, 2754, 2912]},
+    'DeltaBlue': {'median': 2787, 'max': 3028, 'time_avg': 2.23, 'scores': [2919, 2863, 2803, 2817, 2807, 2876, 2939, 2770, 2612, 2900, 2803, 2853, 2926, 2873, 2860, 2797, 2764, 2804, 2771, 2896, 2761, 2797, 2702, 2708, 2778, 2757, 2784, 2803, 2737, 2777, 2400, 2728, 2807, 2752, 2774, 2896, 2671, 2717, 2765, 2950, 2622, 2380, 2699, 2691, 2725, 2771, 2774, 2764, 2658, 2784, 2702, 2609, 2790, 2784, 2757, 2735, 2721, 2784, 2870, 2850, 2962, 2820, 2771, 2798, 2933, 2745, 2989, 2840, 2886, 3028, 2864, 2834, 2797, 2787, 2712, 2774, 2787, 2642, 2764, 2847, 2744, 2807, 2886, 2695, 2721, 2745, 2692, 2724, 2794, 2820, 2741, 2817, 2847, 2804, 2975, 2797, 2787, 2923, 2880, 2721]},
+    'Crypto': {'median': 4916, 'max': 4976, 'time_avg': 4.45, 'scores': [4712, 4891, 4826, 4831, 4866, 4933, 4837, 4872, 4898, 4897, 4958, 4944, 4920, 4955, 4965, 4940, 4971, 4976, 4956, 4867, 4944, 4841, 4849, 4913, 4958, 4916, 4861, 4882, 4909, 4954, 4916, 4976, 4930, 4944, 4848, 4939, 4891, 4926, 4938, 4941, 4861, 4901, 4841, 4733, 4845, 4908, 4933, 4958, 4934, 4943, 4961, 4856, 4856, 4897, 4835, 4544, 4750, 4916, 4944, 4967, 4973, 4971, 4956, 4973, 4963, 4939, 4903, 4897, 4893, 4952, 4947, 4917, 4940, 4943, 4870, 4771, 4940, 4927, 4768, 4915, 4941, 4935, 4942, 4816, 4722, 4686, 4892, 4941, 4877, 4949, 4869, 4675, 4817, 4891, 4962, 4697, 4868, 4878, 4933, 4935]},
+    'RayTrace': {'median': 4923, 'max': 5027, 'time_avg': 2.23, 'scores': [4919, 4923, 4889, 4919, 4928, 4800, 4840, 4840, 4889, 4909, 4850, 4953, 4953, 4992, 4840, 4850, 4805, 4938, 4879, 4899, 4938, 4909, 4977, 4958, 5027, 4933, 4997, 4943, 4821, 5027, 5007, 4816, 4879, 4786, 5027, 4977, 4992, 4987, 4855, 4938, 4938, 4884, 5007, 4943, 4982, 5022, 4992, 4962, 4928, 4938, 4933, 4889, 5007, 4943, 4904, 4977, 4943, 4938, 4958, 4958, 4894, 4889, 4972, 4972, 4948, 4874, 4919, 4904, 4904, 4884, 4972, 4962, 4962, 4894, 4850, 4914, 4894, 4923, 4800, 4919, 4885, 5012, 4884, 4933, 4967, 4982, 4977, 4972, 4874, 4812, 4948, 4800, 4630, 4879, 4855, 4653, 4845, 4602, 4657, 4860]},
+    'EarleyBoyer': {'median': 6640, 'max': 6808, 'time_avg': 5.57, 'scores': [6699, 4232, 6765, 5128, 6530, 6535, 6523, 6511, 6396, 6785, 5100, 6552, 6326, 4131, 6742, 5132, 6584, 6416, 6514, 6571, 6572, 6607, 5148, 6718, 6501, 4109, 6678, 5029, 6651, 6762, 6530, 6663, 6788, 6691, 5154, 6608, 6483, 4140, 6650, 5036, 6673, 6706, 6764, 6684, 6560, 6693, 5205, 6775, 6736, 4223, 6719, 5183, 6796, 6803, 6696, 6606, 6756, 6683, 5119, 6765, 6592, 4144, 6653, 5183, 6802, 6752, 6796, 6753, 6746, 6680, 5144, 6800, 6737, 4203, 6763, 5211, 6672, 6727, 6717, 6284, 6272, 6640, 5149, 6718, 6712, 4053, 6639, 5092, 6747, 6749, 6798, 6607, 6748, 6652, 5205, 6808, 6799, 4297, 6713, 5168]},
+    'RegExp': {'median': 818, 'max': 842, 'time_avg': 3.64, 'scores': [838, 833, 833, 839, 832, 829, 485, 839, 842, 833, 469, 784, 746, 822, 785, 801, 822, 802, 808, 831, 805, 515, 823, 799, 808, 824, 817, 787, 468, 815, 834, 807, 482, 797, 815, 832, 830, 813, 815, 490, 832, 836, 827, 526, 827, 818, 809, 817, 809, 818, 515, 815, 826, 838, 504, 818, 838, 839, 826, 827, 835, 465, 831, 810, 773, 454, 757, 823, 828, 831, 832, 838, 482, 812, 832, 805, 500, 833, 839, 821, 813, 820, 823, 494, 827, 822, 822, 473, 831, 816, 830, 809, 827, 830, 509, 835, 752, 797, 485, 811]},
+    'Splay': {'median': 2795, 'max': 3117, 'time_avg': 2.61, 'scores': [2927, 2852, 3038, 3117, 3023, 3089, 2647, 2850, 234, 2648, 2600, 2773, 2640, 2757, 2730, 2626, 2618, 2722, 1270, 2868, 2966, 3059, 2982, 2947, 2985, 3002, 2979, 2934, 2830, 2632, 3015, 2999, 2942, 2997, 3023, 2880, 2933, 2854, 2844, 233, 2858, 2950, 2751, 2811, 2727, 2477, 2950, 2540, 2800, 2639, 2795, 2648, 2590, 2816, 2504, 2623, 2730, 2847, 2711, 2970, 2999, 3113, 2700, 2909, 2754, 2953, 2748, 2555, 2560, 2492, 2632, 2754, 2670, 2626, 2647, 2380, 2795, 2676, 2616, 2857, 2708, 2387, 2787, 2833, 2875, 2808, 2665, 2778, 2738, 2618, 2706, 2949, 2631, 2836, 2759, 2958, 2947, 3009, 2953, 2950]},
+    'SplayLatency': {'median': 3848, 'max': 4216, 'time_avg': 2.61, 'scores': [4017, 3875, 4112, 577, 4143, 4201, 3807, 3961, 571, 3730, 3613, 3805, 3778, 3819, 691, 3675, 3733, 3719, 653, 3942, 4149, 4052, 4027, 4000, 675, 4096, 4041, 4060, 3897, 661, 4107, 4105, 4013, 4066, 584, 3917, 3980, 4081, 4042, 569, 3864, 3993, 3814, 3958, 3879, 629, 3852, 3631, 3761, 3756, 682, 3681, 3786, 3740, 3645, 672, 3748, 3878, 3848, 4071, 4128, 4216, 3964, 4117, 3928, 683, 3804, 3587, 3854, 3578, 672, 3895, 3585, 3501, 3761, 622, 3967, 3811, 3769, 3853, 665, 3504, 3932, 3892, 3856, 690, 3477, 3681, 3856, 3685, 644, 3852, 3788, 3653, 3969, 685, 4154, 4037, 4013, 4025]},
+    'NavierStokes': {'median': 5453, 'max': 5539, 'time_avg': 2.23, 'scores': [5447, 5518, 5399, 5491, 5431, 5388, 5337, 5217, 5263, 5295, 5357, 5311, 5336, 5463, 5378, 5399, 5357, 5222, 5367, 5415, 5453, 5148, 5447, 5436, 5326, 5474, 5486, 5431, 5388, 5337, 5321, 5447, 5529, 5523, 5523, 5518, 5290, 5502, 5431, 5523, 5491, 5458, 5415, 5480, 5474, 5539, 5420, 5399, 5373, 5332, 5518, 5512, 5431, 5399, 5399, 5332, 5238, 5332, 5496, 5529, 5518, 5496, 5284, 5496, 5502, 5383, 5469, 5453, 5442, 5496, 5474, 5485, 5512, 5491, 5507, 5485, 5502, 5431, 5352, 5436, 5518, 5491, 5529, 5523, 5469, 5512, 5512, 5502, 5518, 5453, 5383, 5507, 5458, 5502, 5507, 5442, 5485, 5453, 5507, 5529]},
+    'PdfJS': {'median': 13360, 'max': 13617, 'time_avg': 1.24, 'scores': [13436, 13449, 13360, 13285, 6316, 13322, 13449, 13398, 11773, 13149, 13500, 13162, 12866, 12866, 3792, 12841, 13149, 13322, 13410, 13539, 13617, 13539, 13398, 13058, 13513, 3436, 13423, 13373, 13137, 13410, 13526, 13449, 13373, 13322, 11366, 13335, 6160, 13297, 13398, 13097, 13322, 12791, 13045, 13360, 13110, 13174, 3850, 13487, 13423, 13297, 13449, 13211, 13500, 12904, 12417, 13110, 13019, 3019, 13162, 13398, 13423, 13526, 13398, 13449, 13474, 13436, 13526, 13526, 2916, 13423, 13423, 13474, 13500, 13347, 11947, 13500, 13513, 13398, 13297, 2997, 13310, 13539, 13272, 13436, 13322, 13461, 13385, 13373, 13162, 13461, 2552, 13223, 13211, 13410, 13539, 13513, 13347, 13373, 12993, 13272]},
+    'Mandreel': {'median': 2775, 'max': 2798, 'time_avg': 3.37, 'scores': [1737, 2768, 2754, 2693, 1798, 2780, 2796, 2770, 1813, 2788, 2784, 2750, 1771, 2774, 2778, 2735, 1783, 2766, 2734, 2760, 1753, 2760, 2730, 2612, 1917, 2791, 2797, 2787, 1932, 2765, 2655, 1798, 2794, 2781, 2784, 2789, 2774, 2781, 2779, 2796, 2779, 2778, 2763, 2783, 2782, 2794, 2790, 2793, 2795, 2780, 2737, 2783, 2787, 2781, 2798, 2782, 2780, 2780, 2757, 2762, 2786, 2778, 2738, 2787, 2771, 2759, 2788, 2794, 2755, 2741, 2786, 2778, 2778, 2786, 2788, 2787, 2779, 2786, 2767, 2795, 1929, 2760, 2774, 1791, 2764, 2763, 2721, 1763, 2781, 2663, 2757, 1798, 2765, 2736, 2790, 1786, 2776, 2775, 2779, 1759]},
+    'MandreelLatency': {'median': 18194, 'max': 18671, 'time_avg': 3.37, 'scores': [2469, 18464, 18396, 17250, 2594, 17997, 18601, 18396, 2663, 18601, 18261, 18261, 2522, 18396, 18261, 18328, 2543, 18261, 18396, 17932, 2621, 17997, 18328, 17868, 2791, 18194, 18128, 18532, 2744, 18062, 18194, 2583, 18464, 18261, 18194, 18396, 17741, 17492, 18328, 18396, 18194, 18261, 18464, 18396, 2295, 18396, 18194, 17014, 2385, 18396, 18128, 18062, 2647, 18328, 18671, 18194, 2452, 18396, 17997, 17932, 2594, 18261, 18062, 18396, 2653, 17932, 18464, 18464, 2522, 18128, 18532, 17932, 2610, 18194, 18328, 18261, 2611, 18464, 18194, 18464, 2730, 18128, 18062, 2580, 18328, 18194, 18062, 2560, 18532, 17616, 17868, 2596, 18328, 17431, 18261, 2621, 18328, 18128, 18062, 2464]},
+    'Gameboy': {'median': 21431, 'max': 21726, 'time_avg': 1.21, 'scores': [21238, 21411, 21587, 21489, 21607, 21568, 21587, 21548, 21528, 21568, 6737, 21568, 21548, 21627, 21528, 20905, 21509, 21509, 20968, 21411, 20823, 9801, 21431, 21509, 21353, 21392, 21277, 21489, 21489, 21411, 21528, 21431, 7409, 20618, 21353, 21607, 21238, 21607, 21431, 20989, 21450, 21607, 20968, 20885, 21238, 20679, 20720, 20843, 20700, 20659, 20947, 21296, 21392, 20989, 21450, 11526, 21277, 21411, 21528, 21686, 21568, 21726, 21373, 21509, 21607, 8197, 21431, 21646, 21528, 21646, 21587, 21548, 21706, 21706, 21470, 21528, 8368, 21528, 21162, 21353, 21238, 21143, 21277, 21353, 21587, 21470, 21548, 7797, 21528, 21646, 21392, 21238, 21587, 21706, 21509, 21470, 21106, 20398, 8139, 20905]},
+    'CodeLoad': {'median': 39317, 'max': 42097, 'time_avg': 2.22, 'scores': [40947, 40983, 41169, 37033, 40120, 22399, 39452, 40261, 40973, 39617, 41844, 25747, 40736, 41150, 37209, 37945, 39452, 25226, 37908, 41194, 38121, 40913, 36666, 25028, 41680, 37653, 36485, 40691, 41444, 21912, 42097, 42069, 41407, 41613, 41882, 25053, 41438, 41812, 39795, 40897, 40898, 25279, 37467, 37616, 37568, 41201, 41137, 22629, 37776, 38059, 40860, 37757, 38267, 25667, 41765, 41397, 39761, 41333, 40000, 25444, 40046, 40975, 40424, 40658, 35327, 25160, 37983, 37266, 40820, 37479, 37467, 24433, 32934, 33372, 36508, 37449, 37346, 24864, 36523, 40625, 38132, 40505, 38286, 25702, 40536, 38550, 40347, 41069, 36739, 25118, 40588, 37523, 36450, 39317, 30338, 21379, 40409, 40517, 40570, 37616]},
+    'Box2D': {'median': 10737, 'max': 11055, 'time_avg': 1.12, 'scores': [10897, 10897, 3132, 10559, 10488, 10539, 10478, 9850, 10190, 10388, 10338, 10061, 10368, 10408, 2679, 10866, 10790, 10790, 10918, 10322, 10705, 10448, 10779, 10747, 10570, 10949, 3727, 10378, 10684, 10737, 11034, 10981, 11023, 10970, 10918, 11012, 10970, 11055, 2965, 11002, 10928, 10876, 11012, 10801, 10508, 10907, 10822, 11012, 10866, 10801, 3378, 10673, 10705, 10621, 10251, 10855, 10737, 10835, 10378, 10886, 10458, 10779, 3265, 10949, 10570, 10488, 10601, 10790, 10632, 10570, 10230, 10322, 10559, 10758, 3563, 10747, 10897, 10822, 10866, 10549, 10601, 10694, 10769, 10949, 11012, 10855, 3797, 10970, 10716, 10705, 10855, 10694, 10801, 10855, 10642, 10833, 10716, 10960, 3681, 10897]},
+    'zlib': {'median': 5304, 'max': 5651, 'time_avg': 29.04, 'scores': [5337, 5316, 5360, 5356, 5353, 5129, 5369, 5369, 5385, 5282, 5289, 4934, 5253, 5352, 5335, 5336, 5324, 5103, 5298, 5251, 5304, 5324, 5305, 5009, 5187, 5243, 5286, 5295, 4997, 5232, 5320, 5295, 5297, 5065, 5200, 5333, 5329, 5328, 5369, 5107, 5381, 5302, 5250, 5314, 5321, 5039, 5353, 5320, 5308, 5189, 5027, 5284, 5332, 5361, 5378, 5344, 5085, 5345, 5322, 5342, 5345, 5295, 5082, 5304, 5281, 5259, 5651, 5255, 5336, 5267, 5034, 5198, 5218, 5253, 5346, 5108, 5333, 5220, 5181, 5301, 5035, 5195, 5351, 5347, 5299, 5318, 5110, 5292, 5271, 5338, 5352, 5360, 5097, 5324, 5350, 5060, 5329, 5120, 5350, 5330]},
+    'Typescript': {'median': 24918, 'max': 27368, 'time_avg': 5.58, 'scores': [25858, 20906, 24715, 19481, 24563, 24305, 19970, 24356, 20067, 24744, 20223, 25769, 25754, 20213, 26176, 20787, 25842, 19610, 25874, 26597, 20575, 25309, 19607, 25204, 20061, 25847, 24836, 20073, 25827, 19744, 24918, 20391, 24811, 24085, 20217, 24845, 20365, 26344, 20834, 26636, 26742, 20635, 27368, 20532, 26492, 26144, 20749, 26160, 20712, 26569, 26230, 20349, 26339, 20780, 27043, 26459, 20753, 25522, 19920, 26432, 20645, 26630, 26437, 20284, 26985, 21023, 27020, 27106, 20562, 26742, 20712, 27043, 26586, 20892, 26776, 20526, 25868, 26198, 25522, 25722, 20599, 26906, 21230, 26492, 26350, 20629, 26333, 21009, 26350, 26708, 20625, 25624, 19722, 26464, 20760, 26486, 26139, 19171, 26410, 21089]},
   },
   'duktape': {
-    'Mandreel': 'RangeError: const limit',
-    'MandreelLatency': 'RangeError: const limit',
+    'Mandreel': 'RangeError: const limit (bytecode format limitation)',
+    'MandreelLatency': 'RangeError: const limit (bytecode format limitation)',
     'Box2D': {'time_avg': 1.24, 'scores': [2021, 2532, 3881, 4159, 4203, 4220, 4224, 4269, 4299, 4303, 4307, 4316, 4329, 4333, 4346, 4362, 4377, 4377, 4385, 4385]},
     'CodeLoad': {'time_avg': 2.44, 'scores': [9822, 15660, 26033, 26347, 26416, 26554, 26630, 26683, 26822, 26924, 26967, 26998, 27242, 27310, 27319, 27355, 27437, 27571, 27701, 27712]},
     'Crypto': {'time_avg': 5.57, 'scores': [1299, 1432, 1756, 1764, 1765, 2130, 2134, 2196, 2240, 2283, 2284, 2291, 2292, 2293, 2294, 2295, 2306, 2309, 2310, 2313]},
@@ -1405,10 +1859,10 @@ const kOctaneRunsARM64 = {
     'Typescript': {'max': 13787, 'time_avg': 10.57, 'scores': [12101, 12007, 12017, 11972, 13787, 12063, 12048, 11994, 13712, 12047, 11996, 12077, 12066, 13488, 11858, 11939, 12086, 12003, 13746, 11969]},
   },
   'mujs': {
-    'RegExp': 'Checksum mismatch',
-    'PdfJS': 'SyntaxError: jump address integer overflow',
-    'Mandreel': 'SyntaxError: jump address integer overflow',
-    'MandreelLatency': 'SyntaxError: jump address integer overflow',
+    'RegExp': 'RegExp: Error: Wrong checksum',
+    'PdfJS': 'jump address integer overflow / Uint8Array is not defined (with JS_INSTRUCTION=uint32_t)',
+    'Mandreel': 'jump address integer overflow / Float64Array is not defined (with JS_INSTRUCTION=uint32_t)',
+    'MandreelLatency': 'jump address integer overflow / Float64Array is not defined (with JS_INSTRUCTION=uint32_t)',
     'Gameboy': 'Gameboy: TypedArrayUnsupported',
     'CodeLoad': "EvalError: /bench/code-load.js:489: invalid use of 'eval'",
     'Typescript': 'Crashed',
@@ -1461,25 +1915,24 @@ const kOctaneRunsARM64 = {
     'SplayLatency': {'time_avg': 2.97, 'scores': [480, 481, 505, 2077, 2145, 2152, 2152, 2160, 2161, 2172, 2189, 2204, 2221, 2223, 2242, 2255, 2280, 2298, 2365, 2381]},
     'zlib': {'time_avg': 516.47, 'scores': [296]},
   },
-  'hermes': {  // hermes -O
-    'note': 'Run as: hermes -O',
-    'Box2D': {'time_avg': 1.19, 'scores': [2443, 9260, 9376, 9403, 9513, 9559, 9625, 9964, 10281, 10478, 10508, 10559, 10590, 10611, 10611, 10642, 10653, 10653, 10663, 10684]},
-    'CodeLoad': {'time_avg': 2.19, 'scores': [6202, 6668, 7626, 10087, 10204, 10319, 10459, 10499, 10516, 10527, 10588, 10653, 11155, 11281, 12254, 12309, 12396, 12983, 13263, 13284]},
-    'Crypto': {'time_avg': 5.54, 'scores': [2073, 2544, 2555, 2568, 3244, 3285, 3290, 3291, 3301, 3305, 3350, 3356, 3359, 3359, 3359, 3362, 3363, 3369, 3369, 3379]},
-    'DeltaBlue': {'time_avg': 2.27, 'scores': [1830, 2028, 2123, 2133, 2138, 2138, 2140, 2142, 2149, 2149, 2155, 2155, 2158, 2160, 2164, 2167, 2171, 2175, 2178, 2180]},
-    'EarleyBoyer': {'time_avg': 5.61, 'scores': [4138, 4278, 5315, 5448, 5512, 7043, 7070, 7084, 7126, 7151, 7164, 7197, 7199, 7220, 7231, 7240, 7286, 7289, 7311, 7359]},
-    'Gameboy': {'time_avg': 1.25, 'scores': [5165, 7471, 15123, 15137, 15181, 15284, 15494, 15571, 15632, 15891, 16185, 16256, 16638, 16714, 16729, 17039, 17150, 17246, 17328, 17344]},
-    'Mandreel': {'time_avg': 5.27, 'scores': [1670, 1774, 1788, 1809, 2380, 2380, 2480, 2480, 2485, 2488, 2495, 2500, 2511, 2517, 2521, 2529, 2550, 2556, 2560, 2566]},
-    'MandreelLatency': {'time_avg': 5.27, 'scores': [2587, 2673, 2762, 2794, 2910, 17932, 17932, 20102, 20183, 20431, 20515, 20600, 20600, 20600, 20685, 20685, 20685, 20772, 20772, 21035]},
-    'NavierStokes': {'time_avg': 2.3, 'scores': [1978, 3562, 3605, 3644, 3677, 3688, 3699, 3801, 3901, 3909, 3917, 3917, 3921, 3924, 3928, 3932, 3932, 3944, 3944, 3944]},
-    'PdfJS': {'time_avg': 1.51, 'scores': [2325, 9624, 10303, 10341, 10399, 10419, 10577, 10730, 10750, 10855, 10908, 10973, 10973, 10994, 11005, 11027, 11027, 11049, 11071, 11071]},
-    'RayTrace': {'time_avg': 2.21, 'scores': [3612, 3704, 3715, 3715, 3766, 3791, 3814, 3817, 3864, 3868, 3891, 3902, 3922, 3937, 3952, 3968, 3976, 3980, 3980, 3988]},
-    'RegExp': {'time_avg': 3.4, 'scores': [573, 591, 615, 623, 742, 1138, 1157, 1170, 1178, 1208, 1211, 1212, 1228, 1230, 1231, 1242, 1248, 1253, 1255, 1257]},
-    'Richards': {'time_avg': 2.17, 'scores': [2411, 2436, 2471, 2478, 2489, 2492, 2514, 2514, 2521, 2521, 2524, 2524, 2532, 2535, 2535, 2546, 2560, 2563, 2595, 2619]},
-    'Splay': {'time_avg': 2.21, 'scores': [1025, 1610, 1697, 6364, 6479, 6682, 6715, 6767, 6853, 6992, 7000, 7016, 7114, 7204, 7271, 7350, 7416, 7497, 7523, 7603]},
-    'SplayLatency': {'time_avg': 2.21, 'scores': [750, 837, 872, 19443, 20290, 20502, 20516, 20635, 21055, 21086, 21140, 21381, 21421, 21881, 21949, 22242, 22305, 22311, 22659, 22850]},
-    'Typescript': {'time_avg': 4.58, 'scores': [23793, 23797, 23819, 23918, 24356, 24501, 31091, 31205, 31421, 31561, 31576, 32069, 32198, 32313, 32560, 32560, 32577, 32862, 33084, 33110]},
-    'zlib': {'time_avg': 61.88, 'scores': [2470]},
+  'hermes': {  // ./hermes -O
+    'Richards': {'median': 2469, 'max': 2570, 'time_avg': 2.22, 'scores': [2570, 2536, 2543, 2514, 2566, 1018, 2549, 2524, 2559, 2517, 2528, 1048, 2543, 2539, 2517, 2504, 2497, 1086, 2478, 2429, 2552, 2524, 2499, 1051, 2500, 2531, 2504, 2486, 2439, 996, 2423, 2359, 2458, 2475, 2450, 1057, 2423, 2483, 2409, 2415, 2514, 1062, 2485, 2450, 2122, 2437, 2462, 1031, 2443, 2401, 2522, 2471, 2437, 1027, 2429, 2475, 2499, 2489, 2330, 1026, 2471, 2422, 2404, 2383, 2453, 1017, 2305, 2489, 2381, 2489, 2356, 1029, 2386, 2461, 2455, 2430, 2468, 1055, 2404, 2492, 2478, 2499, 2461, 1059, 2439, 2469, 2529, 2503, 2440, 1017, 2492, 2493, 2496, 2471, 2490, 1047, 2504, 2475, 2486, 2536]},
+    'DeltaBlue': {'median': 2151, 'max': 2175, 'time_avg': 2.23, 'scores': [2059, 893, 2160, 2147, 2155, 2155, 2142, 884, 2160, 2140, 2069, 2155, 2131, 897, 2017, 2167, 2142, 2158, 2147, 910, 2167, 2158, 2167, 2167, 2109, 865, 2155, 2147, 2149, 2069, 2160, 895, 2151, 2175, 2138, 2151, 2153, 895, 2164, 2149, 2162, 2153, 2138, 896, 2147, 2158, 2155, 2156, 2149, 902, 2149, 2160, 2162, 2114, 2151, 885, 2167, 2162, 2151, 2155, 2160, 856, 2155, 2133, 2158, 2153, 2118, 913, 2160, 2074, 2164, 2162, 2153, 872, 2162, 2155, 2158, 2142, 2094, 904, 2153, 2153, 2158, 2158, 2149, 877, 2164, 2160, 2160, 2164, 2149, 879, 2158, 2160, 2156, 2149, 2054, 906, 2149, 2164]},
+    'Crypto': {'median': 3329, 'max': 3401, 'time_avg': 5.57, 'scores': [3382, 3374, 3384, 2591, 3366, 3380, 2142, 3362, 2620, 3390, 3401, 3391, 3394, 3383, 3381, 2588, 3382, 3384, 2098, 3366, 2608, 3358, 3306, 3353, 3344, 3286, 3334, 2553, 3343, 3332, 2060, 3300, 2515, 3249, 3329, 3317, 3313, 3348, 3366, 2567, 3329, 3384, 2050, 3326, 2566, 3375, 3307, 3332, 3369, 3328, 3357, 2410, 3332, 3338, 2035, 3329, 2551, 3356, 3347, 3334, 3291, 3313, 3319, 2498, 3306, 3338, 1988, 3237, 2555, 3305, 3309, 3329, 3319, 3322, 3352, 2508, 3277, 3316, 2111, 3341, 2588, 3266, 3350, 3351, 3318, 3356, 3353, 2453, 3361, 3363, 2085, 3343, 2571, 3289, 3340, 3370, 3348, 3376, 3323, 2564]},
+    'RayTrace': {'median': 4002, 'max': 4062, 'time_avg': 2.22, 'scores': [4006, 3945, 4002, 4042, 4010, 1526, 3848, 3945, 3933, 3972, 3992, 1577, 4038, 3976, 4018, 3980, 3922, 1610, 4026, 4030, 4018, 4030, 4050, 1564, 4058, 3996, 3968, 4054, 4042, 1623, 4050, 4034, 3980, 4038, 4034, 1630, 4050, 4034, 4050, 4026, 4058, 1625, 4042, 4058, 4002, 4038, 4022, 1628, 4062, 4026, 4050, 4042, 4026, 1618, 3988, 4018, 4054, 4014, 4046, 1585, 3996, 4006, 4014, 4014, 3972, 1590, 4014, 4038, 3945, 3833, 3984, 1632, 3964, 4022, 4030, 3941, 4002, 1496, 3872, 4002, 4038, 4006, 4014, 1519, 4030, 3844, 3968, 3984, 3945, 1602, 4046, 3921, 3918, 3914, 3941, 1557, 3964, 3941, 3902, 3945]},
+    'EarleyBoyer': {'median': 7285, 'max': 7462, 'time_avg': 5.57, 'scores': [5661, 7308, 7353, 7137, 7253, 7390, 7329, 5482, 7316, 7376, 4343, 7216, 5542, 7361, 7429, 6928, 7159, 7204, 7426, 5430, 7346, 7294, 4490, 7393, 5649, 7248, 7274, 7314, 7308, 7384, 7390, 5570, 7335, 7439, 4410, 7384, 5614, 7136, 7303, 7377, 7290, 7335, 7388, 5503, 7246, 7255, 4302, 7290, 5655, 7462, 7333, 7290, 7298, 7389, 7333, 5623, 7379, 7225, 4458, 7305, 5640, 6771, 7302, 7200, 7254, 7287, 7351, 5621, 7350, 7181, 4286, 7392, 5455, 7020, 6932, 7397, 7326, 7456, 7332, 5436, 7345, 7290, 4463, 6963, 5423, 7377, 7415, 7285, 7451, 7327, 7282, 5529, 7272, 7238, 4348, 7231, 5594, 7094, 7277, 7447]},
+    'RegExp': {'median': 1241, 'max': 1291, 'time_avg': 3.35, 'scores': [1237, 1241, 654, 1269, 1241, 1244, 645, 1219, 1283, 1234, 587, 1239, 1226, 1230, 604, 1256, 1210, 1289, 637, 1234, 1261, 1252, 610, 1260, 1229, 1238, 637, 1250, 1218, 1233, 604, 1186, 1226, 1224, 593, 1230, 1258, 1246, 618, 1212, 1245, 1258, 636, 1261, 1269, 1223, 611, 1183, 1244, 1268, 625, 1241, 1260, 1260, 648, 1233, 1244, 1255, 602, 1240, 1242, 1186, 625, 1201, 1200, 1249, 573, 1242, 1224, 1264, 607, 1282, 1274, 1277, 613, 1265, 1273, 1241, 639, 1245, 1276, 1291, 1273, 1276, 1255, 1253, 1281, 1258, 1284, 1253, 1250, 1285, 1272, 1202, 1245, 1237, 1270, 1265, 1251, 1261]},
+    'Splay': {'median': 7432, 'max': 7660, 'time_avg': 2.23, 'scores': [7530, 7188, 7114, 6438, 7335, 7538, 7465, 7506, 6951, 6943, 7432, 7334, 7530, 7091, 7116, 6970, 7473, 7571, 7376, 7441, 7367, 7171, 7564, 7515, 7342, 7595, 7456, 7139, 7628, 7587, 7513, 7326, 7098, 7571, 7376, 7073, 7555, 7147, 7562, 7595, 7320, 7587, 7433, 7554, 7473, 7505, 7489, 7334, 7383, 7546, 7391, 7384, 7326, 7285, 7546, 7399, 7554, 7376, 7318, 7489, 7432, 7000, 7327, 7424, 7269, 7220, 7141, 7171, 7172, 7253, 7261, 7399, 7538, 7489, 7571, 7579, 7505, 7522, 7328, 7456, 7350, 7563, 7376, 7383, 7497, 7440, 7236, 7644, 7465, 7628, 7408, 6967, 6780, 7554, 7033, 7603, 7571, 7473, 7489, 7660]},
+    'SplayLatency': {'median': 22289, 'max': 23183, 'time_avg': 2.23, 'scores': [22852, 22448, 21497, 788, 21782, 22534, 21988, 22729, 21883, 816, 22329, 22340, 22667, 21727, 21992, 798, 22462, 22510, 22271, 22409, 22262, 831, 22139, 22426, 22231, 22620, 22084, 839, 22983, 22961, 22946, 22001, 21930, 821, 22596, 21059, 22723, 22170, 22697, 855, 22164, 22676, 22343, 22483, 22719, 875, 22714, 22510, 22289, 22846, 22256, 805, 22334, 22343, 22650, 22663, 22979, 827, 22091, 22731, 22407, 21948, 22332, 870, 22120, 22161, 21906, 21976, 21851, 802, 21862, 21923, 22746, 22533, 22885, 846, 22542, 22736, 22244, 22374, 22296, 870, 22332, 22152, 22620, 22605, 22116, 830, 22369, 23183, 22227, 20548, 21397, 824, 21566, 22954, 22729, 22440, 22453, 861]},
+    'NavierStokes': {'median': 3924, 'max': 3967, 'time_avg': 2.22, 'scores': [3898, 3894, 3944, 3913, 3905, 3835, 3948, 3936, 3735, 3855, 3917, 3913, 3932, 3948, 3924, 3905, 3798, 3739, 3571, 3598, 3620, 3609, 3706, 3794, 3706, 3820, 3940, 3944, 3871, 3558, 3595, 3835, 3832, 3951, 3944, 3928, 3932, 3924, 3924, 3913, 3928, 3955, 3963, 3924, 3886, 3948, 3967, 3864, 3940, 3955, 3928, 3901, 3917, 3963, 3959, 3940, 3901, 3890, 3951, 3955, 3955, 3959, 3890, 3875, 3612, 3951, 3764, 3940, 3932, 3928, 3905, 3875, 3951, 3940, 3940, 3909, 3940, 3951, 3951, 3936, 3936, 3924, 3921, 3924, 3940, 3944, 3955, 3948, 3917, 3786, 3928, 3944, 3883, 3955, 3936, 3901, 3921, 3917, 3932, 3959]},
+    'PdfJS': {'median': 11071, 'max': 11208, 'time_avg': 1.49, 'scores': [11147, 10994, 11137, 11093, 11071, 11027, 11104, 10908, 10750, 11167, 3905, 11082, 11137, 11115, 11038, 11016, 11005, 11071, 10930, 4229, 11104, 11137, 11126, 11157, 10940, 10792, 11016, 11104, 3500, 10898, 11115, 10973, 10824, 11096, 11115, 11049, 11115, 3585, 11115, 11137, 11167, 11198, 11071, 11126, 11177, 11208, 2859, 11060, 11104, 11049, 11093, 11049, 11060, 10834, 11126, 3456, 11016, 11027, 11147, 10782, 11104, 11177, 10898, 11104, 3544, 10782, 11060, 10803, 11060, 11055, 11049, 11104, 11147, 3271, 10876, 10567, 11093, 11071, 11115, 11188, 11038, 10951, 3505, 11115, 11198, 11005, 11082, 11115, 11082, 11071, 11082, 3500, 11157, 10237, 11027, 11126, 10866, 11115, 10962, 10962]},
+    'Mandreel': {'median': 2575, 'max': 2597, 'time_avg': 5.03, 'scores': [2583, 2587, 1697, 2574, 2586, 1697, 2576, 2578, 2588, 2575, 2580, 2580, 2536, 1822, 2574, 2584, 2582, 2574, 2579, 2521, 2548, 1844, 2589, 2570, 2579, 2045, 1833, 2583, 2566, 1841, 2588, 1690, 2562, 2544, 1589, 2579, 2568, 2557, 2527, 2582, 2578, 2582, 1822, 2556, 2580, 2561, 2574, 1708, 2577, 2523, 1711, 2581, 2566, 2579, 2584, 2572, 2579, 2580, 1838, 2584, 2582, 2565, 2583, 2581, 2591, 2547, 1826, 2582, 2585, 2590, 2584, 2580, 2038, 2572, 1686, 2557, 2597, 2582, 2566, 1711, 2585, 2561, 1688, 2587, 2583, 2552, 2590, 2588, 2580, 2571, 1816, 2568, 2568, 2580, 2581, 2583, 2585, 2558, 1824, 2584]},
+    'MandreelLatency': {'median': 20946, 'max': 21304, 'time_avg': 5.03, 'scores': [21124, 21035, 2584, 21214, 21124, 2601, 20859, 21124, 2563, 21124, 20859, 21035, 19941, 2887, 20946, 21124, 2499, 20946, 21124, 20515, 20685, 2927, 21124, 20515, 2490, 18601, 2841, 21035, 21035, 2938, 21035, 2527, 20859, 20859, 2558, 20685, 21124, 2666, 20600, 21035, 21035, 21035, 2852, 21035, 21124, 20685, 20946, 2609, 21124, 20600, 2631, 21035, 20946, 2432, 21035, 20946, 20946, 21124, 2924, 21124, 20600, 2489, 21124, 21035, 21304, 20515, 2885, 21124, 21124, 2570, 21124, 20102, 20431, 21035, 2528, 21304, 20946, 21214, 21035, 2621, 21214, 21124, 2514, 21035, 21124, 2574, 21035, 21124, 21124, 21035, 2787, 20859, 21035, 2633, 21214, 21124, 20946, 20946, 2839, 21124]},
+    'Gameboy': {'median': 17295, 'max': 17443, 'time_avg': 1.22, 'scores': [17230, 17377, 17393, 16623, 17263, 8885, 17214, 16729, 17246, 17230, 16836, 17246, 17393, 17263, 17393, 6151, 17377, 17295, 17344, 17344, 17295, 17214, 16992, 17118, 17311, 16852, 5370, 17246, 17360, 16836, 17393, 17246, 17344, 17328, 17344, 17360, 17182, 6209, 16898, 17344, 17344, 17344, 16836, 17393, 17263, 17279, 17344, 17328, 6125, 17344, 17023, 17295, 17377, 17360, 17377, 16960, 17134, 17410, 17328, 6247, 17263, 17328, 16699, 17426, 17263, 17328, 17377, 17214, 17007, 14511, 5255, 17328, 17426, 17443, 17393, 17039, 17295, 16805, 17279, 17311, 15434, 6134, 16729, 17328, 17393, 17377, 17328, 17039, 17279, 17377, 17360, 17393, 6232, 17328, 17328, 17393, 17360, 17263, 17393, 17360]},
+    'CodeLoad': {'median': 13538, 'max': 13696, 'time_avg': 2.23, 'scores': [13628, 13372, 2136, 13583, 13551, 13511, 13487, 12825, 8559, 13602, 13623, 13496, 13507, 13623, 8603, 13646, 13696, 13534, 13454, 13527, 8643, 13583, 13690, 13538, 13506, 13602, 8671, 13615, 13589, 13494, 13196, 13571, 8504, 13535, 13675, 13634, 13548, 13430, 8447, 13586, 13626, 13584, 13493, 13590, 8548, 13652, 13613, 13305, 13469, 13590, 8662, 13682, 13588, 13662, 13508, 13558, 8584, 13651, 13629, 13628, 13535, 13423, 8444, 13584, 13521, 13556, 13608, 13567, 8431, 13591, 13476, 13644, 13532, 13547, 8515, 13514, 13395, 13390, 13537, 13585, 8628, 13557, 13569, 13572, 13567, 13532, 8506, 13504, 13368, 13527, 13555, 13452, 8523, 13553, 13562, 13491, 13592, 13574, 8608, 13620]},
+    'Box2D': {'median': 10673, 'max': 10737, 'time_avg': 1.21, 'scores': [10694, 10673, 10508, 10694, 10673, 10663, 10694, 10694, 2488, 10705, 10653, 10570, 10621, 10488, 10673, 10498, 10673, 10694, 10694, 10632, 4694, 10642, 10705, 10705, 10694, 10642, 10632, 10705, 10705, 10684, 10684, 5019, 10694, 10663, 10716, 10663, 10726, 10705, 10716, 10653, 10488, 10705, 4916, 10663, 10642, 10673, 10694, 10716, 10663, 10642, 10580, 10684, 10716, 5178, 10663, 10716, 10653, 10684, 10642, 10694, 10694, 10210, 10653, 10632, 5005, 10705, 10694, 10726, 10418, 10518, 10737, 10271, 10601, 10716, 10694, 5011, 10716, 10663, 10684, 10694, 10694, 10632, 10621, 10716, 10338, 10705, 5064, 10684, 10716, 10663, 10653, 10601, 10716, 10642, 10684, 10488, 10478, 4972, 10653, 10716]},
+    'zlib': {'median': 2473, 'max': 2542, 'time_avg': 61.72, 'scores': [2526, 2473, 2462, 2529, 2470, 2530, 2473, 2530, 2476, 2477, 2533, 2474, 2526, 2469, 2527, 2473, 2477, 2536, 2481, 2528, 2474, 2535, 2471, 2477, 2529, 2479, 2532, 2479, 2535, 2474, 2468, 2530, 2479, 2521, 2472, 2504, 2467, 2477, 2522, 2466, 2520, 2464, 2480, 2527, 2470, 2503, 2470, 2441, 2472, 2429, 2419, 2484, 2460, 2440, 2506, 2442, 2454, 2473, 2458, 2443, 2488, 2439, 2440, 2499, 2470, 2502, 2442, 2445, 2323, 2479, 2450, 2417, 2542, 2434, 2392, 2404, 2454, 2520, 2444, 2427, 2492, 2423, 2513, 2465, 2465, 2526, 2451, 2456, 2513, 2461, 2477, 2435, 2459, 2525, 2452, 2460, 2481, 2452, 2452, 2496]},
+    'Typescript': {'median': 31996, 'max': 33153, 'time_avg': 4.57, 'scores': [32239, 32568, 29305, 24076, 32544, 31452, 24222, 32577, 32820, 24398, 32973, 33041, 24268, 32535, 32939, 24380, 32795, 32812, 24549, 32922, 33153, 24204, 32879, 32753, 24525, 32981, 32964, 24347, 31152, 32142, 23621, 32981, 33093, 24506, 32321, 32786, 24067, 31236, 31639, 23225, 31475, 30784, 23828, 32198, 32403, 32769, 31996, 23886, 32544, 32845, 24511, 32125, 32223, 24605, 32939, 32345, 24126, 32519, 32685, 24245, 32362, 32519, 23630, 32444, 32093, 23936, 30606, 30200, 23936, 32947, 31884, 23660, 31491, 30482, 24153, 31467, 32494, 24296, 32956, 32419, 32029, 31167, 24163, 32174, 30570, 24264, 31374, 32593, 23595, 31742, 32045, 24121, 32618, 32669, 24734, 32922, 32635, 24149, 30732, 31053]},
   },
   'kiesel': {
     'Mandreel': "Mandreel: ReferenceError: 'emit_32' is not defined",
@@ -1520,24 +1973,20 @@ const kOctaneRunsARM64 = {
     'Box2D': {'median': 523, 'max': 637, 'time_avg': 8.21, 'scores': [523, 513, 611, 518, 613, 505, 516, 619, 541, 635, 531, 517, 612, 490, 516, 599, 518, 637, 504, 518]},
   },
   'rhino': {  // rhino -opt 9
-    'note': 'Run as: rhino -opt 9',
-    'Mandreel': 'Checksum mismatch',
-    'MandreelLatency': 'Checksum mismatch',
-    'zlib': 'zlib: Assertion: Assertion failed: Typed arrays 2 must be run on a little-endian system',
-    'Richards': {'time_avg': 2.24, 'scores': [2391, 2411, 2422, 2437, 2457, 2458, 2461, 2490, 2492, 2499, 2500, 2528, 2531, 2556, 2559, 2591, 2598, 2613, 2616, 2638]},
-    'DeltaBlue': {'time_avg': 2.22, 'scores': [2678, 2698, 2708, 2751, 2797, 2850, 2860, 2860, 2860, 2863, 2889, 2913, 2923, 2929, 2939, 2939, 2942, 2946, 2962, 2963]},
-    'Crypto': {'time_avg': 4.87, 'scores': [2574, 3278, 3333, 3345, 3380, 3450, 3453, 3473, 3484, 3490, 3491, 3494, 3550, 3552, 3558, 3560, 3569, 3601, 3631, 3663]},
-    'RayTrace': {'time_avg': 2.42, 'scores': [1828, 3964, 4034, 4046, 4058, 4095, 4099, 4119, 4123, 4136, 4147, 4180, 4193, 4210, 4214, 4241, 4271, 4288, 4292, 4344]},
-    'EarleyBoyer': {'time_avg': 5.66, 'scores': [2553, 2735, 2771, 2839, 2850, 3655, 3758, 3762, 3778, 3781, 3787, 3791, 3831, 3848, 3854, 3855, 3868, 3877, 3964, 4012]},
-    'RegExp': {'time_avg': 4.01, 'scores': [575, 634, 951, 961, 968, 974, 976, 993, 1004, 1020, 1027, 1028, 1036, 1037, 1045, 1047, 1049, 1054, 1057, 1057]},
-    'Splay': {'time_avg': 2.42, 'scores': [965, 2966, 9021, 9249, 9844, 10722, 10846, 10846, 10879, 11009, 11058, 11083, 11099, 11156, 11164, 11221, 11221, 11270, 11344, 11376]},
-    'SplayLatency': {'time_avg': 2.42, 'scores': [838, 846, 898, 901, 12194, 12204, 12234, 12258, 12485, 12684, 12696, 12705, 12785, 12821, 12852, 12866, 12917, 12925, 12963, 13053]},
-    'NavierStokes': {'time_avg': 2.44, 'scores': [1617, 1683, 3924, 3940, 4042, 4050, 4070, 4090, 4098, 4102, 4106, 4106, 4122, 4122, 4126, 4135, 4139, 4147, 4151, 4170]},
-    'PdfJS': {'time_avg': 4.29, 'scores': [927, 942, 948, 1005, 1077, 1402, 1405, 1407, 1409, 1414, 1423, 1426, 1426, 1461, 1461, 1511, 1517, 1521, 1545, 1576]},
-    'Gameboy': {'time_avg': 2.75, 'scores': [3399, 3970, 4017, 4870, 7023, 7067, 7166, 7170, 7173, 7176, 7199, 7206, 7215, 7225, 7229, 7262, 7265, 7275, 7279, 7507]},
-    'CodeLoad': {'time_avg': 2.24, 'scores': [5619, 5735, 6128, 6177, 44100, 44740, 44837, 44937, 45597, 45696, 45785, 45880, 45898, 46207, 46218, 46256, 46361, 46408, 46541, 47421]},
-    'Box2D': {'time_avg': 2.57, 'scores': [1792, 2027, 2451, 3769, 3780, 3833, 3862, 3866, 3886, 3892, 3897, 3907, 3914, 3922, 3933, 3944, 3967, 4043, 4068, 4071]},
-    'Typescript': {'time_avg': 28.52, 'scores': [4208, 4344, 4361, 4374, 4413, 4415, 4430, 4433, 4453, 4475, 4576, 4596, 4652, 4674, 4677, 4693, 4698, 4726, 4730, 4744]},
+    'Richards': {'median': 2395, 'max': 2732, 'time_avg': 2.22, 'scores': [2160, 2175, 2275, 2172, 2266, 2270, 2235, 2146, 2236, 2136, 2157, 2535, 2499, 2517, 2451, 2395, 2352, 2524, 2404, 2478, 2393, 2504, 2451, 2344, 2415, 2419, 2453, 2323, 2358, 2504, 2401, 2362, 2472, 2362, 2514, 2390, 2348, 2722, 2496, 2355, 2342, 2492, 2485, 2316, 2372, 2528, 2485, 2499, 2333, 2284, 2333, 2358, 2497, 2529, 2313, 2471, 2464, 2475, 2326, 2319, 2479, 2303, 2472, 2450, 2497, 2372, 2338, 2483, 2335, 2372, 2358, 2362, 2411, 2440, 2279, 2362, 2514, 2506, 2337, 2316, 2457, 2490, 2732, 2485, 2450, 2379, 2464, 2483, 2386, 2439, 2444, 2451, 2395, 2344, 2386, 2492, 2302, 2506, 2391, 2323]},
+    'DeltaBlue': {'median': 2950, 'max': 3022, 'time_avg': 2.23, 'scores': [2962, 2953, 2890, 2929, 2913, 2959, 2903, 2953, 2916, 2876, 2999, 2910, 2886, 2943, 2903, 2979, 2953, 2867, 2926, 2942, 2876, 2959, 2989, 3002, 2959, 2962, 2873, 2889, 2962, 2942, 2942, 2942, 2840, 2995, 2909, 2955, 2949, 3019, 2896, 2913, 2972, 2982, 2942, 2953, 2896, 2963, 2989, 2942, 2933, 2942, 2889, 2946, 2972, 2966, 2983, 2969, 2906, 2979, 2989, 2950, 2966, 2969, 2893, 2909, 2949, 3019, 2992, 2999, 2818, 2870, 2966, 2886, 2946, 2946, 2853, 2979, 2910, 2959, 3002, 2922, 2903, 2982, 2982, 2969, 2989, 2959, 2909, 2972, 2983, 2969, 2896, 2939, 2889, 2972, 2963, 3022, 2972, 2982, 2860, 2876]},
+    'Crypto': {'median': 2940, 'max': 3067, 'time_avg': 5.57, 'scores': [2922, 2170, 3061, 3067, 2935, 3026, 2911, 2775, 2231, 3044, 2990, 1363, 2980, 2256, 2899, 2872, 2812, 2851, 2884, 2871, 2115, 2826, 2868, 1288, 2856, 1998, 2951, 2975, 2910, 2936, 2923, 2940, 2134, 2973, 2942, 1432, 2814, 2212, 2923, 2956, 3007, 2963, 2952, 2981, 2170, 2968, 2970, 1411, 2920, 2233, 2991, 2944, 2908, 2946, 2950, 3056, 2068, 3043, 2971, 1413, 2979, 2208, 2974, 2973, 2966, 2946, 2940, 2961, 2203, 2977, 2936, 1472, 2949, 2200, 3029, 2961, 3016, 2773, 3029, 3053, 2276, 2978, 2997, 1467, 2913, 2186, 2966, 3060, 2930, 3058, 2978, 2941, 2197, 2996, 3057, 1478, 3040, 2189, 2965, 2781]},
+    'RayTrace': {'median': 4184, 'max': 4314, 'time_avg': 2.23, 'scores': [4083, 4218, 4205, 4038, 4164, 4218, 4070, 4147, 4314, 4184, 4164, 4249, 4070, 4249, 4210, 4205, 4210, 4210, 4099, 4233, 4201, 4176, 4123, 4233, 3984, 4172, 4111, 4289, 4193, 4172, 4042, 4210, 4144, 4201, 4193, 4201, 3964, 4193, 4205, 4245, 4189, 4214, 4010, 4283, 4218, 4254, 4176, 4214, 4103, 4193, 4168, 4229, 4205, 4160, 3964, 4184, 4168, 4224, 4189, 4237, 4091, 4168, 4184, 4168, 4201, 4201, 4042, 4140, 4136, 4156, 4193, 4210, 4156, 4176, 4140, 4197, 4189, 4197, 4087, 4193, 4152, 4172, 4180, 4254, 3906, 4180, 4115, 4180, 4197, 4164, 3972, 4140, 4184, 4258, 4214, 4168, 4038, 4164, 4168, 4224]},
+    'EarleyBoyer': {'median': 3830, 'max': 4020, 'time_avg': 5.62, 'scores': [2676, 3872, 3848, 1589, 3798, 2802, 3844, 3793, 3900, 3881, 3877, 3811, 2791, 3898, 3824, 2661, 3798, 3942, 3887, 2765, 3841, 3931, 2644, 3761, 3824, 3916, 2895, 3708, 3903, 2710, 4020, 2806, 3852, 3800, 3985, 3910, 2832, 3830, 3848, 3750, 3853, 3916, 3811, 2713, 4016, 3807, 3864, 3844, 2820, 3627, 3863, 1613, 3776, 2771, 3845, 3795, 3799, 3824, 3907, 3871, 2827, 3807, 3822, 2726, 3818, 3904, 3907, 2852, 3918, 3803, 2671, 3918, 3878, 3947, 2736, 3812, 3869, 2725, 3837, 3955, 3901, 2753, 3877, 3868, 1628, 3859, 2861, 3933, 3869, 3896, 3853, 3757, 3881, 2816, 3800, 3874, 2654, 3847, 3889, 3885]},
+    'RegExp': {'median': 771, 'max': 801, 'time_avg': 4.01, 'scores': [767, 765, 776, 798, 466, 771, 781, 765, 757, 780, 764, 781, 759, 771, 487, 717, 769, 473, 776, 757, 801, 767, 785, 776, 481, 728, 742, 765, 776, 766, 719, 760, 767, 781, 454, 766, 780, 458, 773, 763, 769, 777, 775, 778, 489, 773, 763, 779, 777, 791, 786, 797, 794, 770, 484, 770, 783, 774, 722, 778, 778, 770, 766, 767, 457, 772, 758, 464, 767, 759, 778, 776, 780, 769, 496, 785, 782, 718, 775, 779, 781, 773, 779, 772, 470, 776, 758, 779, 784, 777, 759, 769, 761, 771, 451, 776, 771, 774, 764, 779]},
+    'Splay': {'median': 11629, 'max': 11849, 'time_avg': 2.42, 'scores': [10928, 11531, 10472, 11018, 11751, 11637, 11588, 4720, 11629, 11498, 11303, 11376, 11653, 11490, 11718, 11808, 11637, 11629, 4484, 11735, 11368, 11735, 11792, 11710, 11319, 11319, 11670, 11596, 11767, 4518, 11784, 11653, 11678, 11588, 11547, 11368, 11580, 11710, 11572, 11083, 4475, 11555, 11759, 11775, 11849, 11718, 11287, 11743, 11612, 10969, 11751, 4595, 11759, 11661, 11824, 11686, 11458, 11319, 11808, 11376, 11670, 11678, 4357, 11678, 11118, 11735, 11278, 11792, 11523, 11743, 11653, 11743, 11637, 4461, 11531, 10920, 11727, 11670, 11767, 11376, 11287, 11824, 11841, 11792, 4646, 11612, 11710, 11743, 11678, 11474, 11449, 11727, 11678, 11710, 11319, 4614, 11596, 11621, 11417, 11727]},
+    'SplayLatency': {'median': 13238, 'max': 13832, 'time_avg': 2.42, 'scores': [12387, 12787, 866, 12235, 13345, 13518, 13494, 1122, 13532, 13179, 13364, 13040, 13315, 988, 13356, 13325, 13238, 13397, 1089, 13467, 13007, 13403, 13685, 13516, 1032, 13171, 13410, 13234, 13724, 1094, 13272, 13183, 12848, 12880, 12975, 973, 13141, 13424, 12990, 12766, 1099, 13349, 13078, 13717, 13648, 13243, 1005, 13322, 13556, 11891, 13565, 1110, 13648, 12932, 13471, 13234, 13272, 995, 13648, 13182, 13080, 13457, 1083, 13535, 12993, 13426, 13135, 13545, 1056, 13255, 13330, 13290, 12856, 1075, 13062, 11274, 13691, 13640, 13347, 1028, 12513, 13244, 13832, 13477, 1132, 13434, 13394, 13620, 13290, 13494, 1006, 13481, 13183, 13430, 11386, 1107, 12987, 13085, 13156, 13374]},
+    'NavierStokes': {'median': 3578, 'max': 3616, 'time_avg': 2.43, 'scores': [3595, 3492, 3595, 3578, 3591, 3533, 3523, 3578, 3591, 3602, 3588, 3588, 3506, 3475, 3547, 3598, 3585, 3595, 3595, 3591, 3562, 3512, 3595, 3591, 3554, 3578, 3519, 3581, 3581, 3571, 3574, 3574, 3598, 3588, 3581, 3554, 3558, 3585, 3492, 3571, 3567, 3602, 3581, 3598, 3616, 3488, 3578, 3421, 3585, 3567, 3574, 3588, 3567, 3578, 3588, 3567, 3564, 3581, 3551, 3562, 3609, 3591, 3512, 3585, 3598, 3581, 3562, 3591, 3585, 3396, 3578, 3574, 1546, 3578, 3567, 3609, 3502, 3574, 3551, 3533, 3578, 3588, 3591, 3554, 3574, 3588, 3591, 3562, 3530, 3499, 3595, 3598, 3581, 3591, 3581, 3571, 3506, 3564, 3558, 3558]},
+    'PdfJS': {'median': 1341, 'max': 1448, 'time_avg': 4.44, 'scores': [1053, 1336, 1339, 1003, 1331, 1350, 1326, 1347, 916, 1339, 1327, 912, 1419, 1317, 1352, 1354, 1343, 968, 1347, 1350, 1331, 1338, 1343, 1343, 1431, 1434, 1353, 988, 1340, 1307, 1015, 1345, 1358, 1010, 1355, 1352, 1010, 1342, 1349, 1426, 1322, 1448, 1007, 1339, 1421, 1007, 1433, 1342, 932, 1325, 1351, 931, 1330, 1358, 967, 1344, 1315, 1051, 1352, 1350, 1000, 1338, 1343, 1360, 1345, 1445, 1001, 1320, 1340, 1338, 1347, 1344, 1022, 1347, 1328, 1008, 1374, 1341, 1007, 1301, 1341, 1350, 1300, 1441, 1333, 1433, 1343, 1059, 1354, 1320, 1005, 1428, 1440, 929, 1345, 1351, 1062, 1446, 1343, 913]},
+    'Gameboy': {'median': 7364, 'max': 7690, 'time_avg': 2.69, 'scores': [4101, 7252, 7292, 7419, 7302, 3998, 7426, 7668, 7493, 7319, 4088, 7423, 7350, 7357, 7440, 4010, 7360, 7661, 7134, 7381, 4082, 7371, 7360, 7353, 7430, 4082, 7391, 7323, 7402, 7416, 4016, 7405, 7347, 7426, 7398, 4059, 7451, 7374, 7111, 7209, 4077, 7440, 7222, 7340, 7367, 7430, 7353, 7683, 7395, 7405, 7232, 7374, 7118, 7144, 4069, 7340, 7371, 7416, 7391, 4052, 7364, 7048, 7409, 7388, 4076, 7402, 7454, 7447, 7412, 4046, 7391, 7265, 7500, 7340, 4039, 7447, 7329, 7367, 7690, 4062, 7353, 7388, 7051, 7426, 4013, 7391, 7189, 7437, 7215, 4118, 7255, 7412, 7388, 7440, 4117, 7444, 7134, 7371, 7423, 4025]},
+    'CodeLoad': {'median': 47977, 'max': 49337, 'time_avg': 2.23, 'scores': [48370, 47979, 47500, 48400, 48298, 30763, 48012, 49337, 48381, 47448, 48884, 12302, 48913, 46520, 48637, 46141, 47903, 13094, 47898, 48000, 48317, 48100, 48739, 12962, 48061, 47339, 47580, 47923, 47164, 11347, 47427, 47621, 47743, 47917, 48814, 12393, 48599, 49115, 48083, 48374, 48816, 12571, 48269, 48358, 47851, 48216, 48014, 13635, 48282, 47375, 48996, 48581, 48259, 12838, 48358, 48200, 47877, 48777, 48001, 13629, 48557, 47186, 48876, 47137, 47757, 13172, 47357, 47792, 47388, 48014, 47896, 13620, 47999, 48036, 47983, 46487, 47924, 12814, 48123, 48204, 47815, 47527, 47977, 12798, 48273, 48572, 47334, 47621, 47013, 12251, 48126, 47158, 49097, 48356, 47745, 12996, 48239, 48765, 47455, 48094]},
+    'Box2D': {'median': 4089, 'max': 4268, 'time_avg': 2.49, 'scores': [4068, 4070, 4122, 4005, 3999, 3910, 1803, 4268, 3993, 4018, 4131, 1936, 4104, 4085, 4205, 4205, 4207, 1822, 4051, 4122, 4157, 4145, 2558, 4085, 4077, 4189, 4175, 1680, 4089, 4073, 4112, 4163, 3946, 1820, 4131, 4129, 4177, 4141, 2591, 3886, 3993, 4153, 4106, 1797, 4163, 4127, 4143, 4094, 4052, 4177, 4054, 4171, 4161, 4159, 2062, 4085, 4048, 4201, 3985, 1847, 4089, 4052, 4079, 4189, 4191, 1786, 4145, 4197, 4083, 4222, 1679, 4159, 3943, 4126, 4051, 4112, 4151, 4079, 4149, 4070, 4141, 1792, 4066, 4143, 4171, 4096, 1811, 4181, 4268, 3987, 4199, 3962, 1802, 4012, 4087, 4157, 4167, 1670, 4197, 4051]},
+    'Typescript': {'median': 4129, 'max': 4544, 'time_avg': 31.13, 'scores': [4103, 4016, 4129, 4133, 4058, 4233, 4125, 3954, 4220, 4227, 4051, 4146, 4223, 4470, 4044, 4222, 4108, 3928, 4431, 4111, 4286, 4311, 4313, 4199, 4045, 4315, 4314, 4233, 4152, 4212, 3890, 4143, 4224, 3922, 4228, 4210, 4036, 4106, 4183, 4046, 4221, 4234, 4043, 4223, 4108, 4052, 4260, 4077, 3809, 4109, 3867, 4221, 4194, 4220, 3870, 4060, 3987, 4491, 4121, 4022, 4117, 4075, 4114, 4120, 4445, 4544, 4049, 4192, 4178, 3912, 3992, 3867, 4021, 4105, 4035, 4205, 4479, 3938, 4451, 4206, 4068, 4292, 4429, 4185, 4099, 4223, 4205, 4047, 4221, 4067, 4408, 3910, 4194, 3949, 4065, 4119, 3913, 4203, 4253, 3915]},
   },
   'nashorn': {  // /bin/nashorn -ot
     'note': 'Run as: nashorn -ot. Took ~5 cores on some tests. High variance.',
@@ -1676,22 +2125,22 @@ const kOctaneRunsARM64 = {
   },
   'iv-lv5': {
     'PdfJS': 'Crashed',
-    'Richards': {'time_avg': 2.18, 'scores': [593, 872, 904, 2055, 2062, 2069, 2069, 2070, 2070, 2077, 2083, 2084, 2093, 2093, 2095, 2098, 2098, 2109, 2109, 2116]},
-    'DeltaBlue': {'time_avg': 2.27, 'scores': [1193, 1218, 1250, 1262, 2823, 2830, 2831, 2851, 2857, 2867, 2886, 2886, 2886, 2893, 2896, 2900, 2909, 2916, 3002, 3008]},
-    'Crypto': {'time_avg': 4.41, 'scores': [2331, 2366, 2371, 2445, 2455, 2459, 3725, 3733, 3794, 3797, 3801, 3819, 3833, 3833, 3836, 3846, 3856, 3871, 3873, 3882]},
-    'RayTrace': {'time_avg': 2.27, 'scores': [1351, 1375, 1429, 1443, 3486, 3569, 3576, 3583, 3583, 3597, 3615, 3615, 3622, 3626, 3635, 3638, 3638, 3642, 3649, 3652]},
-    'EarleyBoyer': {'time_avg': 5.54, 'scores': [3434, 3463, 3996, 4237, 4238, 4261, 5084, 5454, 5467, 5490, 5511, 5530, 5558, 5568, 5606, 5608, 5626, 5633, 5666, 5690]},
-    'RegExp': {'time_avg': 3.46, 'scores': [606, 613, 647, 725, 755, 1027, 1164, 1167, 1167, 1168, 1170, 1176, 1181, 1184, 1193, 1194, 1194, 1195, 1197, 1197]},
-    'Splay': {'time_avg': 2.24, 'scores': [459, 482, 750, 792, 5640, 5794, 5827, 5859, 5867, 5876, 5884, 5900, 5900, 5924, 5965, 5965, 5971, 5981, 5998, 6008]},
-    'SplayLatency': {'time_avg': 2.24, 'scores': [700, 711, 722, 735, 5366, 6184, 6254, 6296, 6313, 6340, 6351, 6362, 6365, 6382, 6402, 6415, 6418, 6419, 6462, 6517]},
-    'NavierStokes': {'time_avg': 2.26, 'scores': [1217, 1326, 1414, 2283, 2770, 2873, 3142, 3148, 3176, 3176, 3396, 3465, 3468, 3482, 3492, 3502, 3502, 3512, 3512, 3516]},
-    'Mandreel': {'time_avg': 4.28, 'scores': [1259, 1543, 1554, 1697, 1713, 1727, 1963, 2079, 2141, 2218, 2247, 2296, 2349, 2379, 2392, 2397, 2424, 2429, 2480, 2501]},
-    'MandreelLatency': {'time_avg': 4.28, 'scores': [2574, 2575, 2702, 2744, 2774, 2845, 12432, 12463, 12783, 12815, 12882, 13085, 13365, 14082, 15339, 15339, 15386, 15434, 15826, 15876]},
-    'Gameboy': {'time_avg': 1.37, 'scores': [5888, 6570, 7871, 9870, 11480, 12651, 12774, 12811, 13144, 13493, 13921, 13921, 13983, 14172, 14184, 14197, 14261, 14287, 14300, 14391]},
-    'CodeLoad': {'time_avg': 2.26, 'scores': [9142, 9171, 9210, 9335, 13196, 13806, 13865, 13914, 13934, 13979, 13986, 13988, 14012, 14020, 14026, 14032, 14037, 14043, 14066, 14461]},
-    'Box2D': {'time_avg': 1.08, 'scores': [2289, 8318, 8334, 8358, 8390, 8415, 8423, 8431, 8439, 8456, 8456, 8456, 8464, 8464, 8464, 8472, 8480, 8489, 8505, 8505]},
-    'zlib': {'time_avg': 61.28, 'scores': [2388, 2395, 2421, 2432, 2439, 2440, 2451, 2461, 2462, 2465, 2481, 2503, 2508, 2520, 2564, 2566, 2585, 2601, 2615, 2621]},
-    'Typescript': {'time_avg': 5.27, 'scores': [20844, 20889, 20909, 20947, 20985, 20999, 21626, 21685, 26295, 26686, 26911, 26940, 27048, 27117, 27169, 27245, 27421, 27444, 27486, 27617]},
+    'Richards': {'median': 2045, 'max': 2097, 'time_avg': 2.23, 'scores': [2055, 2002, 800, 2051, 2069, 2065, 1956, 1968, 861, 2048, 2033, 2058, 2081, 2033, 883, 2053, 2051, 2055, 2028, 2045, 865, 2053, 2069, 2065, 2058, 2055, 878, 2086, 2038, 2056, 2065, 2045, 876, 2026, 2074, 2083, 2045, 1982, 819, 1995, 2044, 2069, 2055, 2044, 867, 2037, 1793, 2033, 2049, 2033, 880, 2031, 2062, 2056, 1984, 2056, 877, 2044, 2058, 2079, 2083, 2083, 870, 2030, 2048, 2076, 2038, 2072, 862, 2081, 2083, 2097, 1940, 2097, 884, 2074, 2056, 2023, 2065, 2079, 870, 2060, 2048, 2045, 2051, 2017, 863, 2028, 2042, 2056, 2055, 2030, 870, 2040, 2083, 2035, 2069, 2058, 878, 2040]},
+    'DeltaBlue': {'median': 2823, 'max': 3012, 'time_avg': 2.22, 'scores': [3002, 2856, 2893, 2827, 1179, 2884, 2823, 2860, 2836, 2751, 1214, 2873, 2853, 2832, 2834, 2972, 1215, 2823, 2823, 2876, 2790, 2818, 1190, 2724, 2827, 2820, 2889, 2853, 1200, 2817, 2884, 2864, 2873, 2811, 1206, 2949, 2801, 2896, 2889, 2883, 1229, 2860, 2837, 2853, 2810, 2853, 1202, 2843, 2801, 2896, 2972, 2900, 1188, 2853, 2797, 2731, 2834, 2801, 1223, 2817, 2959, 2818, 2827, 2803, 1220, 2836, 2791, 2784, 2946, 2737, 1175, 2903, 2847, 2810, 2695, 2784, 1211, 2850, 2929, 2774, 2698, 2886, 1171, 2823, 2777, 2724, 2764, 2916, 1197, 3012, 2735, 2876, 2741, 2863, 1198, 2916, 2896, 2794, 2794, 2814]},
+    'Crypto': {'median': 3853, 'max': 3911, 'time_avg': 4.46, 'scores': [2476, 3860, 3849, 2408, 3782, 3811, 2479, 3732, 3886, 2497, 3888, 3896, 2491, 3742, 3892, 2466, 3896, 3891, 2474, 3749, 3882, 2471, 3881, 3790, 2489, 3747, 3880, 2451, 3876, 3884, 2490, 3742, 3906, 2424, 3893, 3881, 2435, 3877, 3888, 2494, 3866, 3881, 2420, 3869, 3896, 2469, 3884, 3742, 2506, 3871, 3891, 2487, 3852, 3909, 2465, 3864, 3882, 2503, 3861, 3715, 2491, 3890, 3887, 2522, 3853, 3871, 2453, 3737, 3868, 2497, 3876, 3850, 2499, 3883, 3890, 2509, 3872, 3891, 2365, 3856, 3895, 2514, 3888, 3911, 2552, 3731, 3909, 2471, 3883, 3901, 2534, 3733, 3866, 2425, 3874, 3853, 2489, 3887, 3867, 2422]},
+    'RayTrace': {'median': 3652, 'max': 3700, 'time_avg': 2.22, 'scores': [3674, 3678, 3642, 3685, 1453, 3689, 3649, 3649, 3678, 3667, 1487, 3626, 3645, 3652, 3660, 3638, 1534, 3619, 3635, 3626, 3685, 3517, 1495, 3645, 3674, 3660, 3660, 3685, 1456, 3678, 3631, 3604, 3663, 3642, 1414, 3656, 3693, 3660, 3682, 3652, 1494, 3700, 3660, 3656, 3656, 3635, 1478, 3642, 3524, 3700, 3649, 3638, 1441, 3645, 3663, 3689, 3671, 3682, 1467, 3674, 3689, 3671, 3685, 3626, 1511, 3685, 3678, 3642, 3645, 3660, 1470, 3652, 3652, 3638, 3674, 3667, 1442, 3663, 3527, 3674, 3660, 3678, 1435, 3656, 3642, 3663, 3645, 3663, 1458, 3667, 3693, 3671, 3682, 3642, 1505, 3638, 3667, 3671, 3612, 3635]},
+    'EarleyBoyer': {'median': 5876, 'max': 5950, 'time_avg': 5.6, 'scores': [3704, 5887, 4552, 5876, 5850, 5893, 5934, 5950, 5891, 4479, 5848, 5915, 3597, 5858, 4519, 5873, 5878, 5936, 5923, 5914, 5815, 4501, 5913, 5932, 3540, 5920, 4505, 5861, 5928, 5872, 5679, 5894, 5906, 4445, 5898, 5837, 3693, 5879, 4480, 5937, 5932, 5865, 5774, 5881, 5870, 4553, 5921, 5865, 3684, 5843, 4500, 5873, 5915, 5926, 5876, 5860, 5878, 4516, 5927, 5921, 3709, 5923, 4449, 5863, 5919, 5941, 5839, 5922, 5930, 5929, 3658, 5924, 5916, 5901, 5830, 5914, 5530, 4549, 5929, 5789, 3712, 5888, 4524, 5902, 5900, 5855, 5925, 5932, 5914, 4573, 5862, 5929, 3661, 5872, 4548, 5885, 5917, 5869, 5945, 5919]},
+    'RegExp': {'median': 1159, 'max': 1193, 'time_avg': 3.34, 'scores': [1170, 1192, 1138, 1166, 1187, 1162, 1138, 1151, 1163, 1147, 1189, 1145, 1177, 1143, 1163, 1163, 1168, 1172, 1191, 1185, 1163, 1155, 1126, 1178, 1155, 1183, 756, 1151, 1190, 1185, 1193, 1155, 1172, 1134, 1164, 1143, 1170, 1159, 1149, 1162, 1173, 1143, 1148, 1184, 1156, 1167, 1171, 1161, 1141, 1170, 1183, 1158, 1180, 1181, 1160, 1183, 1157, 1159, 1143, 1159, 1140, 1164, 1151, 1150, 1155, 1143, 1139, 1158, 1167, 1156, 1150, 1184, 1174, 1144, 1135, 1160, 1164, 1145, 1158, 1161, 1155, 1169, 1152, 1150, 1189, 1169, 1160, 1148, 1153, 1166, 1135, 1136, 1124, 1150, 1147, 1101, 1131, 1139, 1129, 1111]},
+    'Splay': {'median': 5653, 'max': 6022, 'time_avg': 2.25, 'scores': [5430, 4844, 5191, 5770, 271, 5639, 5843, 5827, 5262, 5313, 625, 5558, 5574, 5607, 5615, 5639, 585, 5688, 5786, 5727, 5859, 5807, 497, 5761, 5653, 5818, 5770, 5688, 353, 5609, 6022, 5550, 5566, 5876, 533, 5692, 5680, 5745, 5851, 5676, 558, 5739, 5700, 5749, 5575, 5688, 491, 5766, 5709, 5941, 5712, 5635, 805, 5815, 5753, 5558, 5818, 5590, 580, 5052, 5704, 5615, 5688, 5753, 478, 5379, 5590, 5032, 5484, 5639, 2318, 5451, 5677, 5757, 5235, 5933, 5761, 5289, 5492, 5713, 5253, 5499, 5835, 5069, 5764, 5631, 5680, 1011, 5843, 5797, 5696, 5770, 5467, 596, 5566, 5770, 5745, 5729, 6014, 469]},
+    'SplayLatency': {'median': 5974, 'max': 6230, 'time_avg': 2.25, 'scores': [5754, 4812, 5718, 5974, 701, 6001, 6129, 6130, 5792, 5685, 704, 5817, 5916, 6091, 5979, 5953, 696, 6137, 5156, 6081, 6173, 6145, 712, 5980, 6025, 6099, 4958, 5987, 700, 6025, 6166, 5877, 5992, 6011, 693, 6171, 6068, 6181, 5000, 6142, 705, 6146, 6106, 6112, 6048, 5829, 685, 5876, 6155, 6006, 6190, 6138, 742, 6095, 6183, 6124, 6113, 5051, 727, 5719, 5994, 5969, 6006, 6037, 688, 5775, 5848, 5557, 5650, 6008, 819, 5806, 6054, 6047, 5705, 5972, 698, 4815, 5803, 5895, 5700, 5746, 851, 4698, 6012, 6038, 5923, 736, 6024, 6150, 6125, 6230, 6096, 735, 5941, 5925, 6194, 6040, 6131, 697]},
+    'NavierStokes': {'median': 3441, 'max': 3516, 'time_avg': 2.23, 'scores': [3475, 3458, 3488, 3455, 3413, 1171, 3471, 3142, 3492, 3461, 3207, 1264, 3488, 3346, 3509, 3516, 3073, 1218, 3176, 3509, 3488, 3455, 3455, 1174, 3444, 3421, 3444, 3451, 3468, 1721, 3383, 3386, 3413, 3110, 3089, 3389, 3369, 3386, 3471, 3438, 3465, 3425, 3485, 3425, 3451, 3260, 3386, 3406, 3386, 3379, 3400, 3116, 3386, 3410, 3458, 3400, 3298, 3435, 3291, 3448, 3458, 3468, 3506, 3182, 3458, 3444, 3410, 3482, 3448, 3502, 3488, 3468, 3471, 3182, 3506, 3207, 3502, 3506, 3418, 3403, 3499, 3468, 3465, 3509, 3448, 3488, 3492, 3116, 3317, 3431, 3475, 3502, 3441, 3482, 3393, 3413, 3327, 3198, 3455, 3428]},
+    'Mandreel': {'median': 2491, 'max': 2560, 'time_avg': 3.83, 'scores': [1669, 2337, 2526, 2528, 1780, 2352, 2513, 1794, 2431, 2535, 2484, 2525, 2372, 2519, 1801, 2531, 2534, 2495, 2549, 2533, 2545, 1813, 2515, 2524, 2452, 1796, 2468, 2542, 1805, 2560, 2558, 2535, 2519, 2550, 2343, 1812, 2530, 2496, 2427, 2431, 2453, 2501, 1661, 2344, 2523, 2518, 2522, 2348, 2542, 1779, 2490, 2554, 2519, 2472, 2541, 2477, 1706, 2506, 2304, 1585, 2540, 2521, 2515, 1688, 2374, 2533, 2352, 2511, 2469, 2485, 1808, 2523, 2502, 2514, 2481, 2473, 2455, 1782, 2507, 2283, 1664, 2510, 2506, 2468, 1687, 2500, 2495, 2538, 2525, 2488, 2486, 1782, 2491, 2531, 2517, 2485, 2460, 2339, 1778, 2505]},
+    'MandreelLatency': {'median': 15876, 'max': 16399, 'time_avg': 3.83, 'scores': [2401, 13547, 16292, 16133, 2754, 13658, 15978, 2839, 15726, 16238, 15826, 2562, 13733, 16133, 2815, 16133, 16133, 16133, 2472, 16345, 16238, 2799, 16030, 16030, 16238, 2735, 15245, 16238, 2625, 16399, 16345, 16081, 2609, 16345, 13621, 2898, 16238, 15927, 15016, 15826, 15482, 16030, 2570, 13437, 16133, 16292, 2656, 13474, 16081, 2751, 15978, 16399, 15978, 2536, 16081, 15628, 2844, 16238, 13401, 2551, 16345, 16292, 16238, 2586, 13696, 16238, 13696, 16292, 15826, 15826, 2709, 16081, 15927, 16292, 15876, 15978, 15776, 2609, 15978, 13119, 2603, 16030, 16292, 15876, 2638, 16030, 15927, 16186, 2441, 16081, 15927, 2828, 16030, 16238, 15876, 2643, 16030, 13510, 2750, 15677]},
+    'Gameboy': {'median': 14274, 'max': 14714, 'time_avg': 1.26, 'scores': [14537, 14418, 14537, 14210, 14673, 14645, 7056, 14352, 14287, 14045, 14058, 14497, 14391, 14020, 14524, 14511, 5964, 13728, 14365, 13946, 13971, 13551, 14261, 14020, 14339, 13848, 14197, 7421, 14714, 14471, 14551, 14326, 14274, 14352, 14418, 14274, 14551, 5768, 14172, 14071, 14159, 14497, 14632, 14618, 14033, 13621, 13812, 13788, 7615, 13752, 13470, 14300, 14339, 14497, 14248, 13633, 14591, 14339, 7837, 14405, 14248, 14223, 14134, 13740, 14096, 14184, 14524, 14471, 5068, 14551, 13946, 13885, 14524, 14274, 14223, 14071, 14378, 14537, 14248, 4986, 14352, 13776, 13836, 14484, 14172, 13621, 14365, 14457, 13586, 13378, 7892, 14365, 14405, 14274, 14659, 14511, 14645, 14551, 14300, 14405]},
+    'CodeLoad': {'median': 13698, 'max': 14538, 'time_avg': 2.23, 'scores': [9348, 14182, 14440, 13958, 13828, 13989, 9200, 13661, 13905, 13630, 13192, 13802, 9355, 13774, 14056, 13975, 13796, 14324, 9402, 13756, 13603, 14299, 14036, 13428, 9227, 13375, 13364, 13422, 13548, 13299, 8845, 13464, 13331, 13249, 13322, 13620, 8957, 13125, 13803, 14022, 13949, 13958, 9062, 13816, 13678, 13498, 13551, 13483, 9049, 13280, 13494, 13268, 13403, 13517, 8736, 13422, 13431, 13613, 13601, 13949, 8957, 14041, 13710, 13686, 13791, 13854, 9137, 13758, 13551, 13699, 13389, 13593, 9033, 13883, 14157, 13848, 13903, 13842, 9273, 14272, 14436, 14316, 14024, 14151, 9423, 14014, 13807, 13734, 13817, 13698, 8970, 14040, 13878, 13932, 13831, 14538, 9342, 13869, 13724, 13704]},
+    'Box2D': {'median': 8286, 'max': 8472, 'time_avg': 1.18, 'scores': [8147, 8216, 8318, 8255, 4479, 7904, 8093, 7588, 8109, 8185, 7501, 7531, 8045, 8374, 8177, 2285, 8310, 8334, 8456, 8374, 8326, 8133, 8302, 8326, 8439, 8390, 8350, 4488, 8415, 8439, 8231, 8382, 8423, 8382, 8472, 8141, 7623, 7645, 4191, 7568, 7531, 8271, 8326, 8318, 8358, 8358, 8342, 8464, 8423, 2260, 8286, 8208, 8415, 8302, 8286, 8399, 8366, 8208, 8390, 8286, 8224, 4241, 8326, 8271, 8109, 8439, 8390, 8415, 8350, 8334, 8263, 8247, 4493, 8374, 8415, 8382, 8068, 8326, 8286, 8239, 8382, 8045, 8334, 2301, 8279, 8334, 8045, 7666, 7874, 8037, 8147, 8068, 8068, 8326, 8185, 4231, 8382, 8068, 8415, 8342]},
+    'zlib': {'median': 2729, 'max': 2764, 'time_avg': 56.28, 'scores': [2721, 2716, 2655, 2708, 2741, 2740, 2742, 2628, 2715, 2735, 2701, 2656, 2733, 2738, 2724, 2663, 2713, 2746, 2699, 2621, 2737, 2737, 2745, 2720, 2630, 2724, 2714, 2732, 2632, 2717, 2709, 2727, 2752, 2650, 2705, 2740, 2710, 2672, 2701, 2724, 2721, 2649, 2742, 2731, 2709, 2703, 2664, 2727, 2746, 2742, 2761, 2700, 2755, 2703, 2733, 2637, 2748, 2757, 2757, 2735, 2755, 2631, 2759, 2721, 2757, 2742, 2683, 2747, 2746, 2745, 2746, 2680, 2618, 2668, 2592, 2722, 2751, 2730, 2727, 2666, 2729, 2745, 2752, 2744, 2689, 2747, 2747, 2739, 2723, 2619, 2757, 2754, 2764, 2757, 2686, 2747, 2751, 2743, 2761, 2754]},
+    'Typescript': {'median': 28385, 'max': 29131, 'time_avg': 5.0, 'scores': [21919, 28821, 29131, 21527, 28685, 21995, 28972, 28834, 22090, 28303, 28493, 22260, 28730, 22056, 28659, 28867, 22048, 28717, 28647, 21837, 28815, 22056, 28854, 28353, 21938, 28672, 28802, 21848, 28614, 22033, 27815, 28979, 21863, 28717, 28769, 22007, 28506, 21781, 28666, 28750, 21837, 28653, 28309, 21871, 28385, 22117, 28215, 28627, 21792, 28841, 28621, 21848, 28531, 28487, 22026, 28769, 22056, 28563, 28711, 21867, 28391, 28717, 21844, 28079, 22117, 28711, 28815, 21878, 27901, 28582, 21696, 28335, 21965, 28789, 28653, 21520, 28724, 28569, 22148, 27701, 22133, 28724, 28776, 21788, 28417, 28335, 21882, 28278, 22087, 28379, 28493, 22071, 28595, 28756, 22067, 28756, 21833, 28802, 28756, 22033]},
   },
   'besen': {
     'Box2D': 'Internal error',
@@ -1713,7 +2162,7 @@ const kOctaneRunsARM64 = {
     'NavierStokes': {'scores': [423, 526, 527]},
   },
   'v7': {
-    'Richards': {'time_avg': 30.21, 'scores': [4.054]},
+    'Richards': {'median': 4.183, 'max': 4.314, 'time_avg': 28.88, 'scores': [4.13, 4.111, 4.147, 3.905, 4.157, 4.24, 4.184, 4.166, 4.146, 4.169, 4.192, 4.286, 4.196, 4.183, 4.306, 4.261, 4.237, 4.314, 4.177, 4.13]},
     'DeltaBlue': {'scores': [0.5713]},
     'Crypto': 'Crypto: Error: Crypto operation failed',
     'RayTrace': 'RayTrace: Error: Scene rendered incorrectly',

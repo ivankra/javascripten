@@ -1,14 +1,3 @@
-# Low-footprint JavaScript interpreter for microcontrollers.
-# Toy interpreter that can hardly run any JavaScript.
-#
-# URL:      https://github.com/cesanta/elk
-# Standard: no
-# Tech:     interprets from source
-# Language: C
-# License:  AGPL
-# LOC:      1247 (cloc elk.c elk.h)
-# Timeline: 2019-
-
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/cesanta/elk.git

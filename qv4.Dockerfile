@@ -1,20 +1,3 @@
-# JavaScript engine of Qt's QML framework.
-# Fails checksum in NavierStokes test.
-#
-# URL:      https://wiki.qt.io/V4
-# Standard: ES2016
-# Tech:     register VM, JIT, YARR
-# Language: C++
-# License:  LGPL, GPL, Qt
-# Org:      Qt
-# LOC:      50221 (cloc qtdeclarative/src/{qml/{jsruntime,jsapi,jit})
-#   * +extra 50k in qtdeclarative/src/3rdparty/masm - JSC's masm/yarr
-# Timeline: 2012-
-#   * Started out in 2012 as V8 wrapper, then switched to a home-grown engine.
-# VM:
-#   * https://github.com/qt/qtdeclarative/blob/dev/src/qml/jsruntime/qv4vme_moth.cpp
-#   * register-based VM with accumulator, 1-arg binary ops
-
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://code.qt.io/qt/qt5.git
