@@ -4,10 +4,56 @@
 <meta charset="UTF-8">
 <title>JavaScript engines zoo</title>
 <style>
+:root {
+  --accent: #0969da;
+  --bg-accent-muted: #ddf4ff;
+  --bg-color: #fafafa;
+  --bg-td-even: #f2f4f8;
+  --bg-td-hover: #fffbdc;
+  --bg-td-missing-or-excluded: #eeeeee;
+  --bg-td: var(--bg-color);
+  --bg-th-hover: #dddddd;
+  --bg-th: #eaecf0;
+  --border-color: #d1d9e0;
+  --text-color: #000000;
+  --text-muted: #333333;
+  --text-numeric: #0550ae;
+  --text-td-discontinued: #cf222e;
+}
+
 body {
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+h1 {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input, select {
+  accent-color: var(--accent);
+}
+
+.table-container {
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  overflow-y: clip;
+  overflow-x: visible;
+  width: 100%;
+  display: block;
 }
 
 table {
@@ -16,96 +62,114 @@ table {
 }
 
 th, td {
-  padding: 3px 5px 3px 5px;
+  padding: 8px 8px 8px 8px;
   text-align: left;
-  border: 1px solid #d1d9e0b3;
-  vertical-align: center;
+  border: 1px solid var(--border-color);
 }
 
-th.benchmark {
-  padding: 3px 2px 3px 2px;
+th {
+  vertical-align: center;
 }
 
 td {
   vertical-align: top;
 }
 
+.benchmark {
+  padding: 8px 4px 8px 4px;
+  text-align: right;
+  font-family: 'Roboto Condensed', Roboto;
+
+  .control {
+    font-size: 10px;
+    font-weight: 400;
+    display: flex;
+    margin: 0;
+    padding: 0px;
+    align-items: center;
+
+    input[type="checkbox"] {
+      margin: 0;
+      padding: 0;
+      transform: scale(0.7);
+    }
+  }
+}
+
+.numeric {
+  text-align: right;
+}
+
+td.numeric {
+  color: var(--text-numeric);
+  text-align: right;
+}
+
+td.missing, td.excluded-column {
+  background-color: var(--bg-td-missing-or-excluded);
+}
+
+td.discontinued {
+  color: var(--text-td-discontinued);
+}
+
 th {
-  background-color: #eaecf0;
+  background-color: var(--bg-th);
   font-weight: 500;
   position: sticky;
   top: 0;
   z-index: 10;
   user-select: none;
-}
-
-thead th {
   border-bottom: none;
   box-shadow: inset 0 -1px 0 #ccc;
 }
 
-table tbody:nth-of-type(1) tr:nth-of-type(1) td {
-  border-top: none !important;
-}
-
 th:hover {
-  background-color: #ddd;
+  background-color: var(--bg-th-hover);
 }
 
-.sorted-column {
-  background-color: #eeeeff;
+td.sorted-column {
+  background-color: var(--bg-accent-muted);
 }
 
-.missing {
-  background-color: #eee !important;
+tbody {
+  tr {
+    background-color: var(--bg-td);
+  }
+
+  tr:nth-child(even) {
+    background-color: var(--bg-td-even);
+  }
+
+  tr:nth-child(1) td {
+    border-top: none !important;
+  }
+
+  tr:hover, tbody tr:hover .sorted-column {
+    background-color: var(--bg-td-hover);
+  }
 }
 
-tbody tr:nth-child(even) .sorted-column {
-  background-color: #eeeeff;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #f6f8fa;
-}
-
-tbody tr:hover {
-  background-color: #fff3cd;
-}
-
-tbody tr:hover .sorted-column {
-  background-color: #fff3cd;
-}
-
-th.sort-asc:not(.benchmark)::after, th.sort-asc div::after {
+th.sort-asc:not(.benchmark)::after, th.benchmark.sort-asc div.control::after {
   content: '▲';
 }
 
-th.sort-desc:not(.benchmark)::after, th.sort-desc div::after {
+th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
   content: '▼';
 }
 
 .engine-cell {
   min-width: 120px;
-}
 
-.engine-name {
-  font-weight: 500;
-  color: #0066cc;
-  text-decoration: none;
-}
+  .engine-name {
+    color: var(--accent);
+    font-weight: 500;
+  }
 
-.engine-name:hover {
-  text-decoration: underline;
-}
-
-.engine-version {
-  font-size: 12px;
-  color: #333;
-  text-decoration: none;
-}
-
-.engine-version a:hover {
-  text-decoration: underline;
+  .engine-version {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
 }
 
 .license-cell {
@@ -118,101 +182,77 @@ th.sort-desc:not(.benchmark)::after, th.sort-desc div::after {
   word-wrap: break-word;
 }
 
-.numeric {
-  text-align: right;
-}
-
-td.numeric {
-  color: #0066ff;
-}
-
-td.benchmark {
-  font-family: 'Roboto Condensed', Roboto;
-}
-
-th.benchmark div {
-  font-size: 8px;
+.control-container {
   display: flex;
-  margin: 0;
-  padding: 0px;
-  align-items: center;
-}
-
-th input[type="checkbox"] {
-  margin: 0px;
-  padding: 0px;
-  transform: scale(0.7);
-}
-
-.excluded-column {
-  background-color: #eee !important;
-}
-
-.controls {
-  padding-bottom: 10px;
+  gap: 16px;
+  margin-bottom: 16px;
+  user-select: none;
 }
 
 .hidden {
   display: none;
 }
-
-.discontinued {
-  color: #ff0000;
-}
 </style>
 </head>
 <body>
-<h3><a href="https://github.com/ivankra/javascript-zoo">JavaScript engines zoo</a> » <a href="https://github.com/chromium/octane">Octane 2.0</a> benchmarks results</h3>
-<div class="controls">
-  <select data-state="platform" class="control">
-    <option value="arm64" selected>arm64: Mac M4 4.5GHz - Linux VM</option>
-    <option value="x64">x64: i9-10900K 3.7GHz - Linux</option>
-  </select>
-  <label for="controlJitless"><input data-state="jitless" id="controlJitless" type="checkbox" class="control" />Show JIT-less variants</label>
-  │<label for="controlV8"><input data-state="v8" id="controlV8" type="checkbox" class="control" />Only v8-v7 benchmarks</label>
-  <!--│<label for="controlBaseline"><input data-state="baseline" id="controlBaseline" type="checkbox" class="control" />Show baseline JIT</label>-->
-  <!--│ Score aggregation:
-  <select data-state="agg" class="control">
-    <option value="median" selected>median</option>
-    <option value="max">max</option>
-    <option value="iqm">interquartile mean</option>
-  </select>-->
-</div>
-<table>
-  <thead>
-    <tr>
-      <th data-col="engine" class="engine-cell">Engine</th>
-      <th data-col="score" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime).">Score</th>
-      <th data-col="binarySize" class="numeric" title="Binary size">Binary</th>
-      <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests and third-party code">LoC</th>
-      <th data-col="language" title="Main programming language">Lang</th>
-      <th data-col="standard" title="ECMAScript standard (targeted/mostly compliant with)">Standard</th>
-      <th data-col="jit" title="Just-in-time compilation">JIT</th>
-      <th data-col="years" title="Years of active development">Years</th>
-      <th data-col="org" title="Corporate backer">Org</th>
-      <th data-col="license" class="license-cell">License</th>
-      <th data-col="description" class="description-cell">Description</th>
-      <th data-col="Richards" data-v8=true class="numeric benchmark" title="Object property access benchmark"></th>
-      <th data-col="DeltaBlue" data-v8=true class="numeric benchmark" title="Constraint solver. Polymorphism benchmark"></th>
-      <th data-col="Crypto" data-v8=true class="numeric benchmark" title="RSA encryption. Integer math, bit operations, arrays benchmark"></th>
-      <th data-col="RayTrace" data-v8=true class="numeric benchmark" title="Raytracer. Floating point math and objects benchmark"></th>
-      <th data-col="EarleyBoyer" data-v8=true class="numeric benchmark" title="Scheme interpreter. Memory, GC, variadic functions benchmark"></th>
-      <th data-col="RegExp" data-v8=true class="numeric benchmark" title="Regexp, strings, arrays benchmark"></th>
-      <th data-col="Splay" data-v8=true class="numeric benchmark" title="Splay trees. Memory/GC benchmark"></th>
-      <th data-col="SplayLatency" class="numeric benchmark" title="SplayLatency: GC latency"></th>
-      <th data-col="NavierStokes" data-v8=true class="numeric benchmark" title="Fluid simulation. Math, arrays benchmark"></th>
-      <th data-col="PdfJS" class="numeric benchmark" title="PDF.js parser. Bit operations, array manipulation benchmark"></th>
-      <th data-col="Mandreel" class="numeric benchmark" title="C++ physics engine"></th>
-      <th data-col="MandreelLatency" class="numeric benchmark" title="MandreelLatency: compilation latency"></th>
-      <th data-col="Gameboy" class="numeric benchmark" title="Gameboy emulator. Typed arrays and property access performance benchmark"></th>
-      <th data-col="CodeLoad" class="numeric benchmark" title="Code load speed of jQuery and Closure libraries"></th>
-      <th data-col="Box2D" class="numeric benchmark" title="C physics engine"></th>
-      <th data-col="zlib" class="numeric benchmark" title="zlib. Emscripten/asm.js benchmark"></th>
-      <th data-col="Typescript" class="numeric benchmark" title="Typescript compiler. Benchmarks speed of optimizing a large pile of code"></th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<header>
+  <h1><a href="https://github.com/ivankra/javascript-zoo">JavaScript engines zoo</a></h1>
+</header>
+<nav>
+  <div class="control-container">
+    <div class="control">
+      <select data-state="platform">
+        <option value="arm64" selected>arm64: Mac M4 4.5GHz - Linux VM</option>
+        <option value="x64">x64: i9-10900K 3.7GHz - Linux</option>
+      </select>
+    </div>
+    <div class="control">
+      <label><input data-state="jitless" type="checkbox" /> Show JIT-less variants</label>
+    </div>
+    <div class="control">
+      <label><input data-state="v8" type="checkbox" /> Only v8-v7 benchmarks</label>
+    </div>
+  </div>
+</nav>
+<main>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th data-col="engine" class="engine-cell">Engine</th>
+          <th data-col="score" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime).">Score</th>
+          <th data-col="binarySize" class="numeric" title="Binary size">Binary</th>
+          <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests and third-party code">LoC</th>
+          <th data-col="language" title="Main programming language">Lang</th>
+          <th data-col="standard" title="ECMAScript standard (targeted/mostly compliant with)">Standard</th>
+          <th data-col="jit" title="Just-in-time compilation">JIT</th>
+          <th data-col="years" title="Years of active development">Years</th>
+          <th data-col="org" title="Corporate backer">Org</th>
+          <th data-col="license" class="license-cell">License</th>
+          <th data-col="description" class="description-cell">Description</th>
+          <th data-col="Richards" data-v8=true class="numeric benchmark" title="Richards: task scheduler simulator, property access benchmark"></th>
+          <th data-col="DeltaBlue" data-v8=true class="numeric benchmark" title="DeltaBlue: constraint solver, polymorphism benchmark"></th>
+          <th data-col="Crypto" data-v8=true class="numeric benchmark" title="Crypto: RSA encryption, integer math, bit operations and arrays benchmark"></th>
+          <th data-col="RayTrace" data-v8=true class="numeric benchmark" title="RayTracer: floating-point math and objects benchmark"></th>
+          <th data-col="EarleyBoyer" data-v8=true class="numeric benchmark" title="EarleyBoyer: scheme interpreter, memory/GC and variadic functions benchmark"></th>
+          <th data-col="RegExp" data-v8=true class="numeric benchmark" title="Regexp: RE, strings and arrays benchmark"></th>
+          <th data-col="Splay" data-v8=true class="numeric benchmark" title="Splay: memory/GC benchmark"></th>
+          <th data-col="SplayLatency" class="numeric benchmark" title="SplayLatency: GC latency"></th>
+          <th data-col="NavierStokes" data-v8=true class="numeric benchmark" title="NavierStokes: fluid simulation, floating-point math and arrays benchmark"></th>
+          <th data-col="PdfJS" class="numeric benchmark" title="PdfJS: real-world PDF.js parser, bit operations and arrays benchmark"></th>
+          <th data-col="Mandreel" class="numeric benchmark" title="Mandreel: C++ physics engine"></th>
+          <th data-col="MandreelLatency" class="numeric benchmark" title="MandreelLatency: compilation latency"></th>
+          <th data-col="Gameboy" class="numeric benchmark" title="Gameboy: GB emulator, typed arrays and property access performance benchmark"></th>
+          <th data-col="CodeLoad" class="numeric benchmark" title="CodeLoad: jQuery and Closure load speed benchmark"></th>
+          <th data-col="Box2D" class="numeric benchmark" title="Box2D: C physics engine"></th>
+          <th data-col="zlib" class="numeric benchmark" title="zlib: Emscripten/asm.js benchmark"></th>
+          <th data-col="Typescript" class="numeric benchmark" title="Typescript: TS compiler running on itself, benchmarks speed of optimizing a large pile of code"></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
 
 <script>
 const state = {
@@ -225,8 +265,8 @@ const state = {
     { col: 'language', dir: 'asc' },
     { col: 'engine', dir: 'asc' },
   ],
-  visible: {},
-  selected: {},
+  visible: {},   // col => bool
+  selected: {},  // col => bool
 };
 
 let tableData = null;
@@ -333,7 +373,7 @@ function render() {
       th.classList.toggle('excluded-column', !state.selected[col]);
 
       th.innerHTML = `
-        <div>
+        <div class="control">
           <input type="checkbox" data-col="${col}" data-state="selected"
                  ${state.selected[col] ? 'checked' : ''}
                  title="Check to include in total score">
@@ -344,8 +384,7 @@ function render() {
 
   const tbody = document.querySelector('tbody');
   const thead = document.querySelector('thead');
-  ths = [...thead.querySelectorAll('th')];
-
+  const ths = [...thead.querySelectorAll('th')];
   const frag = document.createDocumentFragment();
 
   tableData = processRawData().sort(sortComparator);
@@ -388,7 +427,6 @@ function renderCell(th, row) {
     } else {
       revLink = '';
     }
-    // TODO show date instead of commit hash
     td.innerHTML = `
       <div class="engine-cell">
         <a href="${row.url ?? row.repo ?? ''}" class="engine-name" target="_blank">${row.engine}</a>
@@ -406,7 +444,6 @@ function renderCell(th, row) {
     td.title = `${row.binarySize} bytes`;
   } else if (col === 'license' && row.license) {
     let s = row.license
-      //.replace(/(Apache|MPL|UPL)-[0-9.]+/, '$1')
       .replace('-Clause', '')
       .replace('-or-later', '+')
       .replace('-only', '')
@@ -422,7 +459,11 @@ function renderCell(th, row) {
     s = '<nobr>' + s.split(/ /).join('</nobr> <nobr>') + '</nobr>';
     td.innerHTML = s;
   } else if (col === 'standard' && row.standard) {
-    td.innerHTML = row.standard.replace(/ \(/, '<br>(');
+    let s = row.standard.replace(/ \(.*\)/, '<sup>*</sup>');
+    td.innerHTML = s;
+    if (s != row.standard) {
+      td.title = row.standard;
+    }
   } else if (col === 'language' && row.language) {
     let s = row.language.replace('JavaScript', 'JS').replace('TypeScript', 'TS')
     td.innerHTML = s;
@@ -431,9 +472,7 @@ function renderCell(th, row) {
     }
   } else if (col === 'years' && row.years) {
     td.innerHTML = row.years.replace(/-/, '-<br>');
-    if (!row.years.endsWith('-')) {
-      td.classList += ' discontinued';
-    }
+    td.classList.toggle('discontinued', !row.years.endsWith('-'));
   } else if (col === 'jit') {
     td.innerHTML = row.jit ? 'Y' : '';
   } else if (col === 'description') {
@@ -446,7 +485,7 @@ function renderCell(th, row) {
     const val = agg?.value ?? '';
     if (val === '' || isNaN(Number(val))) {
       td.innerHTML = '';
-      td.className += ' missing';
+      td.classList.add('missing');
     } else {
       td.innerHTML = String(val|0);
       td.title = `N=${agg.N} median=${agg.median} mean=${agg.mean}±${agg.sem} iqm=${agg.iqm} max=${agg.max}`;
@@ -579,8 +618,6 @@ function geometricMean(arr) {
 }
 
 // === Embedded data ===
-//
-// Do not edit directly - use update-octane-html.py
 
 const kMetadataARM64 = (
 // BEGIN metadata-arm64.json
