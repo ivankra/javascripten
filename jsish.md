@@ -1,8 +1,10 @@
-* Summary:    Small embeddable JavaScript interpreter.
+# Jsish
+
+* Summary:    Small embeddable JavaScript-ish interpreter.
 * Repository: https://github.com/pcmacdon/jsish.git
-* Tech:       stack VM
+* LOC:        50896 (`cloc src`)
 * Language:   C
 * License:    MIT
-* LOC:        50896 (`cloc src`)
-* Timeline:   2020-2022
 * Note:       Can't run test suite: bugs in ASI, != operator, no Date class.
+* Tech:       stack VM
+* Years:      2020-2022

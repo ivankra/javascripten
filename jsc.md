@@ -3,19 +3,20 @@
 * Summary:    JavaScript engine of Safari/WebKit.
 * URL:        https://trac.webkit.org/wiki/JavaScriptCore
 * Repository: https://github.com/WebKit/WebKit.git
-* Standard:   ESnext
-* Tech:       register VM, 3-tier JIT, YARR
+* LOC:        770374 (`cloc --not_match_d="(?i)(test)" Source/JavaScriptCore`)
 * Language:   C++
 * License:    LGPL-2.0-only
   * LGPL-2.0-only: default / top-level
-  * LGPL-2.0-or-later: most of original KJS portions
-  * BSD-2-Clause / BSD-3-Clause: most of newer Apple's contributions
+  * LGPL-2.0-or-later: most of original KJS code
+  * BSD-2-Clause / BSD-3-Clause: most of Apple's contributions
 * Org:        Apple
-* LOC:        770374 (`cloc --not_match_d="(?i)(test)" Source/JavaScriptCore`)
-* Timeline:   2001-
+* Standard:   ESnext
+* Tech:       register VM, 3-tier JIT, YARR
+* Years:      2001-
 
-## History:
-  * 2001: KHTML/KJS forked by Apple (~37k LOC)
+## History
+
+  * 2001: KHTML/[KJS](kjs.md) forked by Apple (~37k LOC)
     * Tree-walking interpreter
     * PCRE-based regex engine ("JSCRE")
   * 2008/06: SquirrelFish (predecessor to LLint)

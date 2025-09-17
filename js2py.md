@@ -1,7 +1,9 @@
+# Js2Py
+
 * Summary:    JavaScript interpreter written in Python.
 * Repository: https://github.com/PiotrDabkowski/Js2Py.git
-* Tech:       stack VM
+* LOC:        69402 (`cloc js2py`)
 * Language:   Python
 * License:    MIT
-* LOC:        69402 (`cloc js2py`)
-* Timeline:   2014-2022
+* Tech:       stack VM
+* Years:      2014-2022

@@ -128,7 +128,7 @@ metadata: .PHONY
 	    "'standard': '`sed -Ene 's/# Standard: *(.*)/\1/p' $$f`'," \
 	    "'tech':     '`sed -Ene 's/# Tech: *(.*)/\1/p'     $$f`'," \
 	    "'language': '`sed -Ene 's/# Language: *(.*)/\1/p' $$f`'," \
-	    "'years':    '`sed -Ene 's/# Timeline: *(.*)/\1/p' $$f`'", \
+	    "'years':    '`sed -Ene 's/# Years: *(.*)/\1/p' $$f`'", \
 	    "'org':      '`sed -Ene 's/# Org: *(.*)/\1/p'      $$f`'," \
 	    "'note':     \"`sed -Ene 's/# Note: *(.*)/\1/p'     $$f`\"," \
 	    "'license':  '`sed -Ene 's/ [(].*//g; s/# License: *(.*)/\1/p' $$f`'," \

@@ -3,13 +3,13 @@
 * Summary:    JavaScript engine of Firefox.
 * URL:        https://spidermonkey.dev/
 * Repository: https://github.com/mozilla-firefox/firefox.git
-* Standard:   ESnext
-* Tech:       stack VM, 2-tier JIT, Irregexp
+* LOC:        1028123 (`cloc --not_match_d="(?i)(test|octane)" js/src`)
 * Language:   C++
 * License:    MPL-2.0
 * Org:        Mozilla
-* LOC:        1028123 (`cloc --not_match_d="(?i)(test|octane)" js/src`)
-* Timeline:   1996-
+* Standard:   ESnext
+* Tech:       stack VM, 2-tier JIT, Irregexp
+* Years:      1996-
 
 ## History
 

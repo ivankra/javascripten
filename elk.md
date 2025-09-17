@@ -1,7 +1,9 @@
+# Elk
+
 * Summary:    Toy interpreter for microcontrollers that can hardly run any JavaScript.
 * Repository: https://github.com/cesanta/elk.git
-* Tech:       interprets from source
+* LOC:        1247 (`cloc elk.c elk.h`)
 * Language:   C
 * License:    AGPL
-* LOC:        1247 (`cloc elk.c elk.h`)
-* Timeline:   2019-
+* Tech:       interprets from source
+* Years:      2019-

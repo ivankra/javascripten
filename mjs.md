@@ -1,8 +1,10 @@
+# mJS
+
 * Summary:    JavaScript interpreter for microcontrollers.
 * Repository: https://github.com/cesanta/mjs.git
-* Tech:       stack VM
+* LOC:        33845 (`cloc src`)
 * Language:   C
 * License:    GPL-2.0-only
-* LOC:        33845 (`cloc src`)
-* Timeline:   2016-
-* Note:       Can't run test suite: '[var] is not implemented' and other bugs/compliance issues.
+* Note:       Severely limited JS subset, can't run test suite.
+* Tech:       stack VM
+* Years:      2016-

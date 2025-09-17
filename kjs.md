@@ -1,12 +1,19 @@
+# KJS
+
 * Summary:    Original JavaScript engine of KDE's Konqueror browser.
 * URL:        https://invent.kde.org/frameworks/kjs
 * Repository: https://github.com/KDE/kjs.git
-* Standard:   ES5
-* Tech:       AST walker / register VM (2008)
+* LOC:        42352 (`cloc src`)
 * Language:   C++
 * License:    LGPL-2.0-or-later
 * Org:        KDE
-* LOC:        42352 (`cloc src`)
-* Timeline:   1998-2023
-   * Forked by Apple in 2001.
-   * Most dead by KDE 5 (2014), dropped from KDE 6 (2024)
+* Standard:   ES5
+* Tech:       tree walker, register VM (2008)
+* Years:      1998-2023
+
+## History
+
+ * 2001: KHTML/KJS forked by Apple as WebCore/[JavaScriptCore](jsc.md) for their WebKit browser engine.
+ * 2008: implemented a bytecode interpreter "FrostByte" (https://blogs.kde.org/2008/05/22/news-land-konquerors/)
+ * Most dead by KDE 5 (2014)
+ * Dropped from KDE 6 (2024)

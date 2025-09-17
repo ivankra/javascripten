@@ -1,11 +1,13 @@
+# JerryScript
+
 * Summary:    Lightweight JavaScript engine for microcontrollers.
 * URL:        https://jerryscript.net/
 * Repository: https://github.com/jerryscript-project/jerryscript.git
-* Standard:   ES2022 (partial)
-* Tech:       stack VM
+* LOC:        108762 (`cloc jerry-*`)
 * Language:   C
 * License:    Apache-2.0
+* Note:       Built with --mem-heap=10240 for octane tests.
 * Org:        Samsung
-* LOC:        108762 (`cloc jerry-*`)
-* Timeline:   2014-
-* Note:       Built with --mem-heap=10240 (10MiB)
+* Standard:   ES2022 (partial)
+* Tech:       stack VM
+* Years:      2014-

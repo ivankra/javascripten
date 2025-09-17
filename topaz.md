@@ -1,8 +1,10 @@
+# Topaz
+
 * Summary:    Multithreaded JavaScript engine for .NET.
 * Repository: https://github.com/koculu/Topaz.git
-* Standard:   ES6
-* Tech:       AST walker
+* LOC:        21794 (`cloc --not_match_d="(?i)(test)" src`)
 * Language:   C#
 * License:    MIT
-* LOC:        21794 (`cloc --not_match_d="(?i)(test)" src`)
-* Timeline:   2021-
+* Standard:   ES6
+* Tech:       tree walker
+* Years:      2021-

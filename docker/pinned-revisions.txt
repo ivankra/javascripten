@@ -1,4 +1,0 @@
-# Pinned values for JS_COMMIT argument
-# engine=<branch/tag/commit>
-
-mujs=05cd646bad083ed45e9e1c9846ea671d461ced30

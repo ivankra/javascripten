@@ -1,8 +1,10 @@
+# MuJS
+
 * Summary:    Embeddable JavaScript engine from MuPDF.
 * Repository: https://codeberg.org/ccxvii/mujs.git
-* Standard:   ES5
-* Tech:       stack VM
+* LOC:        18490 (`cloc *.c *.h`)
 * Language:   C
 * License:    ISC
-* LOC:        18490 (`cloc *.c *.h`)
-* Timeline:   2013-
+* Standard:   ES5
+* Tech:       stack VM
+* Years:      2013-
