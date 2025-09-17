@@ -1,3 +1,5 @@
+# JavaScriptCore
+
 * Summary:    JavaScript engine of Safari/WebKit.
 * URL:        https://trac.webkit.org/wiki/JavaScriptCore
 * Repository: https://github.com/WebKit/WebKit.git
@@ -12,7 +14,7 @@
 * LOC:        770374 (`cloc --not_match_d="(?i)(test)" Source/JavaScriptCore`)
 * Timeline:   2001-
 
-History:
+## History:
   * 2001: KHTML/KJS forked by Apple (~37k LOC)
     * Tree-walking interpreter
     * PCRE-based regex engine ("JSCRE")
@@ -42,7 +44,8 @@ History:
     * BBQ (baseline) and OMG (optimizing) JIT tiers
     * https://webkit.org/blog/7691/webassembly/
 
-VM (LLint):
+## VM (LLint)
+
   * Register-based indirect-threaded VM, 3-arg binary ops
   * https://webkit.org/blog/9329/a-new-bytecode-format-for-javascriptcore/
   * Opcodes: https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/bytecode/BytecodeList.rb

@@ -1,3 +1,5 @@
+# SpiderMonkey
+
 * Summary:    JavaScript engine of Firefox.
 * URL:        https://spidermonkey.dev/
 * Repository: https://github.com/mozilla-firefox/firefox.git
@@ -9,7 +11,8 @@
 * LOC:        1028123 (`cloc --not_match_d="(?i)(test|octane)" js/src`)
 * Timeline:   1996-
 
-History:
+## History
+
   * 1996: Nescape Navigator 2.0
     * Traces history all the way back to the first browser with JavaScript.
   * 2008: TraceMonkey - tracing JIT compiler for hot loops
@@ -26,5 +29,3 @@ History:
     * https://github.com/mozilla-firefox/firefox/blob/main/js/src/vm/Interpreter.cpp
     * https://github.com/mozilla-firefox/firefox/blob/main/js/src/vm/Opcodes.h
   * 2020: WarpMonkey
-
-GC: https://firefox-source-docs.mozilla.org/js/gc.html
