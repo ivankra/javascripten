@@ -1,3 +1,13 @@
-* Summary: Extensible Portable Layered JavaScript Engine
+# MuscalietJS
+
+* Summary:    
+* URL:        
 * Repository: https://github.com/mcjs/mcjs.git
-* Language: C#
+* Language:   C#
+* LOC:        (`cloc `)
+* Language:   
+* License:    
+* Note:       
+* Standard:   
+* Tech:       
+* Years:      

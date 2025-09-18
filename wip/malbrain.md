@@ -1,9 +1,11 @@
+# malbrain
+
 * Summary:    
 * URL:        
-* Repository: https://github.com/bramblex/jsjs.git
+* Repository: https://github.com/malbrain/javascript-database.git
 * LOC:        (`cloc `)
-* Language:   
-* License:    
+* Language:   C
+* License:    None
 * Note:       
 * Standard:   
 * Tech:       

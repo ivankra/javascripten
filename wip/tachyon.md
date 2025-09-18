@@ -1,4 +1,12 @@
-* Summary: Metacircular VM for JavaScript (ECMAScript 5) written in
-JavaScript.
+# Tachyon
+
+* Summary:    Metacircular VM for ES5 written in JavaScript.
 * Repository: https://github.com/Tachyon-Team/Tachyon.git
-* Language: JavaScript
+* Language:   JavaScript
+* LOC:        (`cloc `)
+* Language:   JavaScript
+* License:    BSD-3-Clause
+* Note:       
+* Standard:   ES5
+* Tech:       
+* Years:      

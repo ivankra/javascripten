@@ -429,7 +429,7 @@ function renderCell(th, row) {
     }
     td.innerHTML = `
       <div class="engine-cell">
-        <a href="${row.url ?? row.repo ?? ''}" class="engine-name" target="_blank">${row.engine}</a>
+        <a href="https://github.com/ivankra/javascript-zoo/blob/main/${row.engine}.md" class="engine-name" target="_blank">${row.engine}</a>
         <div class="engine-version">${revLink}</div>
       </div>`;
   } else if (col === 'loc' && Number(row.loc)) {
@@ -444,10 +444,10 @@ function renderCell(th, row) {
     td.title = `${row.binarySize} bytes`;
   } else if (col === 'license' && row.license) {
     let s = row.license
-      .replace('-Clause', '')
-      .replace('-or-later', '+')
-      .replace('-only', '')
-      .replace(/ with[^,]*/i, '<sup>*</sup>')
+      .replace(/ (OR|AND) /g, ', ')
+      .replace(/(-Clause|-only)/g, '')
+      .replace(/-or-later/g, '+')
+      .replace(/ WITH[^,]*/i, '<sup>*</sup>')
       .replace('AWeb Public License', 'AWebPL');
     if (row.license === 'UPL-1.0') {
       td.title = 'Universal Permissive License 1.0';
@@ -465,7 +465,10 @@ function renderCell(th, row) {
       td.title = row.standard;
     }
   } else if (col === 'language' && row.language) {
-    let s = row.language.replace('JavaScript', 'JS').replace('TypeScript', 'TS')
+    let s = row.language
+      .replace('JavaScript', 'JS')
+      .replace('TypeScript', 'TS')
+      .replace(/ \(.*\)/, '');
     td.innerHTML = s;
     if (s != row.language) {
       td.title = row.language;
@@ -869,7 +872,7 @@ const kMetadataARM64 = (
     "years": "1998-2023",
     "org": "KDE",
     "note": "",
-    "license": "LGPL-2.0-or-later",
+    "license": "LGPL-2.1-only",
     "loc": "42352",
     "binarySize": 1262680,
     "description": "Original JavaScript engine of KDE's Konqueror browser."
@@ -1157,7 +1160,7 @@ const kMetadataARM64 = (
     "language": "C",
     "years": "2002-2007",
     "note": "",
-    "license": "AWebPL",
+    "license": "AWeb Public License",
     "loc": "21440",
     "binarySize": "",
     "description": "JavaScript engine of AWeb, a web browser for Amiga."
@@ -1210,7 +1213,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/akapav/js.git",
     "url": "https://marijnhaverbeke.nl/cl-javascript/",
     "standard": "ES3",
-    "language": "Lisp",
+    "language": "Lisp (Common Lisp)",
     "years": "2009-2012",
     "note": "",
     "license": "MIT",
@@ -1245,6 +1248,59 @@ const kMetadataARM64 = (
     "loc": "38883",
     "binarySize": "",
     "description": "Ahead of time compiler and runtime for ES6"
+  },
+  "edbrowse": {
+    "revisionDate": "",
+    "url": "https://edbrowse.org/",
+    "tech": "stack VM",
+    "language": "C",
+    "years": "2004-2006",
+    "note": "",
+    "license": "GPL",
+    "loc": "2329",
+    "binarySize": "",
+    "description": "Edbrowse CLI browser had own small JavaScript engine until v2.2.10 (2006)."
+  },
+  "engine262": {
+    "revisionDate": "",
+    "repo": "https://github.com/engine262/engine262.git",
+    "url": "https://engine262.js.org/",
+    "standard": "ESnext",
+    "tech": "tree walker, own parser, extensive standard library implementation",
+    "language": "TypeScript",
+    "years": "2018-",
+    "note": "",
+    "license": "MIT",
+    "loc": "39329",
+    "binarySize": "",
+    "description": "An implementation of ECMA-262 in JavaScript aiming for 100% spec compliance, fast prototyping, validating new spec versions and test262."
+  },
+  "eval5": {
+    "revisionDate": "",
+    "repo": "https://github.com/bplok20010/eval5.git",
+    "url": "https://github.com/bplok20010/eval5",
+    "standard": "ES5",
+    "tech": "Acorn parser",
+    "language": "TypeScript",
+    "years": "2019-",
+    "note": "",
+    "license": "MIT",
+    "loc": "1745",
+    "binarySize": "",
+    "description": "ES5 interpreter written in TypeScript."
+  },
+  "fesi": {
+    "revisionDate": "",
+    "url": "https://web.archive.org/web/20120523224913/http://www.lugrin.ch/fesi/",
+    "standard": "ES1",
+    "tech": "tree walker",
+    "language": "Java",
+    "years": "1998-2003",
+    "note": "",
+    "license": "LGPL-2.0-or-later",
+    "loc": "26004",
+    "binarySize": "",
+    "description": "JavaScript interpreter written in Java."
   },
   "flathead": {
     "revisionDate": "",
@@ -1286,6 +1342,20 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "Embeddable WASM-sandboxed PrimJS fork."
   },
+  "ironjs": {
+    "revisionDate": "",
+    "repo": "https://github.com/fholm/IronJS.git",
+    "url": "https://ironjs.wordpress.com/",
+    "standard": "ES3",
+    "tech": ".NET DLR",
+    "language": "C#",
+    "years": "2010-2013",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "12608",
+    "binarySize": "",
+    "description": "ES3 implementation for .NET."
+  },
   "janet": {
     "revisionDate": "",
     "url": "https://web.archive.org/web/20050404081554/http://janet-js.sourceforge.net/",
@@ -1301,6 +1371,7 @@ const kMetadataARM64 = (
     "revisionDate": "",
     "repo": "https://github.com/drogus/jawsm.git",
     "url": "https://github.com/drogus/jawsm",
+    "tech": "WASM target",
     "language": "Rust",
     "years": "2024-",
     "note": "",
@@ -1335,6 +1406,20 @@ const kMetadataARM64 = (
     "loc": "1182",
     "binarySize": "",
     "description": "Interpreter for a JavaScript subset written in Python."
+  },
+  "js-interpreter": {
+    "revisionDate": "",
+    "repo": "https://github.com/NeilFraser/JS-Interpreter.git",
+    "url": "https://github.com/NeilFraser/JS-Interpreter",
+    "standard": "ES5",
+    "tech": "modified Acorn parser",
+    "language": "JavaScript (ES5)",
+    "years": "2013-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "4995",
+    "binarySize": "",
+    "description": "Sandboxed JavaScript interpreter in JavaScript."
   },
   "js2py": {
     "revisionDate": "",
@@ -1375,6 +1460,32 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript interpreter written in Python for RPython (PyPy)"
   },
+  "links": {
+    "revisionDate": "",
+    "url": "http://links.twibright.com/",
+    "standard": "ES3 (partial, no exceptions)",
+    "tech": "tree walker, YACC",
+    "language": "C",
+    "years": "2002-2007",
+    "note": "",
+    "license": "GPL-2.0-or-later",
+    "loc": "13780",
+    "binarySize": "",
+    "description": "Links browser had a basic JavaScript engine until version 2.1pre28."
+  },
+  "metaes": {
+    "revisionDate": "",
+    "repo": "https://github.com/metaes/metaes.git",
+    "url": "https://github.com/metaes/metaes",
+    "standard": "ES2017 (partial, no standard library)",
+    "language": "TypeScript",
+    "years": "2015-2022",
+    "note": "",
+    "license": "MIT",
+    "loc": "2833",
+    "binarySize": "",
+    "description": "Metacircular JavaScript interpreter."
+  },
   "microvium": {
     "revisionDate": "",
     "repo": "https://github.com/coder-mike/microvium.git",
@@ -1387,6 +1498,20 @@ const kMetadataARM64 = (
     "loc": "20608",
     "binarySize": "",
     "description": "Tiny JavaScript engine for microcontrollers."
+  },
+  "narcissus": {
+    "revisionDate": "",
+    "repo": "https://github.com/mozilla/narcissus.git",
+    "url": "https://github.com/mozilla/narcissus",
+    "standard": "ES5",
+    "language": "JavaScript",
+    "years": "2007-2012",
+    "org": "Mozilla",
+    "note": "",
+    "license": "MPL-1.1-or-later OR GPL-2.0-or-later OR LGPL-2.1-or-later",
+    "loc": "6308",
+    "binarySize": "",
+    "description": "Metacircular JavaScript interpreter. A proof-of-concept by Brendan Eich that was used for prototyping new language features."
   },
   "ngs": {
     "revisionDate": "",
@@ -1415,6 +1540,19 @@ const kMetadataARM64 = (
     "loc": "42214",
     "binarySize": "",
     "description": "JavaScript interpreter for .NET."
+  },
+  "porffor": {
+    "revisionDate": "",
+    "repo": "https://github.com/CanadaHonk/porffor.git",
+    "url": "https://porffor.dev/",
+    "tech": "Acorn parser, WASM target",
+    "language": "JavaScript, TypeScript",
+    "years": "2023-",
+    "note": "",
+    "license": "MIT",
+    "loc": "27848",
+    "binarySize": "",
+    "description": "JavaScript/TypeScript ahead-of-time optimizing compiler targetting WASM and native binaries."
   },
   "primjs": {
     "revisionDate": "",
@@ -1457,6 +1595,19 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript interpreter for JVM written in Kotlin."
   },
+  "see": {
+    "revisionDate": "",
+    "url": "https://web.archive.org/web/20100328145240/http://www.adaptive-enterprises.com.au/~d/software/see/",
+    "standard": "ES3, JS1.5",
+    "tech": "stack VM, Boehm GC",
+    "language": "C",
+    "years": "2003-2009",
+    "note": "",
+    "license": "BSD-3-Clause",
+    "loc": "34022",
+    "binarySize": "",
+    "description": "Simple ECMAScript Engine."
+  },
   "starlight": {
     "version": "nightly",
     "revision": "503e789b9ef53594aee30c45a621018e855dcc17",
@@ -1471,6 +1622,20 @@ const kMetadataARM64 = (
     "loc": "27826",
     "binarySize": "",
     "description": "JavaScript engine written in Rust."
+  },
+  "sval": {
+    "revisionDate": "",
+    "repo": "https://github.com/Siubaak/sval.git",
+    "url": "https://github.com/Siubaak/sval",
+    "standard": "ES2017 (partial, no standard library)",
+    "tech": "Acorn parser",
+    "language": "TypeScript",
+    "years": "2018-",
+    "note": "",
+    "license": "MIT",
+    "loc": "2124",
+    "binarySize": "",
+    "description": "Metacircular JavaScript interpreter."
   },
   "tamarin": {
     "revisionDate": "",
@@ -1552,6 +1717,20 @@ const kMetadataARM64 = (
     "loc": "11922",
     "binarySize": "",
     "description": "Web browser for Amiga with own JavaScript implementation."
+  },
+  "yaji": {
+    "revisionDate": "",
+    "repo": "https://github.com/neades/yaji-ecmascript-interpreter.git",
+    "url": "https://github.com/neades/yaji-ecmascript-interpreter",
+    "standard": "ES5",
+    "tech": "tree walker",
+    "language": "Java",
+    "years": "2011-2012",
+    "note": "",
+    "license": "LGPL-3.0-only",
+    "loc": "41114",
+    "binarySize": "",
+    "description": "Fork of FESI interpreter with ES5 support."
   },
   "yantra": {
     "revisionDate": "",
