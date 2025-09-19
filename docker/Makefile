@@ -114,17 +114,19 @@ metadata: .PHONY
 	  if [[ -z "$$url" && -n "$$repo" ]]; then url=$${repo%.git}; fi; \
 	  if [[ -f "../$$e.md" ]]; then \
 	    desc=`sed -Ene 's/. Summary: *(.*)/\1/p' ../$$e.md`; \
+	    title=`sed -Ene 's/^# (.+)/\1/p' ../$$e.md`; \
 	  else \
 	    desc=`sed -Ene '/^[^#]/q; /^#?$$/q; s/# (.*)/\1/p' $$f`; \
 	  fi; \
 	  desc=`echo "$$desc" | tr '\n' ' ' | sed -e "s/  */ /g; s/ $$//; s/'/\\\\\\'/g"`; \
 	  echo \
 	    "'$$e': {" \
+	    "'title':    '$$title'," \
 	    "'version':  '`cat .meta/version 2>/dev/null || true`'," \
 	    "'revision': '`cat .meta/revision 2>/dev/null || true`'," \
 	    "'revisionDate': '`cat .meta/revisionDate 2>/dev/null || true`'," \
-	    "'repo':     '$${repo}'," \
-	    "'url':      '$${url}'," \
+	    "'repo':     '$$repo'," \
+	    "'url':      '$$url'," \
 	    "'standard': '`sed -Ene 's/# Standard: *(.*)/\1/p' $$f`'," \
 	    "'tech':     '`sed -Ene 's/# Tech: *(.*)/\1/p'     $$f`'," \
 	    "'language': '`sed -Ene 's/# Language: *(.*)/\1/p' $$f`'," \
