@@ -5,6 +5,7 @@
 * LOC:        128103 (`cloc modules/ecmascript/carakan`)
 * Language:   C++
 * License:    Proprietary
+* Org:        Opera
 * Standard:   ES5
 * Tech:       register VM, JIT
 * Years:      2010-2013

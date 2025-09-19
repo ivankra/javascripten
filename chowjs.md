@@ -4,4 +4,4 @@
 * URL:        https://mp2.dk/techblog/chowjs/
 * License:    Proprietary
 * Standard:   ES2020
-* Tech:       SSA IR, PIC, refcounting GC, native target
+* Tech:       SSA IR, PIC, refcounting GC, compiler to native code

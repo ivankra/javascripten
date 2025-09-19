@@ -520,7 +520,7 @@ function renderCell(th, row) {
     }
     td.innerHTML = `
       <div class="engine-cell">
-        <a href="https://github.com/ivankra/javascript-zoo/blob/main/${row.engine}.md" class="engine-name" target="_blank">${row.title}</a>
+        <a href="https://github.com/ivankra/javascript-zoo/blob/main/${row.engine}.md" class="engine-name" target="_blank">${row.title ?? row.engine}</a>
         <div class="engine-version">${revLink}</div>
       </div>`;
   } else if (col === 'loc' && Number(row.loc)) {
@@ -573,10 +573,11 @@ function renderCell(th, row) {
   } else if (col === 'jit') {
     td.innerHTML = row.jit ? 'Y' : '';
   } else if (col === 'description') {
-    td.innerHTML = `${row.description ?? ''}<br>${row.tech ? 'Tech: ' + row.tech : ''}`;
-    if (row.note) {
+    td.innerHTML = row.description ?? '';
+    if (row.tech)
+      td.innerHTML += `<br>Tech: ${row.tech}`;
+    if (row.note)
       td.innerHTML += `<br>${row.note}`;
-    }
   } else if (th.classList.contains('benchmark')) {
     const agg = row[col];
     const val = agg?.value ?? '';
@@ -753,6 +754,55 @@ const kMetadataARM64 = (
     "binarySize": 24256776,
     "description": "Embeddable Javascript engine written in Rust."
   },
+  "cesanta-elk": {
+    "title": "cesanta-elk",
+    "version": "2.2.0-30-ga9bb856",
+    "revision": "a9bb85619c5cddf49dfa8bdf529770fc9943a7fd",
+    "revisionDate": "2025-06-05",
+    "repo": "https://github.com/cesanta/elk.git",
+    "url": "https://github.com/cesanta/elk",
+    "tech": "interprets from source",
+    "language": "C",
+    "years": "2019-",
+    "note": "",
+    "license": "AGPL",
+    "loc": "1247",
+    "binarySize": 67800,
+    "description": "Toy interpreter for microcontrollers that can hardly run any JavaScript."
+  },
+  "cesanta-mjs": {
+    "title": "cesanta-mjs",
+    "version": "2.20.0-15-ged70eac",
+    "revision": "ed70eac9e8b334b1bfc251fc860511b2cb4aa418",
+    "revisionDate": "2025-08-06",
+    "repo": "https://github.com/cesanta/mjs.git",
+    "url": "https://github.com/cesanta/mjs",
+    "tech": "stack VM",
+    "language": "C",
+    "years": "2016-",
+    "note": "Severely limited JS subset, can't run test suite.",
+    "license": "GPL-2.0-only",
+    "loc": "33845",
+    "binarySize": 133976,
+    "description": "JavaScript interpreter for microcontrollers."
+  },
+  "cesanta-v7": {
+    "title": "cesanta-v7",
+    "version": "3.0-151-gce5212a",
+    "revision": "ce5212ae42dfd93247c56fbc233f65367e9def27",
+    "revisionDate": "2017-08-26",
+    "repo": "https://github.com/cesanta/v7.git",
+    "url": "https://github.com/cesanta/v7",
+    "standard": "ES5 (subset)",
+    "tech": "stack VM",
+    "language": "C",
+    "years": "2013-2017",
+    "note": "",
+    "license": "GPL-2.0-only",
+    "loc": "24811",
+    "binarySize": 399904,
+    "description": "JavaScript engine for microcontrollers."
+  },
   "duktape": {
     "title": "Duktape",
     "version": "2.5.0-419-g50af773b",
@@ -769,22 +819,6 @@ const kMetadataARM64 = (
     "loc": "130383",
     "binarySize": 527224,
     "description": "Embeddable Javascript engine with a focus on portability and compact footprint."
-  },
-  "elk": {
-    "title": "Elk",
-    "version": "2.2.0-30-ga9bb856",
-    "revision": "a9bb85619c5cddf49dfa8bdf529770fc9943a7fd",
-    "revisionDate": "2025-06-05",
-    "repo": "https://github.com/cesanta/elk.git",
-    "url": "https://github.com/cesanta/elk",
-    "tech": "interprets from source",
-    "language": "C",
-    "years": "2019-",
-    "note": "",
-    "license": "AGPL",
-    "loc": "1247",
-    "binarySize": 67800,
-    "description": "Toy interpreter for microcontrollers that can hardly run any JavaScript."
   },
   "escargot": {
     "title": "Escargot",
@@ -1004,22 +1038,6 @@ const kMetadataARM64 = (
     "binarySize": 46806288,
     "description": "JavaScript engine of Ladybird browser and SerenityOS."
   },
-  "mjs": {
-    "title": "mJS",
-    "version": "2.20.0-15-ged70eac",
-    "revision": "ed70eac9e8b334b1bfc251fc860511b2cb4aa418",
-    "revisionDate": "2025-08-06",
-    "repo": "https://github.com/cesanta/mjs.git",
-    "url": "https://github.com/cesanta/mjs",
-    "tech": "stack VM",
-    "language": "C",
-    "years": "2016-",
-    "note": "Severely limited JS subset, can't run test suite.",
-    "license": "GPL-2.0-only",
-    "loc": "33845",
-    "binarySize": 133976,
-    "description": "JavaScript interpreter for microcontrollers."
-  },
   "mujs": {
     "title": "MuJS",
     "version": "1.3.7",
@@ -1035,7 +1053,7 @@ const kMetadataARM64 = (
     "license": "ISC",
     "loc": "18490",
     "binarySize": 396408,
-    "description": "Embeddable JavaScript engine from MuPDF."
+    "description": "Embeddable JavaScript engine from MuPDF (Artifex/Ghostscript)."
   },
   "nashorn": {
     "title": "Nashorn",
@@ -1216,25 +1234,8 @@ const kMetadataARM64 = (
     "binarySize": 15605456,
     "description": "JavaScript engine of Firefox."
   },
-  "v7": {
-    "title": "V7",
-    "version": "3.0-151-gce5212a",
-    "revision": "ce5212ae42dfd93247c56fbc233f65367e9def27",
-    "revisionDate": "2017-08-26",
-    "repo": "https://github.com/cesanta/v7.git",
-    "url": "https://github.com/cesanta/v7",
-    "standard": "ES5 (subset)",
-    "tech": "stack VM",
-    "language": "C",
-    "years": "2013-2017",
-    "note": "",
-    "license": "GPL-2.0-only",
-    "loc": "24811",
-    "binarySize": 399904,
-    "description": "JavaScript engine for microcontrollers."
-  },
   "v8-jitless": {
-    "title": "V7",
+    "title": "SpiderMonkey",
     "version": "14.2.3",
     "revision": "345212d2fd3d41e7186580b42b935e1b6b518739",
     "revisionDate": "2025-09-01",
@@ -1268,16 +1269,31 @@ const kMetadataARM64 = (
     "revision": "2ffd29ab24ea9778c94397965448ef96f6be347c",
     "revisionDate": "2025-08-18",
     "repo": "https://github.com/Moddable-OpenSource/moddable.git",
-    "url": "https://github.com/Moddable-OpenSource/moddable",
+    "url": "https://en.wikipedia.org/wiki/Kinoma",
     "standard": "ESnext",
     "tech": "stack VM",
     "language": "C",
-    "years": "2016-",
-    "note": "",
-    "license": "LGPL-3.0-or-later, Apache-2.0",
-    "loc": "129071",
+    "years": "2002-",
+    "org": "Kinoma",
+    "note": "Open-sourced in 2015",
+    "license": "Apache-2.0, LGPL-3.0-or-later",
+    "loc": "88837",
     "binarySize": 2034712,
-    "description": "Lightweight engine for microcontrollers."
+    "description": "Lightweight engine for microcontrollers/IoT by Kinoma/Marvell."
+  },
+  "assemblyscript": {
+    "title": "AssemblyScript",
+    "revisionDate": "",
+    "repo": "https://github.com/AssemblyScript/assemblyscript.git",
+    "url": "https://www.assemblyscript.org/",
+    "tech": "Binaryen, WASM target",
+    "language": "TypeScript",
+    "years": "2017-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "72325",
+    "binarySize": "",
+    "description": "Compiler for a TypeScript dialect targetting WebAssembly."
   },
   "awebjs": {
     "title": "AWebJS",
@@ -1318,6 +1334,7 @@ const kMetadataARM64 = (
     "tech": "register VM, JIT",
     "language": "C++",
     "years": "2010-2013",
+    "org": "Opera",
     "note": "",
     "license": "Proprietary",
     "loc": "128103",
@@ -1340,6 +1357,17 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript engine of Microsoft Edge Legacy."
   },
+  "chowjs": {
+    "title": "ChowJS",
+    "revisionDate": "",
+    "url": "https://mp2.dk/techblog/chowjs/",
+    "standard": "ES2020",
+    "tech": "SSA IR, PIC, refcounting GC, native target",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "QuickJS-based AOT compiler to native code for game developers."
+  },
   "cl-javascript": {
     "title": "CL-JavaScript",
     "revisionDate": "",
@@ -1353,6 +1381,21 @@ const kMetadataARM64 = (
     "loc": "3390",
     "binarySize": "",
     "description": "JavaScript to Common Lisp compiler."
+  },
+  "criscript": {
+    "title": "CRIScript",
+    "revisionDate": "",
+    "repo": "https://github.com/hak/criscript.git",
+    "url": "https://web.archive.org/web/20100302002237/http://criscript.com/trac",
+    "standard": "ES3",
+    "tech": "stack VM, YACC",
+    "language": "C++",
+    "years": "2008",
+    "note": "",
+    "license": "Custom",
+    "loc": "36897",
+    "binarySize": "",
+    "description": "Lightweight ES3 interpreter for game engines."
   },
   "dmdscript": {
     "title": "DMDScript",
@@ -1382,7 +1425,7 @@ const kMetadataARM64 = (
     "license": "MIT",
     "loc": "38883",
     "binarySize": "",
-    "description": "Ahead of time compiler and runtime for ES6"
+    "description": "Ahead of time compiler and runtime for ES6."
   },
   "edbrowse": {
     "title": "Edbrowse",
@@ -1699,7 +1742,7 @@ const kMetadataARM64 = (
     "description": "JavaScript interpreter for .NET."
   },
   "porffor": {
-    "title": "Portfor",
+    "title": "Porffor",
     "revisionDate": "",
     "repo": "https://github.com/CanadaHonk/porffor.git",
     "url": "https://porffor.dev/",
@@ -1755,6 +1798,19 @@ const kMetadataARM64 = (
     "loc": "25566",
     "binarySize": "",
     "description": "JavaScript interpreter for JVM written in Kotlin."
+  },
+  "sablejs": {
+    "title": "sablejs",
+    "revisionDate": "",
+    "repo": "https://github.com/sablejs/sablejs.git",
+    "url": "https://github.com/sablejs/sablejs",
+    "standard": "ES5",
+    "language": "JavaScript",
+    "years": "2020-2022",
+    "note": "No original source available - only minified blob.",
+    "license": "Custom",
+    "binarySize": "",
+    "description": "Sandboxed ES5 interpreter written in JavaScript."
   },
   "see": {
     "title": "SEE",
@@ -1830,6 +1886,20 @@ const kMetadataARM64 = (
     "loc": "2656",
     "binarySize": "",
     "description": "Primitive JavaScript interpreter."
+  },
+  "tjs2": {
+    "title": "tjs2",
+    "revisionDate": "",
+    "repo": "https://github.com/krkrz/krkrz",
+    "url": "http://krkrz.github.io/",
+    "tech": "register VM",
+    "language": "C++",
+    "years": "2000-2017",
+    "note": "",
+    "license": "Custom",
+    "loc": "36451",
+    "binarySize": "",
+    "description": "JavaScript-like scripting engine of KRKR2/KRKRZ game engines."
   },
   "topaz": {
     "title": "Topaz",
@@ -2601,7 +2671,7 @@ const kOctaneRunsARM64 = {
     'DeltaBlue': {'scores': [65, 65, 67]},
     'NavierStokes': {'scores': [423, 526, 527]},
   },
-  'v7': {
+  'cesanta-v7': {
     'Richards': {'median': 4.183, 'max': 4.314, 'time_avg': 28.88, 'scores': [4.13, 4.111, 4.147, 3.905, 4.157, 4.24, 4.184, 4.166, 4.146, 4.169, 4.192, 4.286, 4.196, 4.183, 4.306, 4.261, 4.237, 4.314, 4.177, 4.13]},
     'DeltaBlue': {'scores': [0.5713]},
     'Crypto': 'Crypto: Error: Crypto operation failed',
@@ -3636,7 +3706,7 @@ const kMetadataX64 = (
     "description": "JavaScript interpreter for .NET."
   },
   "porffor": {
-    "title": "Portfor",
+    "title": "Porffor",
     "revisionDate": "",
     "repo": "https://github.com/CanadaHonk/porffor.git",
     "url": "https://porffor.dev/",

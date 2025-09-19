@@ -1,4 +1,4 @@
-# Portfor
+# Porffor
 
 * Summary:    JavaScript/TypeScript ahead-of-time optimizing compiler targetting WASM and native binaries.
 * URL:        https://porffor.dev/
@@ -6,5 +6,5 @@
 * LOC:        27848 (`cloc compiler`)
 * Language:   JavaScript, TypeScript
 * License:    MIT
-* Tech:       Acorn parser, WASM target
+* Tech:       compiler to WASM, Acorn parser
 * Years:      2023-

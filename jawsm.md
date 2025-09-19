@@ -5,5 +5,5 @@
 * LOC:        11971 (`cloc src`)
 * Language:   Rust
 * License:    Apache-2.0
-* Tech:       WASM target
+* Tech:       compiler to WASM
 * Years:      2024-
