@@ -8,3 +8,5 @@
 * License:    MIT
 * LOC:        46141 (`cloc --fullpath --not_match_f="(?i)(test)" .`)
 * Years:      2016-
+
+Used in Ethereum's official Go implementation (geth), Grafana K6.

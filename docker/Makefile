@@ -117,6 +117,7 @@ metadata: .PHONY
 	    title=`sed -Ene 's/^# (.+)/\1/p' ../$$e.md`; \
 	  else \
 	    desc=`sed -Ene '/^[^#]/q; /^#?$$/q; s/# (.*)/\1/p' $$f`; \
+	    title=''; \
 	  fi; \
 	  desc=`echo "$$desc" | tr '\n' ' ' | sed -e "s/  */ /g; s/ $$//; s/'/\\\\\\'/g"`; \
 	  echo \

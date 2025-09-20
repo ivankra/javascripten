@@ -6,6 +6,7 @@
 <style>
 [data-theme="light"] {
   --bg-accent: #ddf4ff;
+  --bg-control: #ffffff;
   --bg-hover: #fffbdc;
   --bg-missing: #eeeeee;
   --bg-primary: #fafafa;
@@ -21,17 +22,20 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg-accent: #1a2332;
+  --bg-control: #000000;
   --bg-hover: #282A36;
   --bg-missing: #44475A;
   --bg-primary: #0e0d11;
-  --bg-secondary: #1d1b22;
+  --bg-secondary: #2b2833 /*#1d1b22*/;
+  --bg-hover: #3d4766;
   --bg-tertiary: #2f3751;
   --border-light: #343746;
   --border-medium: #424450;
-  --text-accent: #bd93f9;
+  --text-accent: #50FA7B;
   --text-muted: #99b3ffcc;
-  --text-numeric: #8be9fd;
+  --text-numeric: #BD93F9;
   --text-primary: #f8f8f2;
   --text-red: #ff79cb;
 }
@@ -48,7 +52,6 @@ body {
 
 header {
   align-items: center;
-  background-color: var(--bg-secondary);
   display: flex;
   justify-content: space-between;
   padding: 16px;
@@ -64,15 +67,13 @@ h1 {
 }
 
 nav {
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-light);
   padding: 8px 16px;
 }
 
 .control-container {
   align-items: center;
   display: flex;
-  gap: 24px;
+  gap: 16px;
   user-select: none;
 
   .control {
@@ -83,11 +84,11 @@ nav {
   }
 }
 
-input, select {
+input, select, button {
   accent-color: var(--text-accent);
   border: 1px solid var(--border-medium);
   border-radius: 4px;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-control);
   color: var(--text-primary);
   padding: 4px 6px;
   cursor: pointer;
@@ -118,12 +119,16 @@ main {
 
 table {
   border-collapse: collapse;
+  border: 1px solid var(--border-light);
 }
 
 th, td {
   padding: 8px 8px 8px 8px;
   text-align: left;
   border: 1px solid var(--border-light);
+  border-left: 0;
+  border-right: 0;
+border:0;
 }
 
 th {
@@ -201,7 +206,7 @@ tbody {
     border-top: none !important;
   }
 
-  tr:hover, tbody tr:hover .sorted-column {
+  tr:hover, tr:hover td.sorted-column {
     background-color: var(--bg-hover);
   }
 }
@@ -220,7 +225,7 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
   min-width: 120px;
 
   .engine-name {
-    color: var(--text-accent);
+    color:var(--text-accent);
     font-weight: 500;
   }
 
@@ -245,7 +250,6 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
 }
 
 .theme-toggle {
-  background: var(--bg-primary);
   border: 1px solid var(--border-light);
   border-radius: 6px;
   cursor: pointer;
@@ -254,7 +258,6 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: sticky;
 }
 
 .theme-toggle::after {
@@ -303,7 +306,7 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
           <th data-col="score" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime).">Score</th>
           <th data-col="binarySize" class="numeric" title="Binary size">Binary</th>
           <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests and third-party code">LoC</th>
-          <th data-col="language" title="Main programming language">Lang</th>
+          <th data-col="language" title="Main programming language">Language</th>
           <th data-col="standard" title="ECMAScript standard (targeted/mostly compliant with)">Standard</th>
           <th data-col="jit" title="Just-in-time compilation">JIT</th>
           <th data-col="years" title="Years of active development">Years</th>
@@ -560,9 +563,7 @@ function renderCell(th, row) {
     }
   } else if (col === 'language' && row.language) {
     let s = row.language
-      .replace('JavaScript', 'JS')
-      .replace('TypeScript', 'TS')
-      .replace(/ \(.*\)/, '');
+      .replace(/ \(.*\)/, '<sup>*</sup>').replace(/ +/g, '<br>');
     td.innerHTML = s;
     if (s != row.language) {
       td.title = row.language;
@@ -583,7 +584,9 @@ function renderCell(th, row) {
     const val = agg?.value ?? '';
     if (val === '' || isNaN(Number(val))) {
       td.innerHTML = '';
-      td.classList.add('missing');
+      if (row.score && !isNaN(row.score)) {
+        td.classList.add('missing');
+      }
     } else {
       td.innerHTML = String(val|0);
       td.title = `N=${agg.N} median=${agg.median} mean=${agg.mean}±${agg.sem} iqm=${agg.iqm} max=${agg.max}`;
@@ -628,6 +631,7 @@ function processRawData() {
       // Merge most of missing metadata from parent, e.g. v8 into v8-jitless
       ...(dropEmptyKeys(raw.metadata[engine.replace(/-.*/, '')]) ?? {}),
       'tech': null,
+      'title': null,
       ...(dropEmptyKeys(raw.metadata[engine]) ?? {}),
       ...row,
     };
@@ -814,7 +818,7 @@ const kMetadataARM64 = (
     "tech": "register VM",
     "language": "C",
     "years": "2013-",
-    "note": "Used by NetSurf browser.",
+    "note": "",
     "license": "MIT",
     "loc": "130383",
     "binarySize": 527224,
@@ -878,7 +882,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/oracle/graaljs",
     "url": "https://www.graalvm.org/javascript/",
     "standard": "ESnext",
-    "tech": "JVM, 2-tier JIT (HotSpot/Graal), Truffle framework",
+    "tech": "JVM, 2-tier JIT (HotSpot/Graal), Truffle framework (Futamura projection)",
     "language": "Java",
     "years": "2018-",
     "org": "Oracle",
@@ -942,7 +946,6 @@ const kMetadataARM64 = (
     "description": "Lightweight JavaScript engine for microcontrollers."
   },
   "jsc-jitless": {
-    "title": "JerryScript",
     "version": "f5b129fe",
     "revision": "f5b129fe96a89a4a8ce8e1169bfa3914a0c8405d",
     "revisionDate": "2025-08-27",
@@ -1160,7 +1163,6 @@ const kMetadataARM64 = (
     "description": "Lightweight embeddable JavaScript engine by Fabrice Bellard and Charlie Gordon."
   },
   "qv4-jitless": {
-    "title": "QuickJS",
     "version": "6.9.1",
     "revision": "a99aafab4cfbbf650493c9a4feb5a1bb4a09d1d2",
     "revisionDate": "2025-05-29",
@@ -1206,7 +1208,6 @@ const kMetadataARM64 = (
     "description": "JavaScript engine from Mozilla for the Java platform, bundled with JDK 6-7."
   },
   "spidermonkey-jitless": {
-    "title": "Rhino",
     "version": "142.0.2",
     "revision": "f88de4141d59b647756e7917c7a97c3e64b88289",
     "revisionDate": "2025-08-27",
@@ -1235,7 +1236,6 @@ const kMetadataARM64 = (
     "description": "JavaScript engine of Firefox."
   },
   "v8-jitless": {
-    "title": "SpiderMonkey",
     "version": "14.2.3",
     "revision": "345212d2fd3d41e7186580b42b935e1b6b518739",
     "revisionDate": "2025-09-01",
@@ -1269,7 +1269,7 @@ const kMetadataARM64 = (
     "revision": "2ffd29ab24ea9778c94397965448ef96f6be347c",
     "revisionDate": "2025-08-18",
     "repo": "https://github.com/Moddable-OpenSource/moddable.git",
-    "url": "https://en.wikipedia.org/wiki/Kinoma",
+    "url": "https://www.moddable.com/faq#what-is-xs",
     "standard": "ESnext",
     "tech": "stack VM",
     "language": "C",
@@ -1286,14 +1286,14 @@ const kMetadataARM64 = (
     "revisionDate": "",
     "repo": "https://github.com/AssemblyScript/assemblyscript.git",
     "url": "https://www.assemblyscript.org/",
-    "tech": "Binaryen, WASM target",
+    "tech": "compiler to WASM, Binaryen",
     "language": "TypeScript",
     "years": "2017-",
     "note": "",
     "license": "Apache-2.0",
     "loc": "72325",
     "binarySize": "",
-    "description": "Compiler for a TypeScript dialect targetting WebAssembly."
+    "description": "Compiler for a restricted TypeScript dialect to WebAssembly."
   },
   "awebjs": {
     "title": "AWebJS",
@@ -1362,7 +1362,9 @@ const kMetadataARM64 = (
     "revisionDate": "",
     "url": "https://mp2.dk/techblog/chowjs/",
     "standard": "ES2020",
-    "tech": "SSA IR, PIC, refcounting GC, native target",
+    "tech": "SSA IR, PIC, refcounting GC, compiler to native code",
+    "language": "C",
+    "years": "2021",
     "note": "",
     "license": "Proprietary",
     "binarySize": "",
@@ -1381,6 +1383,20 @@ const kMetadataARM64 = (
     "loc": "3390",
     "binarySize": "",
     "description": "JavaScript to Common Lisp compiler."
+  },
+  "continuum": {
+    "title": "Continuum",
+    "revisionDate": "",
+    "url": "https://web.archive.org/web/20150619174908/https://github.com/benvie/continuum",
+    "standard": "ES6 (partial)",
+    "tech": "stack VM, Esprima parser",
+    "language": "JavaScript (ES3)",
+    "years": "2012-2013",
+    "note": "",
+    "license": "MIT",
+    "loc": "21741",
+    "binarySize": "",
+    "description": "ES6 interpreter written in ES3."
   },
   "criscript": {
     "title": "CRIScript",
@@ -1406,6 +1422,7 @@ const kMetadataARM64 = (
     "tech": "register VM",
     "language": "D",
     "years": "2002-",
+    "org": "Digital Mars",
     "note": "",
     "license": "BSL-1.0",
     "loc": "18013",
@@ -1454,6 +1471,20 @@ const kMetadataARM64 = (
     "loc": "39329",
     "binarySize": "",
     "description": "An implementation of ECMA-262 in JavaScript aiming for 100% spec compliance, fast prototyping, validating new spec versions and test262."
+  },
+  "epimetheus": {
+    "title": "Epimetheus",
+    "revisionDate": "",
+    "url": "http://www.mozilla.org/js/language/Epimetheus.html",
+    "standard": "ES4",
+    "language": "C++",
+    "years": "2000-2006",
+    "org": "Mozilla",
+    "note": "",
+    "license": "MPL-1.1 OR GPL-2.0-or-later OR LGPL-2.1-or-later",
+    "loc": "41895",
+    "binarySize": "",
+    "description": "Netscape's experimental \"JavaScript 2.0\" implementation towards ES4 proposal."
   },
   "eval5": {
     "title": "eval5",
@@ -1542,6 +1573,20 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "ES3 implementation for .NET."
   },
+  "ixlib": {
+    "title": "ixlib",
+    "revisionDate": "",
+    "repo": "https://github.com/inducer/ixlib",
+    "url": "https://ixlib.sourceforge.net/",
+    "tech": "tree walker",
+    "language": "C++",
+    "years": "2005",
+    "note": "",
+    "license": "LGPL-2.0-only",
+    "loc": "3841",
+    "binarySize": "",
+    "description": "C++ utility library with a rudimentary JavaScript interpreter."
+  },
   "janet": {
     "title": "JANET",
     "revisionDate": "",
@@ -1559,7 +1604,7 @@ const kMetadataARM64 = (
     "revisionDate": "",
     "repo": "https://github.com/drogus/jawsm.git",
     "url": "https://github.com/drogus/jawsm",
-    "tech": "WASM target",
+    "tech": "compiler to WASM",
     "language": "Rust",
     "years": "2024-",
     "note": "",
@@ -1625,6 +1670,18 @@ const kMetadataARM64 = (
     "loc": "69402",
     "binarySize": "",
     "description": "JavaScript interpreter written in Python."
+  },
+  "juce": {
+    "title": "JUCE",
+    "revisionDate": "",
+    "tech": "tree walker",
+    "language": "C++",
+    "years": "2013-2023",
+    "note": "Dropped in favor of QuickJS in v8.0.",
+    "license": "ISC",
+    "loc": "3109",
+    "binarySize": "",
+    "description": "JUCE music apps framework used to have own rudimentary interpreter for a JavaScript subset."
   },
   "jurassic": {
     "title": "Jurassic",
@@ -1741,12 +1798,39 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript interpreter for .NET."
   },
+  "opera": {
+    "title": "Opera",
+    "revisionDate": "",
+    "url": "https://help.opera.com/en/operas-archived-history/",
+    "standard": "ES3",
+    "language": "C++",
+    "years": "1997-2009",
+    "org": "Opera",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "Linear A, Linear B, Futhark - early JavaScript engines of Opera browser."
+  },
+  "perl-je": {
+    "title": "perl-je",
+    "revisionDate": "",
+    "url": "https://metacpan.org/dist/JE",
+    "standard": "ES3",
+    "tech": "tree walker",
+    "language": "Perl",
+    "years": "2007-2014",
+    "note": "",
+    "license": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+    "loc": "11007",
+    "binarySize": "",
+    "description": "Pure-Perl JavaScript engine."
+  },
   "porffor": {
     "title": "Porffor",
     "revisionDate": "",
     "repo": "https://github.com/CanadaHonk/porffor.git",
     "url": "https://porffor.dev/",
-    "tech": "Acorn parser, WASM target",
+    "tech": "compiler to WASM, Acorn parser",
     "language": "JavaScript, TypeScript",
     "years": "2023-",
     "note": "",

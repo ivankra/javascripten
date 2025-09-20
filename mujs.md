@@ -8,3 +8,5 @@
 * Standard:   ES5
 * Tech:       stack VM
 * Years:      2013-
+
+https://github.com/SuperIlu/jSH: JavaScript engine for MS-DOS

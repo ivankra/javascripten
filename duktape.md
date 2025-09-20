@@ -5,7 +5,8 @@
 * LOC:        130383 (`cloc --not_match_d="(?i)(src-tools|website|config|deps|doc|docker|extras|src-tools|test)" .`)
 * Language:   C
 * License:    MIT
-* Note:       Used by NetSurf browser.
 * Standard:   ES2016 (partial)
 * Tech:       register VM
 * Years:      2013-
+
+Used by NetSurf browser.

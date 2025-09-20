@@ -8,5 +8,5 @@
 * License:    UPL-1.0
 * Org:        Oracle
 * Standard:   ESnext
-* Tech:       JVM, 2-tier JIT (HotSpot/Graal), Truffle framework
+* Tech:       JVM, 2-tier JIT (HotSpot/Graal), Truffle framework (Futamura projection)
 * Years:      2018-
