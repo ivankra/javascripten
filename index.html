@@ -2,18 +2,24 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="light dark" />
 <title>JavaScript engines zoo</title>
 <style>
 [data-theme="light"] {
-  --bg-accent: #ddf4ff;
+  color-scheme: light;
+  background-color: #ffffff;
+  --bg-hover: #ddf4ff;
+  --bg-sorted: #fffbdc;
   --bg-control: #ffffff;
-  --bg-hover: #fffbdc;
   --bg-missing: #eeeeee;
   --bg-primary: #fafafa;
-  --bg-secondary: #f5f4f2;
-  --bg-tertiary: #eaecf0;
+  /*--bg-muted: #f5f4f2;*/
+  --bg-primary: #ffffff;
+  --bg-muted: #f6f8fa;
+  --bg-thead: #eaecf0;
   --border-light: #e5e3e0;
   --border-medium: #d1cdc7;
+  --border-muted: #d1d9e0b3;
   --text-accent: #0969da;
   --text-muted: #333333;
   --text-numeric: #0550ae;
@@ -23,25 +29,26 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg-accent: #1a2332;
+  background-color: #000000;
+  --bg-sorted: color-mix(in srgb, #99b3ff 15%, transparent);
   --bg-control: #000000;
   --bg-hover: #282A36;
   --bg-missing: #44475A;
-  --bg-primary: #0e0d11;
-  --bg-secondary: #2b2833 /*#1d1b22*/;
+  --bg-primary: #0d1117;
+  --bg-muted: #151b23;
   --bg-hover: #3d4766;
-  --bg-tertiary: #2f3751;
+  --bg-thead: #2f3751;
   --border-light: #343746;
   --border-medium: #424450;
+  --border-muted: #3d444db3;
   --text-accent: #50FA7B;
-  --text-muted: #99b3ffcc;
+  --text-muted: #99b3ff;
   --text-numeric: #BD93F9;
   --text-primary: #f8f8f2;
   --text-red: #ff79cb;
 }
 
 body {
-  background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -51,12 +58,13 @@ body {
 }
 
 header {
+  padding: 16px;
+}
+
+.header-container {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 16px;
-  top: 0;
-  z-index: 100;
 }
 
 h1 {
@@ -70,13 +78,13 @@ nav {
   padding: 8px 16px;
 }
 
-.control-container {
+.nav-container {
   align-items: center;
   display: flex;
   gap: 16px;
   user-select: none;
 
-  .control {
+  > {
     align-items: center;
     display: flex;
     gap: 8px;
@@ -113,22 +121,40 @@ main {
 }
 
 .table-container {
-  /*border: 1px solid var(--border-light);
-  border-radius: 3px;*/
+  border-radius: 6px;
+  overflow: clip;
+  border: 1px solid var(--border-light);
+  box-shadow:
+    0 4px 4px -1px color-mix(in srgb, var(--border-medium) 50%, transparent),
+    0 8px 8px -2px color-mix(in srgb, var(--border-medium) 50%, transparent);
 }
 
 table {
   border-collapse: collapse;
-  border: 1px solid var(--border-light);
+  border: 0px;
 }
 
-th, td {
+th {
   padding: 8px 8px 8px 8px;
   text-align: left;
-  border: 1px solid var(--border-light);
-  border-left: 0;
-  border-right: 0;
-border:0;
+  border-left: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
+}
+
+td {
+  padding: 8px 8px 8px 8px;
+  text-align: left;
+  border-left: 1px solid var(--border-muted);
+  border-right: 1px solid var(--border-muted);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+td:first-child, th:first-child {
+  border-left: 0px;
+}
+
+td.last, th.last {
+  border-right: 0px;
 }
 
 th {
@@ -142,7 +168,7 @@ td {
 .benchmark {
   padding: 8px 4px 8px 4px;
   text-align: right;
-  font-family: 'Roboto Condensed', inherit;
+  font-family: 'Roboto Condensed', Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
 
   .control {
     font-size: 10px;
@@ -178,19 +204,23 @@ td.missing, td.excluded-column {
 }
 
 th {
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-thead);
   font-weight: 500;
   position: sticky;
   top: 0;
   z-index: 10;
   user-select: none;
   border-bottom: none;
-  box-shadow: inset 0 -1px 0 var(--border-medium);
+  box-shadow: inset 0 -1px 0 var(--border-light);
   cursor: pointer;
 }
 
+th.sorted-column {
+  box-shadow: inset 0 -2px 0 var(--text-accent);
+}
+
 td.sorted-column {
-  background-color: var(--bg-accent);
+  background-color: var(--bg-sorted);
 }
 
 tbody {
@@ -199,11 +229,7 @@ tbody {
   }
 
   tr:nth-child(even) {
-    background-color: var(--bg-secondary);
-  }
-
-  tr:nth-child(1) td {
-    border-top: none !important;
+    background-color: var(--bg-muted);
   }
 
   tr:hover, tr:hover td.sorted-column {
@@ -258,6 +284,8 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  right: 16px;
+  position: sticky;
 }
 
 .theme-toggle::after {
@@ -269,20 +297,20 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
 }
 
 .theme-toggle:hover {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-muted);
   border-color: var(--border-medium);
 }
 </style>
 </head>
 <body>
 <header>
-  <h1><a href="https://github.com/ivankra/javascript-zoo">JavaScript engines zoo</a></h1>
-  <div class="control">
+  <div class="header-container">
+    <h1><a href="https://github.com/ivankra/javascript-zoo">JavaScript engines zoo</a></h1>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></button>
   </div>
 </header>
 <nav>
-  <div class="control-container">
+  <div class="nav-container">
     <div class="control">
       <select data-state="platform">
         <option value="arm64" selected>arm64: Mac M4 4.5GHz - Linux VM</option>
@@ -303,7 +331,7 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
       <thead>
         <tr>
           <th data-col="engine" class="engine-cell">Engine</th>
-          <th data-col="score" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime).">Score</th>
+          <th data-col="score" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime)">Score</th>
           <th data-col="binarySize" class="numeric" title="Binary size">Binary</th>
           <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests and third-party code">LoC</th>
           <th data-col="language" title="Main programming language">Language</th>
@@ -336,7 +364,6 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
     </table>
   </div>
 </main>
-
 <script>
 const state = {
   platform: 'arm64',
@@ -454,6 +481,8 @@ function render() {
   document.querySelector('[data-state=v8]').checked = state.v8;
   document.querySelector('[data-state=jitless]').checked = state.jitless;
 
+  let lastCol = '';
+
   document.querySelectorAll('th').forEach(th => {
     const col = th.dataset.col;
     const sdir = state.sort[0].dir;
@@ -465,6 +494,9 @@ function render() {
       state.visible[col] = state.v8 ? Boolean(th.dataset.v8) : true;
       th.classList.toggle('hidden', !state.visible[col]);
       th.classList.toggle('excluded-column', !state.selected[col]);
+      if (state.visible[col]) {
+        lastCol = col;
+      }
 
       th.innerHTML = `
         <div class="control">
@@ -479,13 +511,19 @@ function render() {
   const tbody = document.querySelector('tbody');
   const thead = document.querySelector('thead');
   const ths = [...thead.querySelectorAll('th')];
+  ths.forEach(th => {
+    th.classList.toggle('last', th.dataset.col == lastCol);
+  });
+
   const frag = document.createDocumentFragment();
 
   tableData = processRawData().sort(sortComparator);
   tableData.forEach(row => {
     const tr = document.createElement('tr');
     ths.forEach(th => {
-      tr.appendChild(renderCell(th, row));
+      const td = renderCell(th, row);
+      td.classList.toggle('last', th.dataset.col == lastCol);
+      tr.appendChild(td);
     });
     frag.appendChild(tr);
   });
@@ -542,7 +580,9 @@ function renderCell(th, row) {
       .replace(/(-Clause|-only)/g, '')
       .replace(/-or-later/g, '+')
       .replace(/ WITH[^,]*/i, '<sup>*</sup>')
-      .replace('AWeb Public License', 'AWebPL');
+      .replace(/MPL.*GPL.*LGPL.*/, 'MPL/(L)GPL')
+      .replace(/LGPL.*Qt/, 'Qt/(L)GPL')
+      .replace(/Artistic.*GPL.*/, 'Artistic/GPL');
     if (row.license === 'UPL-1.0') {
       td.title = 'Universal Permissive License 1.0';
     } else if (row.license === 'BSL-1.0') {
@@ -564,10 +604,10 @@ function renderCell(th, row) {
   } else if (col === 'language' && row.language) {
     let s = row.language
       .replace(/ \(.*\)/, '<sup>*</sup>').replace(/ +/g, '<br>');
-    td.innerHTML = s;
     if (s != row.language) {
       td.title = row.language;
     }
+    td.innerHTML = s;
   } else if (col === 'years' && row.years) {
     td.innerHTML = row.years.replace(/-/, '-<br>');
     td.classList.toggle('red', !row.years.endsWith('-'));
@@ -637,7 +677,7 @@ function processRawData() {
     };
 
     row['jit'] = (
-      row['tech']?.includes('JIT') &&
+      row['tech']?.match(/\bJIT\b/) &&
       !engine.includes('jitless') &&
       !(row['tech']?.includes('JIT (x') && state.platform === 'arm64')
     );
@@ -754,7 +794,7 @@ const kMetadataARM64 = (
     "years": "2018-",
     "note": "",
     "license": "MIT, Unlicense",
-    "loc": "144032",
+    "loc": "141335",
     "binarySize": 24256776,
     "description": "Embeddable Javascript engine written in Rust."
   },
@@ -786,7 +826,7 @@ const kMetadataARM64 = (
     "years": "2016-",
     "note": "Severely limited JS subset, can't run test suite.",
     "license": "GPL-2.0-only",
-    "loc": "33845",
+    "loc": "10449",
     "binarySize": 133976,
     "description": "JavaScript interpreter for microcontrollers."
   },
@@ -820,7 +860,7 @@ const kMetadataARM64 = (
     "years": "2013-",
     "note": "",
     "license": "MIT",
-    "loc": "130383",
+    "loc": "72815",
     "binarySize": 527224,
     "description": "Embeddable Javascript engine with a focus on portability and compact footprint."
   },
@@ -832,13 +872,13 @@ const kMetadataARM64 = (
     "repo": "https://github.com/Samsung/escargot.git",
     "url": "https://github.com/Samsung/escargot",
     "standard": "ESnext",
-    "tech": "register VM, hidden classes, YARR",
+    "tech": "register VM, hidden classes",
     "language": "C++",
     "years": "2016-",
     "org": "Samsung",
     "note": "",
     "license": "LGPL-2.1",
-    "loc": "110475",
+    "loc": "116291",
     "binarySize": 4723208,
     "description": "Lightweight JavaScript engine by Samsung for mid-range devices like phones/TVs."
   },
@@ -854,7 +894,7 @@ const kMetadataARM64 = (
     "years": "2013-",
     "note": "Awfully slow, various bugs/compliance issues.",
     "license": "MPL-2.0",
-    "loc": "28352",
+    "loc": "28365",
     "binarySize": 1183488,
     "description": "JavaScript interpreter for Espruino microcontrollers."
   },
@@ -882,13 +922,13 @@ const kMetadataARM64 = (
     "repo": "https://github.com/oracle/graaljs",
     "url": "https://www.graalvm.org/javascript/",
     "standard": "ESnext",
-    "tech": "JVM, 2-tier JIT (HotSpot/Graal), Truffle framework (Futamura projection)",
+    "tech": "JVM, 2-tier JIT (HotSpot/Graal), Truffle framework",
     "language": "Java",
     "years": "2018-",
     "org": "Oracle",
     "note": "",
     "license": "UPL-1.0",
-    "loc": "191323",
+    "loc": "191606",
     "binarySize": "",
     "description": "High-performance JavaScript engine for GraalVM."
   },
@@ -963,7 +1003,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/WebKit/WebKit.git",
     "url": "https://trac.webkit.org/wiki/JavaScriptCore",
     "standard": "ESnext",
-    "tech": "register VM, 3-tier JIT, YARR",
+    "tech": "register VM, 3-tier JIT",
     "language": "C++",
     "years": "2001-",
     "org": "Apple",
@@ -1084,7 +1124,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/nginx/njs.git",
     "url": "https://nginx.org/en/docs/njs/index.html",
     "standard": "ES6+ (partial)",
-    "tech": "register VM, PCRE2",
+    "tech": "register VM",
     "language": "C",
     "years": "2015-",
     "org": "Nginx",
@@ -1126,7 +1166,7 @@ const kMetadataARM64 = (
     "license": "MIT",
     "loc": "26462",
     "binarySize": 4751352,
-    "description": "JavaScript engine in pure Go"
+    "description": "JavaScript engine in pure Go."
   },
   "quickjs-ng": {
     "title": "QuickJS-NG",
@@ -1180,7 +1220,7 @@ const kMetadataARM64 = (
     "repo": "https://code.qt.io/qt/qt5.git",
     "url": "https://wiki.qt.io/V4",
     "standard": "ES2016",
-    "tech": "register VM, JIT, YARR",
+    "tech": "register VM, JIT",
     "language": "C++",
     "years": "2012-",
     "org": "Qt",
@@ -1188,7 +1228,7 @@ const kMetadataARM64 = (
     "license": "LGPL, GPL, Qt",
     "loc": "50221",
     "binarySize": 12751320,
-    "description": "JavaScript engine of Qt's QML framework."
+    "description": "JavaScript engine of Qt's QML framework (QJSEngine)."
   },
   "rhino": {
     "title": "Rhino",
@@ -1225,7 +1265,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/mozilla-firefox/firefox",
     "url": "https://spidermonkey.dev/",
     "standard": "ESnext",
-    "tech": "stack VM, 2-tier JIT, Irregexp",
+    "tech": "stack VM, 2-tier JIT",
     "language": "C++",
     "years": "1996-",
     "org": "Mozilla",
@@ -1253,7 +1293,7 @@ const kMetadataARM64 = (
     "repo": "https://chromium.googlesource.com/v8/v8.git",
     "url": "https://v8.dev/",
     "standard": "ESnext",
-    "tech": "register VM, 3-tier JIT, Irregexp",
+    "tech": "register VM, 3-tier JIT",
     "language": "C++",
     "years": "2008-",
     "org": "Google",
@@ -1305,8 +1345,8 @@ const kMetadataARM64 = (
     "language": "C",
     "years": "2002-2007",
     "note": "",
-    "license": "AWeb Public License",
-    "loc": "21440",
+    "license": "Custom",
+    "loc": "22912",
     "binarySize": "",
     "description": "JavaScript engine of AWeb, a web browser for Amiga."
   },
@@ -1322,7 +1362,7 @@ const kMetadataARM64 = (
     "years": "2024-",
     "note": "Can't parse octane test harness yet.",
     "license": "BSD-3-Clause",
-    "loc": "12526",
+    "loc": "12642",
     "binarySize": "",
     "description": "JavaScript engine written in Nim."
   },
@@ -1337,23 +1377,51 @@ const kMetadataARM64 = (
     "org": "Opera",
     "note": "",
     "license": "Proprietary",
-    "loc": "128103",
+    "loc": "124811",
     "binarySize": "",
     "description": "JavaScript engine of Opera 10.50–12.18."
+  },
+  "castl": {
+    "title": "castl",
+    "revisionDate": "",
+    "repo": "https://github.com/PaulBernier/castl.git",
+    "url": "https://github.com/PaulBernier/castl",
+    "standard": "ES5 (partial)",
+    "tech": "compiler to Lua (unmodified Lua 5.2 / LuaJIT)",
+    "language": "Lua, JavaScript",
+    "years": "2014-2017",
+    "note": "",
+    "license": "LGPL-3.0-or-later",
+    "loc": "6366",
+    "binarySize": "",
+    "description": "JavaScript to Lua compiler with runtime library."
+  },
+  "chakra": {
+    "title": "Chakra",
+    "revisionDate": "",
+    "standard": "ES6",
+    "tech": "JIT",
+    "language": "C++",
+    "years": "2009-2013",
+    "org": "Microsoft",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "JavaScript engine of IE9-IE11 (jscript9.dll)."
   },
   "chakracore": {
     "title": "ChakraCore",
     "revisionDate": "",
     "repo": "https://github.com/chakra-core/ChakraCore.git",
     "url": "https://github.com/chakra-core/ChakraCore",
-    "standard": "ES6 (partial)",
+    "standard": "ES2019",
     "tech": "register VM, 2-tier JIT, deferred compilation",
     "language": "C++",
     "years": "2015-2021",
     "org": "Microsoft",
     "note": "Doesn't support Linux arm64.",
     "license": "MIT",
-    "loc": "769731",
+    "loc": "779986",
     "binarySize": "",
     "description": "JavaScript engine of Microsoft Edge Legacy."
   },
@@ -1376,7 +1444,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/akapav/js.git",
     "url": "https://marijnhaverbeke.nl/cl-javascript/",
     "standard": "ES3",
-    "language": "Lisp (Common Lisp)",
+    "language": "Lisp",
     "years": "2009-2012",
     "note": "",
     "license": "MIT",
@@ -1389,7 +1457,7 @@ const kMetadataARM64 = (
     "revisionDate": "",
     "url": "https://web.archive.org/web/20150619174908/https://github.com/benvie/continuum",
     "standard": "ES6 (partial)",
-    "tech": "stack VM, Esprima parser",
+    "tech": "stack VM",
     "language": "JavaScript (ES3)",
     "years": "2012-2013",
     "note": "",
@@ -1398,13 +1466,27 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "ES6 interpreter written in ES3."
   },
+  "cpan-je": {
+    "title": "cpan-je",
+    "revisionDate": "",
+    "url": "https://metacpan.org/dist/JE",
+    "standard": "ES3",
+    "tech": "tree walker",
+    "language": "Perl",
+    "years": "2007-2014",
+    "note": "",
+    "license": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+    "loc": "11007",
+    "binarySize": "",
+    "description": "Pure-Perl JavaScript engine."
+  },
   "criscript": {
     "title": "CRIScript",
     "revisionDate": "",
     "repo": "https://github.com/hak/criscript.git",
     "url": "https://web.archive.org/web/20100302002237/http://criscript.com/trac",
     "standard": "ES3",
-    "tech": "stack VM, YACC",
+    "tech": "stack VM",
     "language": "C++",
     "years": "2008",
     "note": "",
@@ -1436,7 +1518,7 @@ const kMetadataARM64 = (
     "url": "https://github.com/toshok/echojs",
     "standard": "ES6",
     "tech": "LLVM",
-    "language": "C++, JavaScript",
+    "language": "JavaScript, C++",
     "years": "2012-2023",
     "note": "",
     "license": "MIT",
@@ -1456,6 +1538,34 @@ const kMetadataARM64 = (
     "loc": "2329",
     "binarySize": "",
     "description": "Edbrowse CLI browser had own small JavaScript engine until v2.2.10 (2006)."
+  },
+  "ejacs": {
+    "title": "Ejacs",
+    "revisionDate": "",
+    "repo": "https://github.com/emacsattic/ejacs.git",
+    "url": "https://github.com/emacsattic/ejacs",
+    "standard": "ES1",
+    "language": "Lisp",
+    "years": "2008",
+    "note": "",
+    "license": "GPL-2.0-only",
+    "loc": "9895",
+    "binarySize": "",
+    "description": "Toy JavaScript interpreter for Emacs, inspired by Narcissus."
+  },
+  "ejscript": {
+    "title": "Ejscript",
+    "revisionDate": "",
+    "repo": "https://github.com/embedthis/ejscript.git",
+    "url": "https://www.embedthis.com/ejscript/doc/",
+    "standard": "ES3, ES6 (partial)",
+    "language": "C",
+    "years": "2003-2014",
+    "note": "",
+    "license": "GPL-2.0-only",
+    "loc": "106690",
+    "binarySize": "",
+    "description": "Embeddable JavaScript engine."
   },
   "engine262": {
     "title": "engine262",
@@ -1492,7 +1602,6 @@ const kMetadataARM64 = (
     "repo": "https://github.com/bplok20010/eval5.git",
     "url": "https://github.com/bplok20010/eval5",
     "standard": "ES5",
-    "tech": "Acorn parser",
     "language": "TypeScript",
     "years": "2019-",
     "note": "",
@@ -1511,7 +1620,7 @@ const kMetadataARM64 = (
     "years": "1998-2003",
     "note": "",
     "license": "LGPL-2.0-or-later",
-    "loc": "26004",
+    "loc": "23687",
     "binarySize": "",
     "description": "JavaScript interpreter written in Java."
   },
@@ -1520,7 +1629,7 @@ const kMetadataARM64 = (
     "revisionDate": "",
     "repo": "https://github.com/ndreynolds/flathead.git",
     "url": "https://github.com/ndreynolds/flathead",
-    "tech": "tree walker, YACC",
+    "tech": "tree walker",
     "language": "C",
     "years": "2012-2017",
     "note": "",
@@ -1557,6 +1666,21 @@ const kMetadataARM64 = (
     "loc": "18306",
     "binarySize": "",
     "description": "Embeddable WASM-sandboxed PrimJS fork."
+  },
+  "higgs": {
+    "title": "Higgs",
+    "revisionDate": "",
+    "repo": "https://github.com/higgsjs/Higgs.git",
+    "url": "https://github.com/higgsjs/Higgs",
+    "standard": "ES5",
+    "tech": "JIT (x64)",
+    "language": "D",
+    "years": "2012-2015",
+    "note": "",
+    "license": "BSD-3-Clause",
+    "loc": "40353",
+    "binarySize": "",
+    "description": "JIT compiler for JavaScript targetting x86-64 platforms."
   },
   "ironjs": {
     "title": "IronJS",
@@ -1648,7 +1772,6 @@ const kMetadataARM64 = (
     "repo": "https://github.com/NeilFraser/JS-Interpreter.git",
     "url": "https://github.com/NeilFraser/JS-Interpreter",
     "standard": "ES5",
-    "tech": "modified Acorn parser",
     "language": "JavaScript (ES5)",
     "years": "2013-",
     "note": "",
@@ -1670,6 +1793,34 @@ const kMetadataARM64 = (
     "loc": "69402",
     "binarySize": "",
     "description": "JavaScript interpreter written in Python."
+  },
+  "jscomp": {
+    "title": "jscomp",
+    "revisionDate": "",
+    "repo": "https://github.com/tmikov/jscomp.git",
+    "url": "https://github.com/tmikov/jscomp",
+    "standard": "ES5 (with some differences, PCRE2 regex)",
+    "tech": "compiler to C++",
+    "language": "TypeScript",
+    "years": "2015-2016",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "19850",
+    "binarySize": "",
+    "description": "AOT compiler targetting native code via C++"
+  },
+  "jscript": {
+    "title": "JScript",
+    "revisionDate": "",
+    "standard": "ES3",
+    "tech": "stack VM",
+    "language": "C++",
+    "years": "1996-2011",
+    "org": "Microsoft",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "JavaScript engine of IE3-IE8 (jscript.dll)."
   },
   "juce": {
     "title": "JUCE",
@@ -1698,25 +1849,12 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript engine for .NET."
   },
-  "lang-js": {
-    "title": "lang-js",
-    "revisionDate": "",
-    "repo": "https://github.com/progval/rpython-langjs.git",
-    "url": "https://web.archive.org/web/20171028201832/https://bitbucket.org/pypy/lang-js/",
-    "tech": "stack VM",
-    "language": "Python",
-    "years": "2009-2013",
-    "note": "",
-    "loc": "7189",
-    "binarySize": "",
-    "description": "JavaScript interpreter written in Python for RPython (PyPy)"
-  },
   "links": {
     "title": "Links",
     "revisionDate": "",
     "url": "http://links.twibright.com/",
     "standard": "ES3 (partial, no exceptions)",
-    "tech": "tree walker, YACC",
+    "tech": "tree walker",
     "language": "C",
     "years": "2002-2007",
     "note": "",
@@ -1766,7 +1904,7 @@ const kMetadataARM64 = (
     "license": "MPL-1.1-or-later OR GPL-2.0-or-later OR LGPL-2.1-or-later",
     "loc": "6308",
     "binarySize": "",
-    "description": "Metacircular JavaScript interpreter. A proof-of-concept by Brendan Eich that was used for prototyping new language features."
+    "description": "Metacircular JavaScript interpreter, was used for prototyping new language features in ES6."
   },
   "ngs": {
     "title": "NGS",
@@ -1809,28 +1947,14 @@ const kMetadataARM64 = (
     "note": "",
     "license": "Proprietary",
     "binarySize": "",
-    "description": "Linear A, Linear B, Futhark - early JavaScript engines of Opera browser."
-  },
-  "perl-je": {
-    "title": "perl-je",
-    "revisionDate": "",
-    "url": "https://metacpan.org/dist/JE",
-    "standard": "ES3",
-    "tech": "tree walker",
-    "language": "Perl",
-    "years": "2007-2014",
-    "note": "",
-    "license": "Artistic-1.0-Perl OR GPL-1.0-or-later",
-    "loc": "11007",
-    "binarySize": "",
-    "description": "Pure-Perl JavaScript engine."
+    "description": "Early JavaScript engines of Opera browser: Linear A, Linear B, Futhark."
   },
   "porffor": {
     "title": "Porffor",
     "revisionDate": "",
     "repo": "https://github.com/CanadaHonk/porffor.git",
     "url": "https://porffor.dev/",
-    "tech": "compiler to WASM, Acorn parser",
+    "tech": "compiler to WASM",
     "language": "JavaScript, TypeScript",
     "years": "2023-",
     "note": "",
@@ -1860,7 +1984,7 @@ const kMetadataARM64 = (
     "repo": "https://github.com/radare/quad-wheel.git",
     "url": "https://code.google.com/archive/p/quad-wheel/",
     "standard": "ES3",
-    "tech": "stack VM, YACC",
+    "tech": "stack VM",
     "language": "C",
     "years": "2010",
     "note": "",
@@ -1883,6 +2007,19 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript interpreter for JVM written in Kotlin."
   },
+  "rpython-langjs": {
+    "title": "rpython-langjs",
+    "revisionDate": "",
+    "repo": "https://github.com/progval/rpython-langjs.git",
+    "url": "https://github.com/progval/rpython-langjs",
+    "tech": "stack VM",
+    "language": "Python",
+    "years": "2009-2013",
+    "note": "",
+    "loc": "7189",
+    "binarySize": "",
+    "description": "JavaScript interpreter for RPython (PyPy)."
+  },
   "sablejs": {
     "title": "sablejs",
     "revisionDate": "",
@@ -1895,6 +2032,18 @@ const kMetadataARM64 = (
     "license": "Custom",
     "binarySize": "",
     "description": "Sandboxed ES5 interpreter written in JavaScript."
+  },
+  "scriptease": {
+    "title": "ScriptEase",
+    "revisionDate": "",
+    "url": "https://brent-noorda.com/nombas/history/HistoryOfNombas.html",
+    "standard": "ES3",
+    "language": "C",
+    "years": "199x-2004",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "Scripting engine of Nombas ScriptEase, most famous for being used by James Webb Space Telescope."
   },
   "see": {
     "title": "SEE",
@@ -1932,7 +2081,6 @@ const kMetadataARM64 = (
     "repo": "https://github.com/Siubaak/sval.git",
     "url": "https://github.com/Siubaak/sval",
     "standard": "ES2017 (partial, no standard library)",
-    "tech": "Acorn parser",
     "language": "TypeScript",
     "years": "2018-",
     "note": "",
@@ -1940,6 +2088,20 @@ const kMetadataARM64 = (
     "loc": "2124",
     "binarySize": "",
     "description": "Metacircular JavaScript interpreter."
+  },
+  "tachyon": {
+    "title": "Tachyon",
+    "revisionDate": "",
+    "repo": "https://github.com/Tachyon-Team/Tachyon.git",
+    "url": "https://github.com/Tachyon-Team/Tachyon",
+    "standard": "ES5",
+    "language": "JavaScript",
+    "years": "2010-2012",
+    "note": "",
+    "license": "BSD-3-Clause",
+    "loc": "58103",
+    "binarySize": "",
+    "description": "Metacircular VM for JavaScript (ES5) written in JavaScript."
   },
   "tamarin": {
     "title": "Tamarin",
@@ -1956,6 +2118,21 @@ const kMetadataARM64 = (
     "loc": "192611",
     "binarySize": "",
     "description": "JavaScript engine of Adobe Flash Player 9+."
+  },
+  "tessel-colony": {
+    "title": "Tessel Colony",
+    "revisionDate": "",
+    "repo": "https://github.com/tessel/colony-compiler.git",
+    "url": "https://github.com/tessel/colony-compiler",
+    "standard": "ES5 (partial)",
+    "tech": "compiler to Lua (fork of Lua 5.1)",
+    "language": "JavaScript",
+    "years": "2013-2015",
+    "note": "",
+    "license": "Apache-2.0 OR MIT",
+    "loc": "1763",
+    "binarySize": "",
+    "description": "JavaScript to Lua compiler."
   },
   "tiny-js": {
     "title": "tiny-js",
@@ -2000,6 +2177,20 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "Multithreaded JavaScript engine for .NET."
   },
+  "topchetoeu-j2s": {
+    "title": "topchetoeu-j2s",
+    "revisionDate": "",
+    "repo": "https://git.topcheto.eu/topchetoeu/j2s",
+    "url": "https://git.topcheto.eu/topchetoeu/j2s",
+    "standard": "ES5",
+    "language": "Java",
+    "years": "2023-",
+    "note": "",
+    "license": "MIT",
+    "loc": "15692",
+    "binarySize": "",
+    "description": "ES5 interpreter written in Java."
+  },
   "toyjs": {
     "title": "Toyjs",
     "revisionDate": "",
@@ -2012,6 +2203,21 @@ const kMetadataARM64 = (
     "loc": "18576",
     "binarySize": "",
     "description": "Toy JavaScript interpreter written in Rust."
+  },
+  "ts2c": {
+    "title": "ts2c",
+    "revisionDate": "",
+    "repo": "https://github.com/andrei-markeev/ts2c.git",
+    "url": "https://github.com/andrei-markeev/ts2c",
+    "standard": "ES3 (partial)",
+    "tech": "compiler to C",
+    "language": "TypeScript",
+    "years": "2016-",
+    "note": "",
+    "license": "ISC",
+    "loc": "9535",
+    "binarySize": "",
+    "description": "JavaScript/TypeScript to C transpiler."
   },
   "twostroke": {
     "title": "Twostroke",
@@ -2027,13 +2233,26 @@ const kMetadataARM64 = (
     "binarySize": "",
     "description": "JavaScript interpreter written in Ruby."
   },
+  "ucode": {
+    "title": "ucode",
+    "revisionDate": "",
+    "repo": "https://github.com/jow-/ucode.git",
+    "url": "https://ucode.mein.io/",
+    "language": "C",
+    "years": "2020-",
+    "note": "",
+    "license": "ISC",
+    "loc": "39664",
+    "binarySize": "",
+    "description": "Interpreter for a JavaScript-like language."
+  },
   "voyager": {
     "title": "Voyager",
     "revisionDate": "",
     "repo": "https://github.com/zapek/Voyager.git",
     "url": "https://zapek.com/software/voyager/",
     "standard": "ES3",
-    "tech": "stack VM, YACC",
+    "tech": "stack VM",
     "language": "C",
     "years": "199x-2002",
     "note": "",
@@ -2041,6 +2260,21 @@ const kMetadataARM64 = (
     "loc": "11922",
     "binarySize": "",
     "description": "Web browser for Amiga with own JavaScript implementation."
+  },
+  "wasmnizer-ts": {
+    "title": "Wasmnizer-ts",
+    "revisionDate": "",
+    "repo": "https://github.com/web-devkits/Wasmnizer-ts.git",
+    "url": "https://github.com/web-devkits/Wasmnizer-ts",
+    "tech": "compiler to WASM",
+    "language": "TypeScript",
+    "years": "2023-2024",
+    "org": "Intel",
+    "note": "",
+    "license": "Apache-2.0 WITH LLVM-exception",
+    "loc": "54506",
+    "binarySize": "",
+    "description": "Compiler for a TypeScript subset targetting WebAssembly"
   },
   "yaji": {
     "title": "YAJI",
@@ -2782,7 +3016,7 @@ const kMetadataX64 = (
     "years": "2024-",
     "note": "Can't parse octane test harness yet.",
     "license": "BSD-3-Clause",
-    "loc": "12526",
+    "loc": "12642",
     "binarySize": 3174496,
     "description": "JavaScript engine written in Nim."
   },
@@ -2816,12 +3050,54 @@ const kMetadataX64 = (
     "years": "2018-",
     "note": "",
     "license": "MIT, Unlicense",
-    "loc": "144032",
+    "loc": "141335",
     "binarySize": 26731808,
     "description": "Embeddable Javascript engine written in Rust."
   },
+  "cesanta-elk": {
+    "title": "cesanta-elk",
+    "revisionDate": "",
+    "repo": "https://github.com/cesanta/elk.git",
+    "url": "https://github.com/cesanta/elk",
+    "tech": "interprets from source",
+    "language": "C",
+    "years": "2019-",
+    "note": "",
+    "license": "AGPL",
+    "loc": "1247",
+    "binarySize": "",
+    "description": "Toy interpreter for microcontrollers that can hardly run any JavaScript."
+  },
+  "cesanta-mjs": {
+    "title": "cesanta-mjs",
+    "revisionDate": "",
+    "repo": "https://github.com/cesanta/mjs.git",
+    "url": "https://github.com/cesanta/mjs",
+    "tech": "stack VM",
+    "language": "C",
+    "years": "2016-",
+    "note": "Severely limited JS subset, can't run test suite.",
+    "license": "GPL-2.0-only",
+    "loc": "10449",
+    "binarySize": "",
+    "description": "JavaScript interpreter for microcontrollers."
+  },
+  "cesanta-v7": {
+    "title": "cesanta-v7",
+    "revisionDate": "",
+    "repo": "https://github.com/cesanta/v7.git",
+    "url": "https://github.com/cesanta/v7",
+    "standard": "ES5 (subset)",
+    "tech": "stack VM",
+    "language": "C",
+    "years": "2013-2017",
+    "note": "",
+    "license": "GPL-2.0-only",
+    "loc": "24811",
+    "binarySize": "",
+    "description": "JavaScript engine for microcontrollers."
+  },
   "chakracore-jitless": {
-    "title": "Boa",
     "version": "36becec4",
     "revision": "36becec43348f259e8bee08cf2fcd171bfe56f42",
     "revisionDate": "2025-02-22",
@@ -2838,14 +3114,14 @@ const kMetadataX64 = (
     "revisionDate": "2025-02-22",
     "repo": "https://github.com/chakra-core/ChakraCore.git",
     "url": "https://github.com/chakra-core/ChakraCore",
-    "standard": "ES6 (partial)",
+    "standard": "ES2019",
     "tech": "register VM, 2-tier JIT, deferred compilation",
     "language": "C++",
     "years": "2015-2021",
     "org": "Microsoft",
     "note": "Doesn't support Linux arm64.",
     "license": "MIT",
-    "loc": "769731",
+    "loc": "779986",
     "binarySize": 12707112,
     "description": "JavaScript engine of Microsoft Edge Legacy."
   },
@@ -2860,27 +3136,11 @@ const kMetadataX64 = (
     "tech": "register VM",
     "language": "C",
     "years": "2013-",
-    "note": "Used by NetSurf browser.",
+    "note": "",
     "license": "MIT",
-    "loc": "130383",
+    "loc": "72815",
     "binarySize": 580648,
     "description": "Embeddable Javascript engine with a focus on portability and compact footprint."
-  },
-  "elk": {
-    "title": "Elk",
-    "version": "2.2.0-30-ga9bb856",
-    "revision": "a9bb85619c5cddf49dfa8bdf529770fc9943a7fd",
-    "revisionDate": "2025-06-05",
-    "repo": "https://github.com/cesanta/elk.git",
-    "url": "https://github.com/cesanta/elk",
-    "tech": "interprets from source",
-    "language": "C",
-    "years": "2019-",
-    "note": "",
-    "license": "AGPL",
-    "loc": "1247",
-    "binarySize": 47424,
-    "description": "Toy interpreter for microcontrollers that can hardly run any JavaScript."
   },
   "escargot": {
     "title": "Escargot",
@@ -2890,13 +3150,13 @@ const kMetadataX64 = (
     "repo": "https://github.com/Samsung/escargot.git",
     "url": "https://github.com/Samsung/escargot",
     "standard": "ESnext",
-    "tech": "register VM, hidden classes, YARR",
+    "tech": "register VM, hidden classes",
     "language": "C++",
     "years": "2016-",
     "org": "Samsung",
     "note": "",
     "license": "LGPL-2.1",
-    "loc": "110475",
+    "loc": "116291",
     "binarySize": 5210768,
     "description": "Lightweight JavaScript engine by Samsung for mid-range devices like phones/TVs."
   },
@@ -2912,7 +3172,7 @@ const kMetadataX64 = (
     "years": "2013-",
     "note": "Awfully slow, various bugs/compliance issues.",
     "license": "MPL-2.0",
-    "loc": "28352",
+    "loc": "28365",
     "binarySize": 1105208,
     "description": "JavaScript interpreter for Espruino microcontrollers."
   },
@@ -2946,7 +3206,7 @@ const kMetadataX64 = (
     "org": "Oracle",
     "note": "",
     "license": "UPL-1.0",
-    "loc": "191323",
+    "loc": "191606",
     "binarySize": "",
     "description": "High-performance JavaScript engine for GraalVM."
   },
@@ -2969,7 +3229,6 @@ const kMetadataX64 = (
     "description": "JavaScript engine from Facebook optimized for running mobile React Native apps."
   },
   "iv-lv5-jitless": {
-    "title": "Hermes",
     "version": "1.0.1-270-g64c3a9c7",
     "revision": "64c3a9c7c517063f29d90d449180ea8f6f4d946f",
     "revisionDate": "2015-03-24",
@@ -3015,7 +3274,6 @@ const kMetadataX64 = (
     "description": "Lightweight JavaScript engine for microcontrollers."
   },
   "jsc-jitless": {
-    "title": "JerryScript",
     "version": "eda07530",
     "revision": "eda075300659c3ff4f1164a89a5077be394cdbc6",
     "revisionDate": "2025-08-27",
@@ -3033,7 +3291,7 @@ const kMetadataX64 = (
     "repo": "https://github.com/WebKit/WebKit.git",
     "url": "https://trac.webkit.org/wiki/JavaScriptCore",
     "standard": "ESnext",
-    "tech": "register VM, 3-tier JIT, YARR",
+    "tech": "register VM, 3-tier JIT",
     "language": "C++",
     "years": "2001-",
     "org": "Apple",
@@ -3111,22 +3369,6 @@ const kMetadataX64 = (
     "binarySize": 47970928,
     "description": "JavaScript engine of Ladybird browser and SerenityOS."
   },
-  "mjs": {
-    "title": "mJS",
-    "version": "2.20.0-15-ged70eac",
-    "revision": "ed70eac9e8b334b1bfc251fc860511b2cb4aa418",
-    "revisionDate": "2025-08-06",
-    "repo": "https://github.com/cesanta/mjs.git",
-    "url": "https://github.com/cesanta/mjs",
-    "tech": "stack VM",
-    "language": "C",
-    "years": "2016-",
-    "note": "Severely limited JS subset, can't run test suite.",
-    "license": "GPL-2.0-only",
-    "loc": "33845",
-    "binarySize": 150272,
-    "description": "JavaScript interpreter for microcontrollers."
-  },
   "mujs": {
     "title": "MuJS",
     "version": "1.3.7",
@@ -3142,7 +3384,7 @@ const kMetadataX64 = (
     "license": "ISC",
     "loc": "18490",
     "binarySize": 384304,
-    "description": "Embeddable JavaScript engine from MuPDF."
+    "description": "Embeddable JavaScript engine from MuPDF (Artifex/Ghostscript)."
   },
   "nashorn": {
     "title": "Nashorn",
@@ -3170,7 +3412,7 @@ const kMetadataX64 = (
     "repo": "https://github.com/nginx/njs.git",
     "url": "https://nginx.org/en/docs/njs/index.html",
     "standard": "ES6+ (partial)",
-    "tech": "register VM, PCRE2",
+    "tech": "register VM",
     "language": "C",
     "years": "2015-",
     "org": "Nginx",
@@ -3212,7 +3454,7 @@ const kMetadataX64 = (
     "license": "MIT",
     "loc": "26462",
     "binarySize": 4890648,
-    "description": "JavaScript engine in pure Go"
+    "description": "JavaScript engine in pure Go."
   },
   "quickjs-ng": {
     "title": "QuickJS-NG",
@@ -3249,7 +3491,6 @@ const kMetadataX64 = (
     "description": "Lightweight embeddable JavaScript engine by Fabrice Bellard and Charlie Gordon."
   },
   "qv4-jitless": {
-    "title": "QuickJS",
     "version": "6.9.1",
     "revision": "a99aafab4cfbbf650493c9a4feb5a1bb4a09d1d2",
     "revisionDate": "2025-05-29",
@@ -3267,7 +3508,7 @@ const kMetadataX64 = (
     "repo": "https://code.qt.io/qt/qt5.git",
     "url": "https://wiki.qt.io/V4",
     "standard": "ES2016",
-    "tech": "register VM, JIT, YARR",
+    "tech": "register VM, JIT",
     "language": "C++",
     "years": "2012-",
     "org": "Qt",
@@ -3275,7 +3516,7 @@ const kMetadataX64 = (
     "license": "LGPL, GPL, Qt",
     "loc": "50221",
     "binarySize": 13132968,
-    "description": "JavaScript engine of Qt's QML framework."
+    "description": "JavaScript engine of Qt's QML framework (QJSEngine)."
   },
   "rhino": {
     "title": "Rhino",
@@ -3295,7 +3536,6 @@ const kMetadataX64 = (
     "description": "JavaScript engine from Mozilla for the Java platform, bundled with JDK 6-7."
   },
   "spidermonkey-jitless": {
-    "title": "Rhino",
     "version": "142.0.2",
     "revision": "f88de4141d59b647756e7917c7a97c3e64b88289",
     "revisionDate": "2025-08-27",
@@ -3313,7 +3553,7 @@ const kMetadataX64 = (
     "repo": "https://github.com/mozilla-firefox/firefox",
     "url": "https://spidermonkey.dev/",
     "standard": "ESnext",
-    "tech": "stack VM, 2-tier JIT, Irregexp",
+    "tech": "stack VM, 2-tier JIT",
     "language": "C++",
     "years": "1996-",
     "org": "Mozilla",
@@ -3339,25 +3579,7 @@ const kMetadataX64 = (
     "binarySize": 3096168,
     "description": "JavaScript engine written in Rust."
   },
-  "v7": {
-    "title": "V7",
-    "version": "3.0-151-gce5212a",
-    "revision": "ce5212ae42dfd93247c56fbc233f65367e9def27",
-    "revisionDate": "2017-08-26",
-    "repo": "https://github.com/cesanta/v7.git",
-    "url": "https://github.com/cesanta/v7",
-    "standard": "ES5 (subset)",
-    "tech": "stack VM",
-    "language": "C",
-    "years": "2013-2017",
-    "note": "",
-    "license": "GPL-2.0-only",
-    "loc": "24811",
-    "binarySize": 420568,
-    "description": "JavaScript engine for microcontrollers."
-  },
   "v8-jitless": {
-    "title": "V7",
     "version": "14.2.3",
     "revision": "345212d2fd3d41e7186580b42b935e1b6b518739",
     "revisionDate": "2025-09-01",
@@ -3375,7 +3597,7 @@ const kMetadataX64 = (
     "repo": "https://chromium.googlesource.com/v8/v8.git",
     "url": "https://v8.dev/",
     "standard": "ESnext",
-    "tech": "register VM, 3-tier JIT, Irregexp",
+    "tech": "register VM, 3-tier JIT",
     "language": "C++",
     "years": "2008-",
     "org": "Google",
@@ -3391,16 +3613,31 @@ const kMetadataX64 = (
     "revision": "2ffd29ab24ea9778c94397965448ef96f6be347c",
     "revisionDate": "2025-08-18",
     "repo": "https://github.com/Moddable-OpenSource/moddable.git",
-    "url": "https://github.com/Moddable-OpenSource/moddable",
+    "url": "https://www.moddable.com/faq#what-is-xs",
     "standard": "ESnext",
     "tech": "stack VM",
     "language": "C",
-    "years": "2016-",
-    "note": "",
-    "license": "LGPL-3.0-or-later, Apache-2.0",
-    "loc": "129071",
+    "years": "2002-",
+    "org": "Kinoma",
+    "note": "Open-sourced in 2015",
+    "license": "Apache-2.0, LGPL-3.0-or-later",
+    "loc": "88837",
     "binarySize": 2083920,
-    "description": "Lightweight engine for microcontrollers."
+    "description": "Lightweight engine for microcontrollers/IoT by Kinoma/Marvell."
+  },
+  "assemblyscript": {
+    "title": "AssemblyScript",
+    "revisionDate": "",
+    "repo": "https://github.com/AssemblyScript/assemblyscript.git",
+    "url": "https://www.assemblyscript.org/",
+    "tech": "compiler to WASM, Binaryen",
+    "language": "TypeScript",
+    "years": "2017-",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "72325",
+    "binarySize": "",
+    "description": "Compiler for a restricted TypeScript dialect to WebAssembly."
   },
   "awebjs": {
     "title": "AWebJS",
@@ -3412,8 +3649,8 @@ const kMetadataX64 = (
     "language": "C",
     "years": "2002-2007",
     "note": "",
-    "license": "AWeb Public License",
-    "loc": "21440",
+    "license": "Custom",
+    "loc": "22912",
     "binarySize": "",
     "description": "JavaScript engine of AWeb, a web browser for Amiga."
   },
@@ -3425,11 +3662,53 @@ const kMetadataX64 = (
     "tech": "register VM, JIT",
     "language": "C++",
     "years": "2010-2013",
+    "org": "Opera",
     "note": "",
     "license": "Proprietary",
-    "loc": "128103",
+    "loc": "124811",
     "binarySize": "",
     "description": "JavaScript engine of Opera 10.50–12.18."
+  },
+  "castl": {
+    "title": "castl",
+    "revisionDate": "",
+    "repo": "https://github.com/PaulBernier/castl.git",
+    "url": "https://github.com/PaulBernier/castl",
+    "standard": "ES5 (partial)",
+    "tech": "compiler to Lua (unmodified Lua 5.2 / LuaJIT)",
+    "language": "Lua, JavaScript",
+    "years": "2014-2017",
+    "note": "",
+    "license": "LGPL-3.0-or-later",
+    "loc": "6366",
+    "binarySize": "",
+    "description": "JavaScript to Lua compiler with runtime library."
+  },
+  "chakra": {
+    "title": "Chakra",
+    "revisionDate": "",
+    "standard": "ES6",
+    "tech": "JIT",
+    "language": "C++",
+    "years": "2009-2013",
+    "org": "Microsoft",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "JavaScript engine of IE9-IE11 (jscript9.dll)."
+  },
+  "chowjs": {
+    "title": "ChowJS",
+    "revisionDate": "",
+    "url": "https://mp2.dk/techblog/chowjs/",
+    "standard": "ES2020",
+    "tech": "SSA IR, PIC, refcounting GC, compiler to native code",
+    "language": "C",
+    "years": "2021",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "QuickJS-based AOT compiler to native code for game developers."
   },
   "cl-javascript": {
     "title": "CL-JavaScript",
@@ -3437,13 +3716,56 @@ const kMetadataX64 = (
     "repo": "https://github.com/akapav/js.git",
     "url": "https://marijnhaverbeke.nl/cl-javascript/",
     "standard": "ES3",
-    "language": "Lisp (Common Lisp)",
+    "language": "Lisp",
     "years": "2009-2012",
     "note": "",
     "license": "MIT",
     "loc": "3390",
     "binarySize": "",
     "description": "JavaScript to Common Lisp compiler."
+  },
+  "continuum": {
+    "title": "Continuum",
+    "revisionDate": "",
+    "url": "https://web.archive.org/web/20150619174908/https://github.com/benvie/continuum",
+    "standard": "ES6 (partial)",
+    "tech": "stack VM",
+    "language": "JavaScript (ES3)",
+    "years": "2012-2013",
+    "note": "",
+    "license": "MIT",
+    "loc": "21741",
+    "binarySize": "",
+    "description": "ES6 interpreter written in ES3."
+  },
+  "cpan-je": {
+    "title": "cpan-je",
+    "revisionDate": "",
+    "url": "https://metacpan.org/dist/JE",
+    "standard": "ES3",
+    "tech": "tree walker",
+    "language": "Perl",
+    "years": "2007-2014",
+    "note": "",
+    "license": "Artistic-1.0-Perl OR GPL-1.0-or-later",
+    "loc": "11007",
+    "binarySize": "",
+    "description": "Pure-Perl JavaScript engine."
+  },
+  "criscript": {
+    "title": "CRIScript",
+    "revisionDate": "",
+    "repo": "https://github.com/hak/criscript.git",
+    "url": "https://web.archive.org/web/20100302002237/http://criscript.com/trac",
+    "standard": "ES3",
+    "tech": "stack VM",
+    "language": "C++",
+    "years": "2008",
+    "note": "",
+    "license": "Custom",
+    "loc": "36897",
+    "binarySize": "",
+    "description": "Lightweight ES3 interpreter for game engines."
   },
   "dmdscript": {
     "title": "DMDScript",
@@ -3454,6 +3776,7 @@ const kMetadataX64 = (
     "tech": "register VM",
     "language": "D",
     "years": "2002-",
+    "org": "Digital Mars",
     "note": "",
     "license": "BSL-1.0",
     "loc": "18013",
@@ -3467,13 +3790,13 @@ const kMetadataX64 = (
     "url": "https://github.com/toshok/echojs",
     "standard": "ES6",
     "tech": "LLVM",
-    "language": "C++, JavaScript",
+    "language": "JavaScript, C++",
     "years": "2012-2023",
     "note": "",
     "license": "MIT",
     "loc": "38883",
     "binarySize": "",
-    "description": "Ahead of time compiler and runtime for ES6"
+    "description": "Ahead of time compiler and runtime for ES6."
   },
   "edbrowse": {
     "title": "Edbrowse",
@@ -3487,6 +3810,34 @@ const kMetadataX64 = (
     "loc": "2329",
     "binarySize": "",
     "description": "Edbrowse CLI browser had own small JavaScript engine until v2.2.10 (2006)."
+  },
+  "ejacs": {
+    "title": "Ejacs",
+    "revisionDate": "",
+    "repo": "https://github.com/emacsattic/ejacs.git",
+    "url": "https://github.com/emacsattic/ejacs",
+    "standard": "ES1",
+    "language": "Lisp",
+    "years": "2008",
+    "note": "",
+    "license": "GPL-2.0-only",
+    "loc": "9895",
+    "binarySize": "",
+    "description": "Toy JavaScript interpreter for Emacs, inspired by Narcissus."
+  },
+  "ejscript": {
+    "title": "Ejscript",
+    "revisionDate": "",
+    "repo": "https://github.com/embedthis/ejscript.git",
+    "url": "https://www.embedthis.com/ejscript/doc/",
+    "standard": "ES3, ES6 (partial)",
+    "language": "C",
+    "years": "2003-2014",
+    "note": "",
+    "license": "GPL-2.0-only",
+    "loc": "106690",
+    "binarySize": "",
+    "description": "Embeddable JavaScript engine."
   },
   "engine262": {
     "title": "engine262",
@@ -3503,13 +3854,26 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "An implementation of ECMA-262 in JavaScript aiming for 100% spec compliance, fast prototyping, validating new spec versions and test262."
   },
+  "epimetheus": {
+    "title": "Epimetheus",
+    "revisionDate": "",
+    "url": "http://www.mozilla.org/js/language/Epimetheus.html",
+    "standard": "ES4",
+    "language": "C++",
+    "years": "2000-2006",
+    "org": "Mozilla",
+    "note": "",
+    "license": "MPL-1.1 OR GPL-2.0-or-later OR LGPL-2.1-or-later",
+    "loc": "41895",
+    "binarySize": "",
+    "description": "Netscape's experimental \"JavaScript 2.0\" implementation towards ES4 proposal."
+  },
   "eval5": {
     "title": "eval5",
     "revisionDate": "",
     "repo": "https://github.com/bplok20010/eval5.git",
     "url": "https://github.com/bplok20010/eval5",
     "standard": "ES5",
-    "tech": "Acorn parser",
     "language": "TypeScript",
     "years": "2019-",
     "note": "",
@@ -3528,7 +3892,7 @@ const kMetadataX64 = (
     "years": "1998-2003",
     "note": "",
     "license": "LGPL-2.0-or-later",
-    "loc": "26004",
+    "loc": "23687",
     "binarySize": "",
     "description": "JavaScript interpreter written in Java."
   },
@@ -3537,7 +3901,7 @@ const kMetadataX64 = (
     "revisionDate": "",
     "repo": "https://github.com/ndreynolds/flathead.git",
     "url": "https://github.com/ndreynolds/flathead",
-    "tech": "tree walker, YACC",
+    "tech": "tree walker",
     "language": "C",
     "years": "2012-2017",
     "note": "",
@@ -3575,6 +3939,21 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "Embeddable WASM-sandboxed PrimJS fork."
   },
+  "higgs": {
+    "title": "Higgs",
+    "revisionDate": "",
+    "repo": "https://github.com/higgsjs/Higgs.git",
+    "url": "https://github.com/higgsjs/Higgs",
+    "standard": "ES5",
+    "tech": "JIT (x64)",
+    "language": "D",
+    "years": "2012-2015",
+    "note": "",
+    "license": "BSD-3-Clause",
+    "loc": "40353",
+    "binarySize": "",
+    "description": "JIT compiler for JavaScript targetting x86-64 platforms."
+  },
   "ironjs": {
     "title": "IronJS",
     "revisionDate": "",
@@ -3589,6 +3968,20 @@ const kMetadataX64 = (
     "loc": "12608",
     "binarySize": "",
     "description": "ES3 implementation for .NET."
+  },
+  "ixlib": {
+    "title": "ixlib",
+    "revisionDate": "",
+    "repo": "https://github.com/inducer/ixlib",
+    "url": "https://ixlib.sourceforge.net/",
+    "tech": "tree walker",
+    "language": "C++",
+    "years": "2005",
+    "note": "",
+    "license": "LGPL-2.0-only",
+    "loc": "3841",
+    "binarySize": "",
+    "description": "C++ utility library with a rudimentary JavaScript interpreter."
   },
   "janet": {
     "title": "JANET",
@@ -3607,7 +4000,7 @@ const kMetadataX64 = (
     "revisionDate": "",
     "repo": "https://github.com/drogus/jawsm.git",
     "url": "https://github.com/drogus/jawsm",
-    "tech": "WASM target",
+    "tech": "compiler to WASM",
     "language": "Rust",
     "years": "2024-",
     "note": "",
@@ -3651,7 +4044,6 @@ const kMetadataX64 = (
     "repo": "https://github.com/NeilFraser/JS-Interpreter.git",
     "url": "https://github.com/NeilFraser/JS-Interpreter",
     "standard": "ES5",
-    "tech": "modified Acorn parser",
     "language": "JavaScript (ES5)",
     "years": "2013-",
     "note": "",
@@ -3674,6 +4066,46 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "JavaScript interpreter written in Python."
   },
+  "jscomp": {
+    "title": "jscomp",
+    "revisionDate": "",
+    "repo": "https://github.com/tmikov/jscomp.git",
+    "url": "https://github.com/tmikov/jscomp",
+    "standard": "ES5 (with some differences, PCRE2 regex)",
+    "tech": "compiler to C++",
+    "language": "TypeScript",
+    "years": "2015-2016",
+    "note": "",
+    "license": "Apache-2.0",
+    "loc": "19850",
+    "binarySize": "",
+    "description": "AOT compiler targetting native code via C++"
+  },
+  "jscript": {
+    "title": "JScript",
+    "revisionDate": "",
+    "standard": "ES3",
+    "tech": "stack VM",
+    "language": "C++",
+    "years": "1996-2011",
+    "org": "Microsoft",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "JavaScript engine of IE3-IE8 (jscript.dll)."
+  },
+  "juce": {
+    "title": "JUCE",
+    "revisionDate": "",
+    "tech": "tree walker",
+    "language": "C++",
+    "years": "2013-2023",
+    "note": "Dropped in favor of QuickJS in v8.0.",
+    "license": "ISC",
+    "loc": "3109",
+    "binarySize": "",
+    "description": "JUCE music apps framework used to have own rudimentary interpreter for a JavaScript subset."
+  },
   "jurassic": {
     "title": "Jurassic",
     "revisionDate": "",
@@ -3689,25 +4121,12 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "JavaScript engine for .NET."
   },
-  "lang-js": {
-    "title": "lang-js",
-    "revisionDate": "",
-    "repo": "https://github.com/progval/rpython-langjs.git",
-    "url": "https://web.archive.org/web/20171028201832/https://bitbucket.org/pypy/lang-js/",
-    "tech": "stack VM",
-    "language": "Python",
-    "years": "2009-2013",
-    "note": "",
-    "loc": "7189",
-    "binarySize": "",
-    "description": "JavaScript interpreter written in Python for RPython (PyPy)"
-  },
   "links": {
     "title": "Links",
     "revisionDate": "",
     "url": "http://links.twibright.com/",
     "standard": "ES3 (partial, no exceptions)",
-    "tech": "tree walker, YACC",
+    "tech": "tree walker",
     "language": "C",
     "years": "2002-2007",
     "note": "",
@@ -3757,7 +4176,7 @@ const kMetadataX64 = (
     "license": "MPL-1.1-or-later OR GPL-2.0-or-later OR LGPL-2.1-or-later",
     "loc": "6308",
     "binarySize": "",
-    "description": "Metacircular JavaScript interpreter. A proof-of-concept by Brendan Eich that was used for prototyping new language features."
+    "description": "Metacircular JavaScript interpreter, was used for prototyping new language features in ES6."
   },
   "ngs": {
     "title": "NGS",
@@ -3789,12 +4208,25 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "JavaScript interpreter for .NET."
   },
+  "opera": {
+    "title": "Opera",
+    "revisionDate": "",
+    "url": "https://help.opera.com/en/operas-archived-history/",
+    "standard": "ES3",
+    "language": "C++",
+    "years": "1997-2009",
+    "org": "Opera",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "Early JavaScript engines of Opera browser: Linear A, Linear B, Futhark."
+  },
   "porffor": {
     "title": "Porffor",
     "revisionDate": "",
     "repo": "https://github.com/CanadaHonk/porffor.git",
     "url": "https://porffor.dev/",
-    "tech": "Acorn parser, WASM target",
+    "tech": "compiler to WASM",
     "language": "JavaScript, TypeScript",
     "years": "2023-",
     "note": "",
@@ -3824,7 +4256,7 @@ const kMetadataX64 = (
     "repo": "https://github.com/radare/quad-wheel.git",
     "url": "https://code.google.com/archive/p/quad-wheel/",
     "standard": "ES3",
-    "tech": "stack VM, YACC",
+    "tech": "stack VM",
     "language": "C",
     "years": "2010",
     "note": "",
@@ -3847,6 +4279,44 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "JavaScript interpreter for JVM written in Kotlin."
   },
+  "rpython-langjs": {
+    "title": "rpython-langjs",
+    "revisionDate": "",
+    "repo": "https://github.com/progval/rpython-langjs.git",
+    "url": "https://github.com/progval/rpython-langjs",
+    "tech": "stack VM",
+    "language": "Python",
+    "years": "2009-2013",
+    "note": "",
+    "loc": "7189",
+    "binarySize": "",
+    "description": "JavaScript interpreter for RPython (PyPy)."
+  },
+  "sablejs": {
+    "title": "sablejs",
+    "revisionDate": "",
+    "repo": "https://github.com/sablejs/sablejs.git",
+    "url": "https://github.com/sablejs/sablejs",
+    "standard": "ES5",
+    "language": "JavaScript",
+    "years": "2020-2022",
+    "note": "No original source available - only minified blob.",
+    "license": "Custom",
+    "binarySize": "",
+    "description": "Sandboxed ES5 interpreter written in JavaScript."
+  },
+  "scriptease": {
+    "title": "ScriptEase",
+    "revisionDate": "",
+    "url": "https://brent-noorda.com/nombas/history/HistoryOfNombas.html",
+    "standard": "ES3",
+    "language": "C",
+    "years": "199x-2004",
+    "note": "",
+    "license": "Proprietary",
+    "binarySize": "",
+    "description": "Scripting engine of Nombas ScriptEase, most famous for being used by James Webb Space Telescope."
+  },
   "see": {
     "title": "SEE",
     "revisionDate": "",
@@ -3867,7 +4337,6 @@ const kMetadataX64 = (
     "repo": "https://github.com/Siubaak/sval.git",
     "url": "https://github.com/Siubaak/sval",
     "standard": "ES2017 (partial, no standard library)",
-    "tech": "Acorn parser",
     "language": "TypeScript",
     "years": "2018-",
     "note": "",
@@ -3875,6 +4344,20 @@ const kMetadataX64 = (
     "loc": "2124",
     "binarySize": "",
     "description": "Metacircular JavaScript interpreter."
+  },
+  "tachyon": {
+    "title": "Tachyon",
+    "revisionDate": "",
+    "repo": "https://github.com/Tachyon-Team/Tachyon.git",
+    "url": "https://github.com/Tachyon-Team/Tachyon",
+    "standard": "ES5",
+    "language": "JavaScript",
+    "years": "2010-2012",
+    "note": "",
+    "license": "BSD-3-Clause",
+    "loc": "58103",
+    "binarySize": "",
+    "description": "Metacircular VM for JavaScript (ES5) written in JavaScript."
   },
   "tamarin": {
     "title": "Tamarin",
@@ -3892,6 +4375,21 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "JavaScript engine of Adobe Flash Player 9+."
   },
+  "tessel-colony": {
+    "title": "Tessel Colony",
+    "revisionDate": "",
+    "repo": "https://github.com/tessel/colony-compiler.git",
+    "url": "https://github.com/tessel/colony-compiler",
+    "standard": "ES5 (partial)",
+    "tech": "compiler to Lua (fork of Lua 5.1)",
+    "language": "JavaScript",
+    "years": "2013-2015",
+    "note": "",
+    "license": "Apache-2.0 OR MIT",
+    "loc": "1763",
+    "binarySize": "",
+    "description": "JavaScript to Lua compiler."
+  },
   "tiny-js": {
     "title": "tiny-js",
     "revisionDate": "",
@@ -3905,6 +4403,20 @@ const kMetadataX64 = (
     "loc": "2656",
     "binarySize": "",
     "description": "Primitive JavaScript interpreter."
+  },
+  "tjs2": {
+    "title": "tjs2",
+    "revisionDate": "",
+    "repo": "https://github.com/krkrz/krkrz",
+    "url": "http://krkrz.github.io/",
+    "tech": "register VM",
+    "language": "C++",
+    "years": "2000-2017",
+    "note": "",
+    "license": "Custom",
+    "loc": "36451",
+    "binarySize": "",
+    "description": "JavaScript-like scripting engine of KRKR2/KRKRZ game engines."
   },
   "topaz": {
     "title": "Topaz",
@@ -3921,6 +4433,20 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "Multithreaded JavaScript engine for .NET."
   },
+  "topchetoeu-j2s": {
+    "title": "topchetoeu-j2s",
+    "revisionDate": "",
+    "repo": "https://git.topcheto.eu/topchetoeu/j2s",
+    "url": "https://git.topcheto.eu/topchetoeu/j2s",
+    "standard": "ES5",
+    "language": "Java",
+    "years": "2023-",
+    "note": "",
+    "license": "MIT",
+    "loc": "15692",
+    "binarySize": "",
+    "description": "ES5 interpreter written in Java."
+  },
   "toyjs": {
     "title": "Toyjs",
     "revisionDate": "",
@@ -3933,6 +4459,21 @@ const kMetadataX64 = (
     "loc": "18576",
     "binarySize": "",
     "description": "Toy JavaScript interpreter written in Rust."
+  },
+  "ts2c": {
+    "title": "ts2c",
+    "revisionDate": "",
+    "repo": "https://github.com/andrei-markeev/ts2c.git",
+    "url": "https://github.com/andrei-markeev/ts2c",
+    "standard": "ES3 (partial)",
+    "tech": "compiler to C",
+    "language": "TypeScript",
+    "years": "2016-",
+    "note": "",
+    "license": "ISC",
+    "loc": "9535",
+    "binarySize": "",
+    "description": "JavaScript/TypeScript to C transpiler."
   },
   "twostroke": {
     "title": "Twostroke",
@@ -3948,13 +4489,26 @@ const kMetadataX64 = (
     "binarySize": "",
     "description": "JavaScript interpreter written in Ruby."
   },
+  "ucode": {
+    "title": "ucode",
+    "revisionDate": "",
+    "repo": "https://github.com/jow-/ucode.git",
+    "url": "https://ucode.mein.io/",
+    "language": "C",
+    "years": "2020-",
+    "note": "",
+    "license": "ISC",
+    "loc": "39664",
+    "binarySize": "",
+    "description": "Interpreter for a JavaScript-like language."
+  },
   "voyager": {
     "title": "Voyager",
     "revisionDate": "",
     "repo": "https://github.com/zapek/Voyager.git",
     "url": "https://zapek.com/software/voyager/",
     "standard": "ES3",
-    "tech": "stack VM, YACC",
+    "tech": "stack VM",
     "language": "C",
     "years": "199x-2002",
     "note": "",
@@ -3962,6 +4516,21 @@ const kMetadataX64 = (
     "loc": "11922",
     "binarySize": "",
     "description": "Web browser for Amiga with own JavaScript implementation."
+  },
+  "wasmnizer-ts": {
+    "title": "Wasmnizer-ts",
+    "revisionDate": "",
+    "repo": "https://github.com/web-devkits/Wasmnizer-ts.git",
+    "url": "https://github.com/web-devkits/Wasmnizer-ts",
+    "tech": "compiler to WASM",
+    "language": "TypeScript",
+    "years": "2023-2024",
+    "org": "Intel",
+    "note": "",
+    "license": "Apache-2.0 WITH LLVM-exception",
+    "loc": "54506",
+    "binarySize": "",
+    "description": "Compiler for a TypeScript subset targetting WebAssembly"
   },
   "yaji": {
     "title": "YAJI",
