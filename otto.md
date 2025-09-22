@@ -1,6 +1,6 @@
 # otto
 
-* Summary:    JavaScript engine in pure Go
+* Summary:    JavaScript engine in pure Go.
 * Repository: https://github.com/robertkrimen/otto.git
 * LOC:        26462 (`cloc --fullpath --not_match_f="(?i)(test)" .`)
 * Language:   Go
@@ -10,4 +10,4 @@
 * Tech:       tree walker
 * Years:      2012-
 
-Obsoleted by newer, faster and full-featured [goja](goja.md) engine.
+Mostly obsoleted by newer, faster and full-featured [goja](goja.md) engine.

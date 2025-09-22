@@ -10,3 +10,7 @@
 * Standard:   ES6+ (partial)
 * Tech:       tree walker, compiler to unoptimized JVM bytecode
 * Years:      1997-
+
+## Users
+
+* [RingoJS](https://github.com/ringo/ringojs) runtime

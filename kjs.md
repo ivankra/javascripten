@@ -8,13 +8,14 @@
 * License:    LGPL-2.1-only
   * Most source files that matter are LGPL-2.0-or-later
 * Org:        KDE
+* Regex:      PCRE2
 * Standard:   ES5
 * Tech:       tree walker, register VM (2008)
 * Years:      1998-2023
 
 ## History
 
- * 2001: KHTML/KJS forked by Apple as WebCore/[JavaScriptCore](jsc.md) for their WebKit browser engine.
- * 2008: implemented a bytecode interpreter "FrostByte" (https://blogs.kde.org/2008/05/22/news-land-konquerors/)
- * Most dead by KDE 5 (2014)
- * Dropped from KDE 6 (2024)
+* 2001: KHTML/KJS forked by Apple as WebCore/[JavaScriptCore](jsc.md) for their WebKit browser engine.
+* 2008: implemented a bytecode interpreter "FrostByte" (https://blogs.kde.org/2008/05/22/news-land-konquerors/)
+* Most dead by KDE 5 (2014)
+* Dropped from KDE 6 (2024)

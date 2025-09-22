@@ -5,6 +5,6 @@
 * LOC:        1745 (`cloc src`)
 * Language:   TypeScript
 * License:    MIT
+* Parser:     Acorn
 * Standard:   ES5
-* Tech:       Acorn parser
 * Years:      2019-

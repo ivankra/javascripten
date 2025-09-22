@@ -1,6 +1,6 @@
 # Narcissus
 
-* Summary:    Metacircular JavaScript interpreter. A proof-of-concept by Brendan Eich that was used for prototyping new language features.
+* Summary:    Metacircular JavaScript interpreter, was used for prototyping new language features in ES6.
 * Repository: https://github.com/mozilla/narcissus.git
 * LOC:        6308 (`cloc lib`)
 * Language:   JavaScript
@@ -9,4 +9,11 @@
 * Standard:   ES5
 * Years:      2007-2012
 
-> Narcissus is a meta-circular JavaScript interpreter with a very direct representation of values: primitives are self-representing, objects are represented as objects (with their properties accessible via usual property access), and functions are represented as functions. The interpreter is designed this way to allow existing JavaScript functions and objects (such as the standard libraries) to interface directly with Narcissus code without following any special protocol or requiring wrapping and unwrapping.
+> Narcissus is a meta-circular JavaScript interpreter with a very
+> direct representation of values: primitives are self-representing,
+> objects are represented as objects (with their properties accessible via
+> usual property access), and functions are represented as functions. The
+> interpreter is designed this way to allow existing JavaScript functions
+> and objects (such as the standard libraries) to interface directly
+> with Narcissus code without following any special protocol or requiring
+> wrapping and unwrapping.

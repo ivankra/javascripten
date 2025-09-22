@@ -6,5 +6,6 @@
 * LOC:        27848 (`cloc compiler`)
 * Language:   JavaScript, TypeScript
 * License:    MIT
-* Tech:       compiler to WASM, Acorn parser
+* Parser:     Acorn
+* Tech:       compiler to WASM
 * Years:      2023-

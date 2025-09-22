@@ -3,10 +3,9 @@
 * Summary:    ES5 interpreter written in Java.
 * Repository: https://git.topcheto.eu/topchetoeu/j2s
 * Github:     https://github.com/TopchetoEU/jscript.git
-* LOC:        (`cloc `)
+  * https://git.topcheto.eu/topchetoeu/j2s (misconfigured)
+* LOC:        15692 (`cloc --not_match_d="(test)" */src`)
 * Language:   Java
 * License:    MIT
-* Note:       
 * Standard:   ES5
-* Tech:       
-* Years:      
+* Years:      2023-

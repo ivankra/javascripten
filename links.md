@@ -6,8 +6,9 @@
 * LOC:        13780 (`cloc jsint.c ipret.c builtin.c parser/javascr.l parser/javascript.y`)
 * Language:   C
 * License:    GPL-2.0-or-later
+* Parser:     YACC
 * Standard:   ES3 (partial, no exceptions)
-* Tech:       tree walker, YACC
+* Tech:       tree walker
 * Years:      2002-2007
 
     > === RELEASE 2.1pre29 ===

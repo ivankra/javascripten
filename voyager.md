@@ -6,6 +6,7 @@
 * LOC:        11922 (`cloc js*`)
 * Language:   C
 * License:    GPL-3.0
+* Parser:     YACC
 * Standard:   ES3
-* Tech:       stack VM, YACC
+* Tech:       stack VM
 * Years:      199x-2002

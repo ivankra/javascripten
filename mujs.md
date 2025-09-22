@@ -9,4 +9,10 @@
 * Tech:       stack VM
 * Years:      2013-
 
-https://github.com/SuperIlu/jSH: JavaScript engine for MS-DOS
+## Users
+
+* [MuPDF](https://github.com/ArtifexSoftware/mupdf)
+* [SumatraPDF](https://github.com/sumatrapdfreader/sumatrapdf)
+* [mpv](https://github.com/mpv-player/mpv/blob/master/DOCS/man/javascript.rst) - for scripting with JS, as alternative to Lua
+* [Elinks](https://github.com/rkd77/elinks) - can be configured to use MuJS, QuickJS, SpiderMonkey engines
+* [jSH](https://github.com/SuperIlu/jSH) - JavaScript engine for MS-DOS

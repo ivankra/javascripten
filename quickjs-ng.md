@@ -11,3 +11,7 @@
 * Years:      2023-
 
 Forked [QuickJS](quickjs.md) in 2023 as it wasn't being maintained at that time. Code base diverged since then.
+
+## Users
+
+* [txiki.js](https://github.com/saghul/txiki.js): QuickJS-ng/libuv-based JavaScript runtime

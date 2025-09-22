@@ -6,6 +6,7 @@
 * LOC:        36897 (`cloc --not_match_d="(?i)(boost)" src inc`)
 * Language:   C++
 * License:    Custom (MIT-like + non-endorsement)
+* Parser:     YACC
 * Standard:   ES3
-* Tech:       stack VM, YACC
+* Tech:       stack VM
 * Years:      2008

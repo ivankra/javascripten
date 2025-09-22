@@ -5,5 +5,6 @@
 * LOC:        7075 (`cloc src`)
 * Language:   C
 * License:    MIT
-* Tech:       tree walker, YACC
+* Parser:     YACC
+* Tech:       tree walker
 * Years:      2012-2017

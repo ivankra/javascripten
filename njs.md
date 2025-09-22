@@ -7,6 +7,7 @@
 * Language:   C
 * License:    BSD-2-Clause
 * Org:        Nginx
+* Regex:      PCRE2
 * Standard:   ES6+ (partial)
-* Tech:       register VM, PCRE2
+* Tech:       register VM
 * Years:      2015-

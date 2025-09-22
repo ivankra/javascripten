@@ -6,5 +6,5 @@
 * Language:   TypeScript
 * License:    MIT
 * Standard:   ES2017 (partial, no standard library)
-* Tech:       Acorn parser
+* Parser:     Acorn
 * Years:      2018-

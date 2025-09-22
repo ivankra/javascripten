@@ -1,6 +1,6 @@
 # Nerd
 
-* Summary:    JavaScript compiler targetting native binaries
+* Summary:    JavaScript compiler targetting native binaries / NectarJS
 * URL:        
 * Repository: https://github.com/NerdLang/nerd.git
 * LOC:        (`cloc `)
@@ -9,4 +9,4 @@
 * Note:       
 * Standard:   ES3 (partial)
 * Tech:       
-* Years:      
+* Years:      2017

@@ -7,7 +7,6 @@ earley-boyer.js
 gbemu.js
 mandreel-plus.js
 mandreel.js
-metadata-*.json
 navier-stokes.js
 octane-git/
 out*
@@ -15,7 +14,6 @@ pdfjs.js
 raytrace.js
 regexp.js
 richards.js
-runs-*.js
 splay.js
 typescript.js
 v9.js

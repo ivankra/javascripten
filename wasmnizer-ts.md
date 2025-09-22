@@ -1,12 +1,10 @@
 # Wasmnizer-ts
 
 * Summary:    Compiler for a TypeScript subset targetting WebAssembly
-* URL:        
 * Repository: https://github.com/web-devkits/Wasmnizer-ts.git
-* LOC:        (`cloc `)
+* LOC:        54506 (`cloc --not_match_d=test src runtime-library`)
 * Language:   TypeScript
 * License:    Apache-2.0 WITH LLVM-exception
-* Note:       
-* Standard:   no (TypeScript subset)
-* Tech:       WASM target
-* Years:      
+* Org:        Intel
+* Tech:       compiler to WASM
+* Years:      2023-2024

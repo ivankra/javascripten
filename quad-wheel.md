@@ -6,6 +6,7 @@
 * LOC:        7917 (`cloc *.{c,h}`)
 * Language:   C
 * License:    MIT
+* Parser:     YACC
 * Standard:   ES3
-* Tech:       stack VM, YACC
+* Tech:       stack VM
 * Years:      2010
