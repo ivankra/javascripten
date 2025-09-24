@@ -1,4 +1,4 @@
-# cesanta-v7
+# cesanta/v7
 
 * Summary:    JavaScript engine for microcontrollers.
 * Repository: https://github.com/cesanta/v7.git

@@ -6,7 +6,7 @@
 * Language:   Go
 * License:    MIT
 * Standard:   ES5 (partial)
-   * non-compliant regex engine from Go
+* Regex:      RE2
 * Tech:       tree walker
 * Years:      2012-
 

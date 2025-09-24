@@ -1,4 +1,4 @@
-# cpan-je
+# CPAN/JE
 
 * Summary:    Pure-Perl JavaScript engine.
 * URL:        https://metacpan.org/dist/JE

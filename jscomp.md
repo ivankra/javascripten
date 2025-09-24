@@ -7,6 +7,6 @@
 * License:    Apache-2.0
 * Parser:     Acorn
 * Regex:      PCRE2
-* Standard:   ES5 (with some differences, PCRE2 regex)
+* Standard:   ES5 (partial)
 * Tech:       compiler to C++
 * Years:      2015-2016

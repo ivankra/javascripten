@@ -7,10 +7,10 @@
 * License:    LGPL-3.0-or-later
 * Parser:     Esprima / Acorn
 * Regex:      PCRE2
-* Standard:   ES5 (partial)
-  * ES6 through babel, built-in flag to call it
-  * Supports eval() through Lua version of Castl/Esprima
-* Tech:       compiler to Lua (unmodified Lua 5.2 / LuaJIT)
+* Standard:   ES5 (partial, some ES6 through babel)
+* Tech:       compiler to Lua (targets unmodified Lua 5.2 / LuaJIT)
 * Years:      2014-2017
+
+Supports eval() through Lua-transpiled Castl/Esprima.
 
 See also [Tessel Colony](tessel-colony.md).

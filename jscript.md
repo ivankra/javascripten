@@ -10,6 +10,7 @@
 
 ## History
 
+* 1996: Released with Internet Explorer 3.0 in May 1996.
 * 2009: Succeeded by [Chakra](chakra.md) (JScript9) engine in IE9-11.
 * 2025: Retired from Windows 11 24H2, replaced with JScript9Legacy (Chakra).
 

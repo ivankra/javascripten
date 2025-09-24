@@ -1,4 +1,4 @@
-# cesanta-mjs
+# cesanta/mjs
 
 * Summary:    JavaScript interpreter for microcontrollers.
 * Repository: https://github.com/cesanta/mjs.git

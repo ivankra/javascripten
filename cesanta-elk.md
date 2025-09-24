@@ -1,4 +1,4 @@
-# cesanta-elk
+# cesanta/elk
 
 * Summary:    Toy interpreter for microcontrollers that can hardly run any JavaScript.
 * Repository: https://github.com/cesanta/elk.git

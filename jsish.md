@@ -1,4 +1,4 @@
-# Jsish
+# jsish
 
 * Summary:    Small embeddable JavaScript-ish interpreter.
 * Repository: https://github.com/pcmacdon/jsish.git

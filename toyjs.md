@@ -1,4 +1,4 @@
-# Toyjs
+# DelSkayn/toyjs
 
 * Summary:    Toy JavaScript interpreter written in Rust.
 * Repository: https://github.com/DelSkayn/toyjs.git

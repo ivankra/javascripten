@@ -1,4 +1,4 @@
-# Twostroke
+# twostroke
 
 * Summary:    JavaScript interpreter written in Ruby.
 * URL:        https://news.ycombinator.com/item?id=3460224

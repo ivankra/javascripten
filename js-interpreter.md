@@ -5,7 +5,6 @@
 * LOC:        4995 (`cloc interpreter.js acorn.js`)
 * Language:   JavaScript (ES5)
 * License:    Apache-2.0
-* Parser:     Acorn (vendored and modified)
-  * LOC: 1365 (`cloc acorn.js`)
+* Parser:     Acorn (vendored and modified, [acorn.js](https://github.com/NeilFraser/JS-Interpreter/blob/master/acorn.js), LOC: 1365)
 * Standard:   ES5
 * Years:      2013-

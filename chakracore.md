@@ -8,7 +8,6 @@
 * Note:       Doesn't support Linux arm64.
 * Org:        Microsoft
 * Standard:   ES2019
-  * ES2020: BigInt disabled by default, optional chaining not implemented
 * Tech:       register VM, 2-tier JIT, deferred compilation
 * Years:      2015-2021
 
@@ -20,3 +19,7 @@ Sometimes referred to as the new Chakra engine, Chakra Edge or chakra.dll.
 Open-sourced in 2016 under the name ChakraCore.
 
 Abandoned by Microsoft in 2021.
+
+## Standard
+
+* ES2020: BigInt implemented but disabled by default. No optional chaining.

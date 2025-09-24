@@ -7,10 +7,7 @@
 * License:    MIT
 * Standard:   ES6 (partial)
 * Tech:       stack VM
-* Parser:     recursive descent
-  * Fork of [otto](otto.md)'s parser from 2016.
-  * Code: https://github.com/dop251/goja/tree/master/parser
-  * LOC: 4285 (`cloc --fullpath --not_match_f="(?i)(test)" --exclude-lang=Markdown parser`)
+* Parser:     recursive descent (fork of otto's parser, [code](https://github.com/dop251/goja/tree/master/parser/), LOC: 4285)
 * Years:      2016-
 
 ## Users

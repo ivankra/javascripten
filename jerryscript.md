@@ -8,6 +8,6 @@
 * License:    Apache-2.0
 * Note:       Built with --mem-heap=10240 for octane tests.
 * Org:        Samsung
-* Standard:   ES2022 (partial)
+* Standard:   ES2022 (partial, missing ES2018 regex and a few other features)
 * Tech:       stack VM
 * Years:      2014-

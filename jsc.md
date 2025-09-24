@@ -5,10 +5,7 @@
 * Repository: https://github.com/WebKit/WebKit.git
 * LOC:        770374 (`cloc --not_match_d="(?i)(test)" Source/JavaScriptCore`)
 * Language:   C++
-* License:    LGPL-2.0-only
-  * LGPL-2.0-only: default / top-level
-  * LGPL-2.0-or-later: most of original KJS code
-  * BSD-2-Clause / BSD-3-Clause: most of Apple's contributions
+* License:    LGPL-2.0-only (LGLP 2.0+ for most of original KJS files, BSD-2/3 for most of Apple's contributions)
 * Org:        Apple
 * Regex:      YARR
 * Standard:   ESnext

@@ -5,8 +5,7 @@
 * Repository: https://github.com/KDE/kjs.git
 * LOC:        42352 (`cloc src`)
 * Language:   C++
-* License:    LGPL-2.1-only
-  * Most source files that matter are LGPL-2.0-or-later
+* License:    LGPL-2.1-only (most source files are LGPL 2.0+)
 * Org:        KDE
 * Regex:      PCRE2
 * Standard:   ES5

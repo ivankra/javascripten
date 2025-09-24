@@ -7,7 +7,7 @@
 * Language:   Java
 * License:    MPL-2.0
 * Org:        Mozilla
-* Standard:   ES6+ (partial)
+* Standard:   ES6-ES2023 (partial)
 * Tech:       tree walker, compiler to unoptimized JVM bytecode
 * Years:      1997-
 

@@ -33,7 +33,10 @@
 
 ## Users
 
-* [MongoDB](https://github.com/mongodb/mongo/tree/master/src/mongo/scripting)
-* [Acrobat Reader](https://opensource.adobe.com/dc-acrobat-sdk-docs/library/jsapiref/index.html): "AcroJS" is a fork of some ancient SpiderMonkey engine
-* [WinterJS](https://github.com/wasmerio/winterjs): SpiderMonkey/hyper.rs-based runtime
-* [spiderfire](https://github.com/Redfire75369/spiderfire) runtime
+* Firefox, Thunderbird and other Mozilla apps
+* GNOME 3+, Cinnamon desktop environments
+* [MongoDB](https://github.com/mongodb/mongo/tree/master/src/mongo/scripting), CouchDB, Riak
+* [Acrobat Reader](https://opensource.adobe.com/dc-acrobat-sdk-docs/library/jsapiref/index.html) and other Adobe products: stuck on SpiderMonkey 1.8.5 fork ("AcroJS")
+* Runtimes:
+  * [WinterJS](https://github.com/wasmerio/winterjs): SpiderMonkey/hyper.rs-based runtime
+  * [spiderfire](https://github.com/Redfire75369/spiderfire) runtime

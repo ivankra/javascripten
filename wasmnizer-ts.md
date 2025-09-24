@@ -1,4 +1,4 @@
-# Wasmnizer-ts
+# wasmnizer-ts
 
 * Summary:    Compiler for a TypeScript subset targetting WebAssembly
 * Repository: https://github.com/web-devkits/Wasmnizer-ts.git

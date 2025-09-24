@@ -1,7 +1,9 @@
 # MuJS
 
 * Summary:    Embeddable JavaScript engine from MuPDF (Artifex/Ghostscript).
+* URL:        https://mujs.com/
 * Repository: https://codeberg.org/ccxvii/mujs.git
+* GitHub:     https://github.com/ccxvii/mujs.git
 * LOC:        18490 (`cloc *.c *.h`)
 * Language:   C
 * License:    ISC

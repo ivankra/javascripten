@@ -34,7 +34,7 @@
     "description": "Embeddable Javascript engine written in Rust."
   },
   "cesanta-elk": {
-    "title": "cesanta-elk",
+    "title": "cesanta/elk",
     "version": "2.2.0-30-ga9bb856",
     "revision": "a9bb85619c5cddf49dfa8bdf529770fc9943a7fd",
     "revisionDate": "2025-06-05",
@@ -50,7 +50,7 @@
     "description": "Toy interpreter for microcontrollers that can hardly run any JavaScript."
   },
   "cesanta-mjs": {
-    "title": "cesanta-mjs",
+    "title": "cesanta/mjs",
     "version": "2.20.0-15-ged70eac",
     "revision": "ed70eac9e8b334b1bfc251fc860511b2cb4aa418",
     "revisionDate": "2025-08-06",
@@ -66,7 +66,7 @@
     "description": "JavaScript interpreter for microcontrollers."
   },
   "cesanta-v7": {
-    "title": "cesanta-v7",
+    "title": "cesanta/v7",
     "version": "3.0-151-gce5212a",
     "revision": "ce5212ae42dfd93247c56fbc233f65367e9def27",
     "revisionDate": "2017-08-26",
@@ -209,7 +209,7 @@
     "revisionDate": "2025-06-03",
     "repo": "https://github.com/jerryscript-project/jerryscript.git",
     "url": "https://jerryscript.net/",
-    "standard": "ES2022 (partial)",
+    "standard": "ES2022 (partial, missing ES2018 regex and a few other features)",
     "tech": "stack VM",
     "language": "C",
     "years": "2014-",
@@ -249,7 +249,7 @@
     "description": "JavaScript engine of Safari/WebKit."
   },
   "jsish": {
-    "title": "Jsish",
+    "title": "jsish",
     "version": "3.0-252-g42c694c",
     "revision": "42c694c152f7f4fbee34d5e14be37d6e0d09673f",
     "revisionDate": "2022-08-23",
@@ -316,13 +316,26 @@
     "binarySize": 46806288,
     "description": "JavaScript engine of Ladybird browser and SerenityOS."
   },
+  "mocha": {
+    "title": "Mocha",
+    "version": "3d109cbf",
+    "revision": "3d109cbf6d185c3665da2982e92ce198406cca01",
+    "revisionDate": "2024-10-12",
+    "repo": "https://github.com/doodlewind/mocha1995",
+    "url": "https://github.com/doodlewind/mocha1995",
+    "standard": "JS1.1 (≈ES1)",
+    "years": "1995-1996",
+    "note": "",
+    "loc": "13728",
+    "binarySize": 273360
+  },
   "mujs": {
     "title": "MuJS",
     "version": "1.3.7",
     "revision": "05cd646bad083ed45e9e1c9846ea671d461ced30",
     "revisionDate": "2025-06-23",
     "repo": "https://codeberg.org/ccxvii/mujs.git",
-    "url": "https://codeberg.org/ccxvii/mujs",
+    "url": "https://mujs.com/",
     "standard": "ES5",
     "tech": "stack VM",
     "language": "C",
@@ -471,7 +484,7 @@
     "revisionDate": "",
     "repo": "https://github.com/mozilla/rhino",
     "url": "https://rhino.github.io/",
-    "standard": "ES6+ (partial)",
+    "standard": "ES6-ES2023 (partial)",
     "tech": "tree walker, compiler to unoptimized JVM bytecode",
     "language": "Java",
     "years": "1997-",
@@ -621,8 +634,8 @@
     "revisionDate": "",
     "repo": "https://github.com/PaulBernier/castl.git",
     "url": "https://github.com/PaulBernier/castl",
-    "standard": "ES5 (partial)",
-    "tech": "compiler to Lua (unmodified Lua 5.2 / LuaJIT)",
+    "standard": "ES5 (partial, some ES6 through babel)",
+    "tech": "compiler to Lua (targets unmodified Lua 5.2 / LuaJIT)",
     "language": "Lua, JavaScript",
     "years": "2014-2017",
     "note": "",
@@ -634,7 +647,7 @@
   "chakra": {
     "title": "Chakra",
     "revisionDate": "",
-    "standard": "ES6",
+    "standard": "ES6 (partial)",
     "tech": "JIT",
     "language": "C++",
     "years": "2009-2013",
@@ -702,7 +715,7 @@
     "description": "ES6 interpreter written in ES3."
   },
   "cpan-je": {
-    "title": "cpan-je",
+    "title": "CPAN/JE",
     "revisionDate": "",
     "url": "https://metacpan.org/dist/JE",
     "standard": "ES3",
@@ -793,7 +806,7 @@
     "revisionDate": "",
     "repo": "https://github.com/embedthis/ejscript.git",
     "url": "https://www.embedthis.com/ejscript/doc/",
-    "standard": "ES3, ES6 (partial)",
+    "standard": "ES6 (ES3, most of ES4/ES5, some ES6: let/const, modules, classes, Promise)",
     "language": "C",
     "years": "2003-2014",
     "note": "",
@@ -820,6 +833,7 @@
   "epimetheus": {
     "title": "Epimetheus",
     "revisionDate": "",
+    "repo": "https://github.com/jrmuizel/mozilla-cvs-history.git ([js2/](https://github.com/jrmuizel/mozilla-cvs-history/tree/master/js2/))",
     "url": "http://www.mozilla.org/js/language/Epimetheus.html",
     "standard": "ES4",
     "language": "C++",
@@ -1034,7 +1048,7 @@
     "revisionDate": "",
     "repo": "https://github.com/tmikov/jscomp.git",
     "url": "https://github.com/tmikov/jscomp",
-    "standard": "ES5 (with some differences, PCRE2 regex)",
+    "standard": "ES5 (partial)",
     "tech": "compiler to C++",
     "language": "TypeScript",
     "years": "2015-2016",
@@ -1413,7 +1427,7 @@
     "description": "Multithreaded JavaScript engine for .NET."
   },
   "topchetoeu-j2s": {
-    "title": "topchetoeu-j2s",
+    "title": "topchetoeu/j2s",
     "revisionDate": "",
     "repo": "https://git.topcheto.eu/topchetoeu/j2s",
     "url": "https://git.topcheto.eu/topchetoeu/j2s",
@@ -1427,7 +1441,7 @@
     "description": "ES5 interpreter written in Java."
   },
   "toyjs": {
-    "title": "Toyjs",
+    "title": "DelSkayn/toyjs",
     "revisionDate": "",
     "repo": "https://github.com/DelSkayn/toyjs.git",
     "url": "https://github.com/DelSkayn/toyjs",
@@ -1455,7 +1469,7 @@
     "description": "JavaScript/TypeScript to C transpiler."
   },
   "twostroke": {
-    "title": "Twostroke",
+    "title": "twostroke",
     "revisionDate": "",
     "repo": "https://github.com/haileys/twostroke.git",
     "url": "https://news.ycombinator.com/item?id=3460224",
@@ -1497,7 +1511,7 @@
     "description": "Web browser for Amiga with own JavaScript implementation."
   },
   "wasmnizer-ts": {
-    "title": "Wasmnizer-ts",
+    "title": "wasmnizer-ts",
     "revisionDate": "",
     "repo": "https://github.com/web-devkits/Wasmnizer-ts.git",
     "url": "https://github.com/web-devkits/Wasmnizer-ts",

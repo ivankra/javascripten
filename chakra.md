@@ -4,8 +4,7 @@
 * Language:   C++
 * License:    Proprietary
 * Org:        Microsoft
-* Standard:   ES6
-  * https://learn.microsoft.com/en-us/openspecs/ie_standards/ms-es6/2262a105-d776-4a44-9d2a-f11bb039b4c5
+* Standard:   ES6 (partial)
 * Tech:       JIT
 * Years:      2009-2013
 
@@ -19,5 +18,6 @@ classic [JScript](jscript.md) with Chakra-based JScript9Legacy engine.
 
 ## References
 
+* [MS-ES6](https://learn.microsoft.com/en-us/openspecs/ie_standards/ms-es6/2262a105-d776-4a44-9d2a-f11bb039b4c5)): ES6 compliance documentation
 * https://www.usenix.org/legacy/event/webapps10/tech/full_papers/Ratanaworabhan.pdf
 * https://labs.withsecure.com/publications/internet-exploiter-understanding-vulnerabilities-in-internet-explorer
