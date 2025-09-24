@@ -5,7 +5,7 @@
 * Repository: https://github.com/oracle/graaljs.git
 * LOC:        191606 (`cloc --not_match_d="(?i)(test)" graal-js/src`)
 * Language:   Java
-* License:    UPL-1.0
+* License:    UPL-1.0 (Universal Permissive License 1.0)
 * Org:        Oracle
 * Standard:   ESnext
 * Tech:       JVM, 2-tier JIT (HotSpot/Graal), Truffle framework

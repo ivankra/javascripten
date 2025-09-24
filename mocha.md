@@ -2,7 +2,7 @@
 
 The very first JavaScript engine that defined early JavaScript language (JS1.0/1.1), used in Netscape 2.0-3.0.
 
-* Repository: https://github.com/doodlewind/mocha1995.git (ported from [ns302.tar.bz2](https://archive.org/download/netscape-communicator-3-0-2-source/ns302.tar.bz2))
+* Sources:    https://github.com/doodlewind/mocha1995.git (version from Netscape Navigator 3.0.2 ported to modern toolchain)
 * GC:         reference counting
 * LOC:        13728 (ns302 code)
 * Parser:     recursive descent, directly emits bytecode ([mo_parse.c](https://github.com/doodlewind/mocha1995/blob/main/src/mo_parse.c), 953 LOC)

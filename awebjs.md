@@ -2,7 +2,7 @@
 
 * Summary:    JavaScript engine of AWeb, a web browser for Amiga.
 * URL:        https://web.archive.org/web/20090225194604/http://aweb.sunsite.dk/
-* Repository: https://github.com/mirq/aweb.git
+* Sources:    https://github.com/mirq/aweb.git
 * LOC:        22912 (`cloc awebjs aweblibs/awebjs aweblibs/include/*/awebjs*.h`)
 * Language:   C
 * License:    Custom (AWeb Public License)

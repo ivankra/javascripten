@@ -1,5 +1,6 @@
 SHELL := /bin/bash
 DOCKER := $(shell command -v podman 2>/dev/null || echo docker)
+ARCH := $(shell uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/')
 
 ENGINES := $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile))
 ENGINES := $(filter-out sh,$(ENGINES))
@@ -18,14 +19,14 @@ all: base $(ENGINES:%=.iid/%) dist
 
 base: .iid/base .iid/sh
 
-dist: $(patsubst %,../dist/%,$(ENGINES))
+dist: $(patsubst %,../dist-$(ARCH)/%,$(ENGINES))
 
 sh: .iid/sh .PHONY
 	$(DOCKER) run \
 	  --rm \
 	  -v $(PWD)/../bench:/bench \
 	  -v $(PWD)/..:/work \
-	  -w /work/dist \
+	  -w /work/dist-$(ARCH) \
 	  -it \
 	  javascripten-sh
 
@@ -37,7 +38,7 @@ clean-docker:
 	$(DOCKER) image prune
 
 define rules
-$(1): .iid/$(1) ../dist/$(1)
+$(1): .iid/$(1) ../dist-$(ARCH)/$(1)
 
 .iid/$(1): $(2)$(1).Dockerfile $(3)
 	$(DOCKER) build \
@@ -46,19 +47,19 @@ $(1): .iid/$(1) ../dist/$(1)
 	  --iidfile=.iid/$(1) \
 	  `sed -ne 's/^$(1): //p' args.txt 2>/dev/null` \
 	  .
-	@rm -f ../dist/$(1)
+	@rm -f ../dist-$(ARCH)/$(1)
 
-../dist/$(1): .iid/$(1)
-	@mkdir -p ../dist
-	@rm -f "../dist/$(1)"
-	$(DOCKER) run --rm -v $(PWD)/../dist:/dist -it javascripten-$(1) /bin/bash -c ' \
+../dist-$(ARCH)/$(1): .iid/$(1)
+	@mkdir -p ../dist-$(ARCH)
+	@rm -f "../dist-$(ARCH)/$(1)"
+	$(DOCKER) run --rm -v $(PWD)/../dist-$(ARCH):/dist -it javascripten-$(1) /bin/bash -c ' \
 	  if [[ -f "$$$$JS_BINARY" ]]; then \
 	    strip "$$$$JS_BINARY" 2>/dev/null && cp -fv "$$$$JS_BINARY" "/dist/$(1)"; \
 	  elif [[ -f "$$$$JS_BINARY_LINK" ]]; then \
 	    ln -sv "$$$$JS_BINARY_LINK" "/dist/$(1)"; \
 	  fi' || true
 
-$(1)-repl: .iid/$(1) ../dist/$(1)
+$(1)-repl: .iid/$(1) ../dist-$(ARCH)/$(1)
 	$(DOCKER) run \
 	  --rm \
 	  -v $(PWD)/../bench:/bench \
@@ -105,9 +106,9 @@ metadata: .PHONY
 	    (cat version || git describe --tags HEAD || git rev-parse --short=8 HEAD) | sed -e s/^v// >/meta/version; \
 	    git rev-parse HEAD >/meta/revision; \
 	    git log -1 --format='%ad' --date=short HEAD >/meta/revisionDate"; \
-	  size=`[[ $$(file -b --mime-type ../dist/$$e 2>/dev/null) == */*-executable ]] && \
+	  size=`[[ $$(file -b --mime-type ../dist-$(ARCH)/$$e 2>/dev/null) == */*-executable ]] && \
 	        [[ $$e != graaljs ]] && \
-	        ls -l ../dist/$$e 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' '`; \
+	        ls -l ../dist-$(ARCH)/$$e 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' '`; \
 	  repo=`sed -Ene 's/ARG JS_REPO=(.*)/\1/p' "$${df}" 2>/dev/null || \
 	        sed -Ene 's/# Repository: *(.*)/\1/p' $$f`; \
 	  url=`sed -Ene 's/# URL: *(.*)/\1/p' $$f`; \

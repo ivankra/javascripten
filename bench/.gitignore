@@ -18,3 +18,5 @@ splay.js
 typescript.js
 v9.js
 zlib.js
+metadata-*.json
+runs-*.js

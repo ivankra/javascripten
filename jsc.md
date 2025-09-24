@@ -58,3 +58,5 @@
 * Safari and WebKit-based browsers (GNOME Web etc)
 * The only JIT-enabled engine allowed by Apple on iOS
 * [bun](https://github.com/oven-sh/bun): JavaScript/TypeScript runtime written in Zig.
+
+<!-- baseline: ./jsc-dfg --useDFGJIT=false --useFTLJIT=false -->

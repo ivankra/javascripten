@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light dark" />
+<title>JavaScript engines zoo</title>
+<style>
+[data-theme="light"] {
+  color-scheme: light;
+  background-color: #ffffff;
+  --bg-hover: #ddf4ff;
+  --bg-sorted: #fffbdc;
+  --bg-control: #ffffff;
+  --bg-missing: #eeeeee;
+  --bg-primary: #fafafa;
+  /*--bg-muted: #f5f4f2;*/
+  --bg-primary: #ffffff;
+  --bg-muted: #f6f8fa;
+  --bg-thead: #eaecf0;
+  --border-light: #e5e3e0;
+  --border-medium: #d1cdc7;
+  --border-muted: #d1d9e0b3;
+  --text-accent: #0969da;
+  --text-muted: #333333;
+  --text-numeric: #0550ae;
+  --text-primary: #000000;
+  --text-red: #cf222e;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  background-color: #000000;
+  --bg-sorted: color-mix(in srgb, #99b3ff 15%, transparent);
+  --bg-control: #000000;
+  --bg-hover: #282A36;
+  --bg-missing: #44475A;
+  --bg-primary: #0d1117;
+  --bg-muted: #151b23;
+  --bg-hover: #3d4766;
+  --bg-thead: #2f3751;
+  --border-light: #343746;
+  --border-medium: #424450;
+  --border-muted: #3d444db3;
+  --text-accent: #50FA7B;
+  --text-muted: #99b3ff;
+  --text-numeric: #BD93F9;
+  --text-primary: #f8f8f2;
+  --text-red: #ff79cb;
+}
+
+body {
+  color: var(--text-primary);
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  width: fit-content;
+}
+
+header {
+  padding: 16px;
+}
+
+.header-container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+h1 {
+  color: var(--text-accent);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+nav {
+  padding: 8px 16px;
+}
+
+.nav-container {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  user-select: none;
+
+  > {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
+  }
+}
+
+input, select, button {
+  accent-color: var(--text-accent);
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  background-color: var(--bg-control);
+  color: var(--text-primary);
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+label {
+  cursor: pointer;
+}
+
+a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+main {
+  padding: 8px 16px;
+  width: fit-content;
+}
+
+.table-container {
+  border-radius: 6px;
+  overflow: clip;
+  border: 1px solid var(--border-light);
+  box-shadow:
+    0 4px 4px -1px color-mix(in srgb, var(--border-medium) 50%, transparent),
+    0 8px 8px -2px color-mix(in srgb, var(--border-medium) 50%, transparent);
+}
+
+table {
+  border-collapse: collapse;
+  border: 0px;
+}
+
+th {
+  padding: 8px 8px 8px 8px;
+  text-align: left;
+  border-left: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
+}
+
+td {
+  padding: 8px 8px 8px 8px;
+  text-align: left;
+  border-left: 1px solid var(--border-muted);
+  border-right: 1px solid var(--border-muted);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+td:first-child, th:first-child {
+  border-left: 0px;
+}
+
+td.last, th.last {
+  border-right: 0px;
+}
+
+th {
+  vertical-align: center;
+}
+
+td {
+  vertical-align: top;
+}
+
+.benchmark {
+  padding: 8px 4px 8px 4px;
+  text-align: right;
+  font-family: 'Roboto Condensed', Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+
+  .control {
+    font-size: 10px;
+    font-weight: 400;
+    display: flex;
+    margin: 0;
+    padding: 0px;
+    align-items: center;
+
+    input[type="checkbox"] {
+      margin: 0;
+      padding: 0;
+      transform: scale(0.7);
+    }
+  }
+}
+
+.numeric {
+  text-align: right;
+}
+
+td.numeric {
+  color: var(--text-numeric);
+  text-align: right;
+}
+
+td.missing, td.excluded-column {
+  background-color: var(--bg-missing);
+}
+
+.red {
+  color: var(--text-red);
+}
+
+th {
+  background-color: var(--bg-thead);
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  user-select: none;
+  border-bottom: none;
+  box-shadow: inset 0 -1px 0 var(--border-light);
+  cursor: pointer;
+}
+
+th.sorted-column {
+  box-shadow: inset 0 -2px 0 var(--text-accent);
+}
+
+td.sorted-column {
+  background-color: var(--bg-sorted);
+}
+
+tbody {
+  tr {
+    background-color: var(--bg-primary);
+  }
+
+  tr:nth-child(even) {
+    background-color: var(--bg-muted);
+  }
+
+  tr:hover, tr:hover td.sorted-column {
+    background-color: var(--bg-hover);
+  }
+}
+
+th.sort-asc:not(.benchmark)::after, th.benchmark.sort-asc div.control::after {
+  content: '▲';
+  color: var(--text-accent);
+}
+
+th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
+  content: '▼';
+  color: var(--text-accent);
+}
+
+.engine-cell {
+  min-width: 120px;
+
+  .engine-name {
+    color:var(--text-accent);
+    font-weight: 500;
+  }
+
+  .engine-version {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+}
+
+.license-cell {
+  max-width: 100px;
+}
+
+.description-cell {
+  min-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.hidden {
+  display: none;
+}
+
+.theme-toggle {
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  cursor: pointer;
+  height: 36px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 16px;
+  position: sticky;
+}
+
+.theme-toggle::after {
+  content: '🌙';
+}
+
+[data-theme="dark"] .theme-toggle::after {
+  content: '☀️';
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-muted);
+  border-color: var(--border-medium);
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-container">
+    <h1><a href="https://github.com/ivankra/javascript-zoo">JavaScript engines zoo</a></h1>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></button>
+  </div>
+</header>
+<nav>
+  <div class="nav-container">
+    <div class="control">
+      <select data-state="arch">
+        <option value="arm64" selected>arm64: Mac M4 4.5GHz - Linux VM</option>
+        <option value="x64">x64: i9-10900K 3.7GHz - Linux</option>
+      </select>
+    </div>
+    <div class="control">
+      <label><input data-state="jitless" type="checkbox" /> Show JIT-less variants</label>
+    </div>
+    <div class="control">
+      <label><input data-state="v8" type="checkbox" /> Only v8-v7 benchmarks</label>
+    </div>
+  </div>
+</nav>
+<main>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th data-col="engine" class="engine-cell">Engine</th>
+          <th data-col="score" class="numeric sort-desc sorted-column" title="Total score: geometric mean of selected benchmarks. Higher is better (inversely proportional to runtime)">Score</th>
+          <th data-col="binary_size" class="numeric" title="Binary size">Binary</th>
+          <th data-col="loc" class="numeric" title="Lines of code: core engine code only, excluding blank lines, comments, tests and third-party code">LoC</th>
+          <th data-col="language" title="Main programming language">Language</th>
+          <th data-col="standard" title="ECMAScript standard (targeted/mostly compliant with)">Standard</th>
+          <th data-col="jit" title="Just-in-time compilation">JIT</th>
+          <th data-col="years" title="Years of active development">Years</th>
+          <th data-col="github_stars" class="numeric" title="GitHub stars">Stars</th>
+          <th data-col="org">Org</th>
+          <th data-col="license" class="license-cell">License</th>
+          <th data-col="description" class="description-cell">Description</th>
+          <th data-col="Richards" data-v8=true class="numeric benchmark" title="Richards: task scheduler simulator, property access benchmark"></th>
+          <th data-col="DeltaBlue" data-v8=true class="numeric benchmark" title="DeltaBlue: constraint solver, polymorphism benchmark"></th>
+          <th data-col="Crypto" data-v8=true class="numeric benchmark" title="Crypto: RSA encryption, integer math, bit operations and arrays benchmark"></th>
+          <th data-col="RayTrace" data-v8=true class="numeric benchmark" title="RayTracer: floating-point math and objects benchmark"></th>
+          <th data-col="EarleyBoyer" data-v8=true class="numeric benchmark" title="EarleyBoyer: scheme interpreter, memory/GC and variadic functions benchmark"></th>
+          <th data-col="RegExp" data-v8=true class="numeric benchmark" title="Regexp: RE, strings and arrays benchmark"></th>
+          <th data-col="Splay" data-v8=true class="numeric benchmark" title="Splay: memory/GC benchmark"></th>
+          <th data-col="SplayLatency" class="numeric benchmark" title="SplayLatency: GC latency"></th>
+          <th data-col="NavierStokes" data-v8=true class="numeric benchmark" title="NavierStokes: fluid simulation, floating-point math and arrays benchmark"></th>
+          <th data-col="PdfJS" class="numeric benchmark" title="PdfJS: real-world PDF.js parser, bit operations and arrays benchmark"></th>
+          <th data-col="Mandreel" class="numeric benchmark" title="Mandreel: C++ physics engine"></th>
+          <th data-col="MandreelLatency" class="numeric benchmark" title="MandreelLatency: compilation latency"></th>
+          <th data-col="Gameboy" class="numeric benchmark" title="Gameboy: GB emulator, typed arrays and property access performance benchmark"></th>
+          <th data-col="CodeLoad" class="numeric benchmark" title="CodeLoad: jQuery and Closure load speed benchmark"></th>
+          <th data-col="Box2D" class="numeric benchmark" title="Box2D: C physics engine"></th>
+          <th data-col="zlib" class="numeric benchmark" title="zlib: Emscripten/asm.js benchmark"></th>
+          <th data-col="Typescript" class="numeric benchmark" title="Typescript: TS compiler running on itself, benchmarks speed of optimizing a large pile of code"></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
+<script>
+const state = {
+  arch: 'arm64',
+  jitless: false,
+  v8: false,
+  sort: [
+    { col: 'score', dir: 'desc' },  // main sort criterion
+    { col: 'language', dir: 'asc' },
+    { col: 'engine', dir: 'asc' },
+  ],
+  visible: {},   // col => bool
+  selected: {},  // col => bool
+};
+
+let tableData = null;
+
+window.addEventListener('load', () => {
+  loadState();
+  setupListeners();
+  render();
+});
+
+function loadState() {
+  const params = new URLSearchParams(window.location.search);
+  state.v8 = params.has('v8');
+  state.jitless = params.has('jitless');
+  state.arch = params.get('arch') ?? state.arch;
+  let m = (params.get('sort') ?? '').match(/^(-?)(\w+)$/);
+  if (m && document.querySelector(`th[data-col="${m[2]}"]`)) {
+    state.sort.unshift({ col: m[2], dir: m[1] === '-' ? 'desc' : 'asc' });
+  }
+  let mask = parseInt(params.get('mask'));
+  document.querySelectorAll('th.benchmark').forEach(th => {
+    state.visible[th.dataset.col] = state.v8 ? Boolean(th.dataset.v8) : true;
+    state.selected[th.dataset.col] = !((mask & 1) === 1);
+    mask >>= 1;
+  });
+  let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  if (typeof localStorage?.getItem('theme') === 'string') {
+    theme = localStorage.getItem('theme');
+  }
+  document.documentElement.dataset.theme = theme;
+}
+
+function saveState() {
+  const params = new URLSearchParams();
+  if (state.arch !== 'arm64') params.set('arch', state.arch);
+  if (state.jitless) params.set('jitless', true);
+  if (state.v8) params.set('v8', true);
+  const sortVal = (state.sort[0].dir == 'desc' ? '-' : '') + state.sort[0].col;
+  if (sortVal !== '-score') params.set('sort', sortVal);
+  let mask = 0;
+  [...document.querySelectorAll('th.benchmark')].reverse().forEach(th => {
+    mask = mask * 2 + (state.selected[th.dataset.col] ? 0 : 1);
+  });
+  if (mask) params.set('mask', mask);
+  const str = params.toString();
+  if (window.location.search != str) {
+    const url = window.location.pathname + (str ? `?${str}` : '');
+    history.pushState(state, '', url);
+  }
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', html.dataset.theme);
+}
+
+function setupListeners() {
+  window.addEventListener('popstate', (e) => {
+    if (e.state) {
+      Object.assign(state, e.state);
+    }
+    render();
+  });
+
+  document.addEventListener('change', (e) => {
+    const el = e.target;
+    if (el?.dataset?.state) {
+      if (el.dataset.state === 'selected') {
+        state.selected[el.dataset.col] = el.checked;
+      } else {
+        state[el.dataset.state] = el.type === 'checkbox' ? el.checked : el.value;
+      }
+      render();
+      saveState();
+    }
+  });
+
+  document.querySelectorAll('th').forEach(th => {
+    th.addEventListener('click', (e) => {
+      if (e.target.tagName.toUpperCase() === 'INPUT') {
+        return false;
+      }
+      if (state.sort[0].col === th.dataset.col) {
+        state.sort[0].dir = state.sort[0].dir === 'desc' ? 'asc' : 'desc';
+      } else {
+        state.sort.unshift({
+          col: th.dataset.col,
+          dir: th.classList.contains('numeric') ? 'desc' : 'asc',
+        });
+      }
+      render();
+      saveState();
+    });
+  });
+}
+
+function render() {
+  document.querySelector('[data-state=arch]').value = state.arch;
+  document.querySelector('[data-state=v8]').checked = state.v8;
+  document.querySelector('[data-state=jitless]').checked = state.jitless;
+
+  let lastCol = '';
+
+  document.querySelectorAll('th').forEach(th => {
+    const col = th.dataset.col;
+    const sdir = state.sort[0].dir;
+    th.classList.toggle('sorted-column', state.sort[0].col === col);
+    th.classList.toggle('sort-asc', state.sort[0].col === col && sdir === 'asc');
+    th.classList.toggle('sort-desc', state.sort[0].col === col && sdir === 'desc');
+
+    if (th.classList.contains('benchmark')) {
+      state.visible[col] = state.v8 ? Boolean(th.dataset.v8) : true;
+      th.classList.toggle('hidden', !state.visible[col]);
+      th.classList.toggle('excluded-column', !state.selected[col]);
+      if (state.visible[col]) {
+        lastCol = col;
+      }
+
+      th.innerHTML = `
+        <div class="control">
+          <input type="checkbox" data-col="${col}" data-state="selected"
+                 ${state.selected[col] ? 'checked' : ''}
+                 title="Check to include in total score">
+          ${col.replace("Latency", "L")}
+        </div>`;
+    }
+  });
+
+  const tbody = document.querySelector('tbody');
+  const thead = document.querySelector('thead');
+  const ths = [...thead.querySelectorAll('th')];
+  ths.forEach(th => {
+    th.classList.toggle('last', th.dataset.col == lastCol);
+  });
+
+  const frag = document.createDocumentFragment();
+
+  tableData = processRawData().sort(sortComparator);
+  tableData.forEach(row => {
+    const tr = document.createElement('tr');
+    ths.forEach(th => {
+      const td = renderCell(th, row);
+      td.classList.toggle('last', th.dataset.col == lastCol);
+      tr.appendChild(td);
+    });
+    frag.appendChild(tr);
+  });
+
+  tbody.innerHTML = '';
+  tbody.appendChild(frag);
+}
+
+function renderCell(th, row) {
+  const col = th.dataset.col;
+  const td = document.createElement('td');
+  td.className = th.className;
+  if (col === 'engine') {
+    let ver = (row.version ?? '').replace(/^nightly$/, '');
+    let revLink = row.repository;
+    if (row.revision && row.repository) {
+      if (row.repository.match(/github.com/)) {
+        revLink = `${row.repository.replace('.git','')}/tree/${row.revision}`;
+      } else if (row.repository.match(/codeberg.org/)) {
+        revLink = `${row.repository.replace('.git','')}/src/commit/${row.revision}`;
+      } else if (row.repository === 'https://chromium.googlesource.com/v8/v8.git') {
+        revLink = `https://github.com/v8/v8/tree/${row.revision}`;
+      }
+    }
+    if (row.revision_date) {
+      if (!ver || ver.includes(row.revision.slice(0, 7))) {
+        revLink = `<a class="engine-version" href="${revLink}" title="${row.version}" target="_blank"}>${row.revision_date}</a>`;
+      } else {
+        revLink = `<a class="engine-version" href="${revLink}" title="${row.version}" target="_blank"}>${row.revision_date} (${ver})</a>`;
+      }
+    } else if (ver) {
+      revLink = `<a class="engine-version" href="${revLink}" target="_blank">${ver}</a>`;
+    } else {
+      revLink = '';
+    }
+    td.innerHTML = `
+      <div class="engine-cell">
+        <a href="https://github.com/ivankra/javascript-zoo/blob/main/${row.engine}.md" class="engine-name" target="_blank">${row.title ?? row.engine}</a>
+        <div class="engine-version">${revLink}</div>
+      </div>`;
+  } else if (col === 'loc' && Number(row.loc)) {
+    let size = Number(row.loc), i = 0, suf = ['', 'K', 'M'];
+    while (size >= 1000 && i < suf.length - 1) { size /= 1000; i++; }
+    td.innerHTML = size.toFixed(size < 20 ? 1 : 0) + suf[i];
+    td.title = `${row.loc}`;
+  } else if (col === 'binary_size' && Number(row.binary_size)) {
+    let size = Number(row.binary_size), i = 0, suf = ['', 'K', 'M'];
+    while (size >= 1024 && i < suf.length - 1) { size /= 1024; i++; }
+    td.innerHTML = size.toFixed(size < 20 ? 1 : 0) + suf[i];
+    td.title = `${row.binary_size} bytes`;
+  } else if (col === 'license' && row.license) {
+    let s = row.license
+      .replace(/ (OR|AND) /g, ', ')
+      .replace(/(-Clause|-only)/g, '')
+      .replace(/-or-later/g, '+')
+      .replace(/ WITH[^,]*/i, '<sup>*</sup>')
+      .replace(/MPL.*GPL.*LGPL.*/, 'MPL/(L)GPL')
+      .replace(/LGPL.*Qt/, 'Qt/(L)GPL')
+      .replace(/Artistic.*GPL.*/, 'Artistic/GPL');
+    if (row.license === 'UPL-1.0') {
+      td.title = 'Universal Permissive License 1.0';
+    } else if (row.license === 'BSL-1.0') {
+      td.title = 'Boost Software License 1.0';
+    } else if (s != row.license) {
+      td.title = row.license;
+    }
+    s = '<nobr>' + s.split(/ /).join('</nobr> <nobr>') + '</nobr>';
+    td.innerHTML = s;
+    if (row.license.match(/(proprietary|custom|agpl)/i)) {
+      td.classList.add('red');
+    }
+  } else if (col === 'standard' && row.standard) {
+    let s = row.standard.replace(/ \(.*\)/, '<sup>*</sup>');
+    td.innerHTML = s;
+    if (s != row.standard) {
+      td.title = row.standard;
+    }
+  } else if (col === 'language' && row.language) {
+    let s = row.language
+      .replace(/ \(.*\)/, '<sup>*</sup>').replace(/ +/g, '<br>');
+    if (s != row.language) {
+      td.title = row.language;
+    }
+    td.innerHTML = s;
+  } else if (col === 'years' && row.years) {
+    td.innerHTML = row.years.replace(/-/, '-<br>');
+    td.classList.toggle('red', !row.years.endsWith('-'));
+  } else if (col === 'jit') {
+    td.innerHTML = row.jit ? 'Y' : '';
+  } else if (col === 'description') {
+    td.innerHTML = row.summary ?? '';
+    if (row.tech)
+      td.innerHTML += `<br>Tech: ${row.tech}`;
+    if (row.note)
+      td.innerHTML += `<br>${row.note}`;
+  } else if (th.classList.contains('benchmark')) {
+    const val = row[col];
+    if (typeof val === 'string') {
+      td.title = row[col];
+      td.style.cursor = 'help';
+      td.classList.add('missing');
+    } else if (typeof val !== 'number' || isNaN(Number(val))) {
+      td.innerHTML = '';
+    } else {
+      td.innerHTML = String(Math.round(val));
+      if (row[col + '_note']) {
+        td.title = row[col + '_note']
+      }
+    }
+  } else {
+    td.innerHTML = row[col] ?? '';
+  }
+  return td;
+}
+
+function processRawData() {
+  const outputRows = [];
+
+  for (const engineRow of kJavascriptZoo) {
+    let joined = [engineRow];
+    if (Array.isArray(engineRow.bench) && engineRow.bench.length > 0) {
+      joined = engineRow.bench.map(benchRow => ({...engineRow, ...benchRow}));
+    }
+
+    joined = joined.filter(row => row.arch == state.arch);
+    if (joined.length === 0) {
+      joined = [engineRow];
+    }
+
+    if (!state.jitless) {
+      joined = joined.filter(row => row.variant != 'jitless');
+    }
+
+    outputRows.push(...joined);
+  }
+
+  for (const row of outputRows) {
+    let selectedScores = [];
+    for (const col in row) {
+      if (state.visible[col] === true && state.selected[col] === true && typeof row[col] === 'number') {
+        selectedScores.push(row[col]);
+      }
+    }
+
+    if (selectedScores.length > 0) {
+      row.score = Math.round(geometricMean(selectedScores));
+    }
+
+    row.jit = (
+      row.tech?.match(/\bJIT\b/) &&
+      !row.engine.includes('jitless') &&
+      !(row.tech?.includes('JIT (x') && state.arch === 'arm64')
+    );
+  }
+
+  return outputRows;
+}
+
+function sortComparator(row1, row2) {
+  let res = 0;
+  for (let i = 0; i < state.sort.length && res === 0; i++) {
+    const col = state.sort[i].col;
+    const a = sortCollate(row1[col], col);
+    const b = sortCollate(row2[col], col);
+    if (a === b) continue;
+    if (a === '' || b === '') {
+      return a === '' ? 1 : -1;  // nulls always last
+    }
+    if (!isNaN(Number(a)) && !isNaN(Number(b))) {
+      res = Number(a) - Number(b);
+    } else {
+      res = String(a).localeCompare(String(b));
+    }
+    res *= (state.sort[i].dir === 'asc' ? 1 : -1);
+  }
+  return res;
+}
+
+function sortCollate(val, col) {
+  val = val ?? '';
+  if (typeof val === 'object' && 'value' in val) {
+    val = val.value;
+  }
+  val = String(val).trim()
+  if (col === 'standard') {
+    val = val.replace('ESnext', 'ES9999');
+    val = val.replace(/([0-9]+)/g, (g) => g.padStart(4, '0'));
+    val = val.replace('+', '9');
+    val = val.replace(' (partial)', '0');
+    val = val.replace(/([0-9]+)/g, (g) => g.padEnd(5, '5'));
+  }
+  if (col === 'years') {
+    val = val.replace('x', '9');
+  }
+  if (col === 'language') {
+    val = val.replace('#', '++#').replace('TypeScript', 'JavaScript, TS')
+  }
+  return val;
+}
+
+function geometricMean(arr) {
+  if (arr.length === 0) return NaN;
+  return Math.exp(arr.map(x => Math.log(x)).reduce((x, y) => x + y, 0) / arr.length);
+}
+</script>
+<script src="data.js"></script>
+</body>
+</html>

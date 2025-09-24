@@ -5,7 +5,7 @@
 * Repository: https://github.com/DigitalMars/DMDScript.git
 * LOC:        18013 (`cloc engine`)
 * Language:   D
-* License:    BSL-1.0
+* License:    BSL-1.0 (Boost Software License 1.0)
 * Org:        Digital Mars
 * Standard:   ES3
 * Tech:       register VM
