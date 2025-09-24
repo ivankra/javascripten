@@ -3,12 +3,14 @@
 The very first JavaScript engine that defined early JavaScript language (JS1.0/1.1), used in Netscape 2.0-3.0.
 
 * Sources:    https://github.com/doodlewind/mocha1995.git (version from Netscape Navigator 3.0.2 ported to modern toolchain)
-* GC:         reference counting
 * LOC:        13728 (ns302 code)
+* Language:   C++
+* License:    Proprietary
+* Standard:   JS1.1 (≈ ES1)
+* Years:      1995-1996
 * Parser:     recursive descent, directly emits bytecode ([mo_parse.c](https://github.com/doodlewind/mocha1995/blob/main/src/mo_parse.c), 953 LOC)
 * Runtime:    stack-based VM ([mocha.c](https://github.com/doodlewind/mocha1995/blob/main/src/mocha.c))
-* Standard:   JS1.1 (≈ES1)
-* Years:      1995-1996
+* GC:         reference counting
 
 ## History
 

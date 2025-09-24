@@ -1,6 +1,7 @@
 # ScriptEase
 
-* Summary:    Scripting engine of Nombas ScriptEase, most famous for being used by James Webb Space Telescope.
+Scripting engine of Nombas ScriptEase, most famous for being used by James Webb Space Telescope.
+
 * URL:        https://brent-noorda.com/nombas/history/HistoryOfNombas.html
 * Language:   C
 * License:    Proprietary

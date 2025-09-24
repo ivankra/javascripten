@@ -1,14 +1,15 @@
 # Ejscript
 
-* Summary:    Embeddable JavaScript engine.
+Embeddable JavaScript engine.
+
 * URL:        https://www.embedthis.com/ejscript/doc/
 * Repository: https://github.com/embedthis/ejscript.git
 * LOC:        106690 (`cloc --not_match_d="(?i)(test|pcre|zlib|ejs.web)" src`)
 * Language:   C
 * License:    GPL-2.0-only
 * Standard:   ES6 (ES3, most of ES4/ES5, some ES6: let/const, modules, classes, Promise)
-* Regex:      PCRE2
 * Years:      2003-2014
+* Regex:      PCRE2
 
 ## Users
 

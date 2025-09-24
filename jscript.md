@@ -1,12 +1,13 @@
 # JScript
 
-* Summary:    JavaScript engine of IE3-IE8 (jscript.dll).
+JavaScript engine of IE3-IE8 (jscript.dll).
+
 * Language:   C++
 * License:    Proprietary
 * Org:        Microsoft
 * Standard:   ES3
-* Tech:       stack VM
 * Years:      1996-2011
+* Tech:       stack-based VM
 
 ## History
 

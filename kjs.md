@@ -1,16 +1,17 @@
 # KJS
 
-* Summary:    Original JavaScript engine of KDE's Konqueror browser.
+Original JavaScript engine of KDE's Konqueror browser.
+
 * URL:        https://invent.kde.org/frameworks/kjs
 * Repository: https://github.com/KDE/kjs.git
 * LOC:        42352 (`cloc src`)
 * Language:   C++
 * License:    LGPL-2.1-only (most source files are LGPL 2.0+)
 * Org:        KDE
-* Regex:      PCRE2
 * Standard:   ES5
-* Tech:       tree walker, register VM (2008)
 * Years:      1998-2023
+* Runtime:    tree walker, register-based VM (2008)
+* Regex:      PCRE2
 
 ## History
 

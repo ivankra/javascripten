@@ -1,6 +1,7 @@
 # ChakraCore
 
-* Summary:    JavaScript engine of Microsoft Edge Legacy.
+JavaScript engine of Microsoft Edge Legacy.
+
 * Repository: https://github.com/chakra-core/ChakraCore.git
 * LOC:        779986 (`cloc --fullpath --not_match_f="(?i)(test)" lib pal`)
 * Language:   C++
@@ -8,8 +9,9 @@
 * Note:       Doesn't support Linux arm64.
 * Org:        Microsoft
 * Standard:   ES2019
-* Tech:       register VM, 2-tier JIT, deferred compilation
 * Years:      2015-2021
+* Runtime:    register-based VM, deferred compilation
+* JIT:        2-tier JIT
 
 ## History
 

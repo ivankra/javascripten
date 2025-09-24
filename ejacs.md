@@ -1,6 +1,7 @@
 # Ejacs
 
-* Summary:    Toy JavaScript interpreter for Emacs, inspired by Narcissus.
+Toy JavaScript interpreter for Emacs, inspired by Narcissus.
+
 * Repository: https://github.com/emacsattic/ejacs.git
 * LOC:        9895 (`cloc .`)
 * Language:   Lisp

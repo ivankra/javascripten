@@ -24,6 +24,11 @@ def main():
         help='Fetch GitHub metadata. Optionally provide a token for higher rate limits (GitHub Settings > Developer settings > Personal access tokens)',
     )
     parser.add_argument(
+        '--sort-markdown',
+        action='store_true',
+        help="Reorder metadata lines in markdown files."
+    )
+    parser.add_argument(
         '--dist',
         action='store_true',
         help="Build helper, generate .json for current build"
@@ -66,8 +71,8 @@ def update_data(args):
         row = orig_row_by_engine.get(engine, {})
         row['engine'] = engine
 
-        process_markdown(row, filename)
-        process_github(row, args)
+        process_markdown(row, filename=filename, args=args)
+        process_github(row, args=args)
 
         row['bench'] = {}
         process_dist(row)
@@ -90,11 +95,47 @@ def update_data(args):
     print('Wrote data.js', flush=True)
 
 # Parse markdown file and populate/update fields in row dict for that engine
-def process_markdown(row, filename):
+def process_markdown(row, filename, args):
     lines = [s.rstrip() for s in open(filename).readlines()]
 
     assert lines[0].startswith('# ') and lines[1] == ''
     row['title'] = lines[0][1:].strip()
+
+    metadata_map = {
+        'URL': 'url',
+        'Repository': 'repository',
+        'GitHub': 'github',    # if github not the main repo
+        'Sources': 'sources',  # if no official repository
+
+        'LOC': 'loc',
+        'Language': 'language',
+        'License': 'license',
+        'Note': 'note',
+        'Org': 'org',
+        'Standard': 'standard',
+        'Type': 'type',
+        'Years': 'years',
+
+        'Tech': 'tech',
+        'Parser': 'parser',
+        'Runtime': 'runtime',
+        'VM': 'vm',
+        'GC': 'gc',
+        'JIT': 'jit',
+        'Regex': 'regex',
+    }
+    metadata_order = list(metadata_map.values())
+
+    # Drop existing keys that are recomputed from .md
+    for k in metadata_map.values():
+        if k in row:
+            del row[k]
+        if k + '_note' in row:
+            del row[k + '_note']
+
+    for k in ['loc_command']:
+        if k in row:
+            del row[k]
 
     line_no = 2
 
@@ -108,37 +149,8 @@ def process_markdown(row, filename):
 
         row['summary'] = ' '.join(lines[2:line_no]).strip()
 
-    json_key_map = {
-        'Summary': 'summary',
-        'Repository': 'repository',
-        'GitHub': 'github',    # if used to be hosted on github
-        'Sources': 'sources',  # if no official repository
-        'URL': 'url',
-        'GC': 'gc',
-        'LOC': 'loc',
-        'Language': 'language',
-        'License': 'license',
-        'Tech': 'tech',
-        'Note': 'note',
-        'Org': 'org',
-        'Regex': 'regex',
-        'VM': 'vm',
-        'Parser': 'parser',
-        'Runtime': 'runtime',
-        'Standard': 'standard',
-        'Years': 'years',
-    }
-
-    # Drop existing keys that are recomputed from .md
-    for k in json_key_map.values():
-        if k in row:
-            del row[k]
-        if k + '_note' in row:
-            del row[k + '_note']
-
-    for k in ['loc_command']:
-        if k in row:
-            del row[k]
+    metadata_start = line_no
+    metadata_lines = []
 
     # Parse metadata items from .md
     while line_no < len(lines) and lines[line_no]:
@@ -147,11 +159,22 @@ def process_markdown(row, filename):
 
         m = re.match(r'^\* ([-A-Za-z ]+): +(.*)$', line)
         assert m, line
-        assert m[1].strip() in json_key_map, line
+        assert m[1].strip() in metadata_map, line
 
-        key = json_key_map[m[1].strip()]
+        key = metadata_map[m[1].strip()]
         val = m[2].strip()
         row[key] = val
+
+        metadata_lines.append((key, line))
+
+    metadata_end = line_no
+    if args.sort_markdown:
+        metadata_lines = [(metadata_order.index(k), v) for (k, v) in metadata_lines]
+        metadata_lines = [v for (k, v) in sorted(metadata_lines)]
+
+        reordered = lines[:metadata_start] + metadata_lines + lines[metadata_end:]
+        with open(filename, 'w') as fp:
+            fp.write('\n'.join(reordered).rstrip() + '\n')
 
     # Split up some "text (note)" keys
     for key in list(row.keys()):
@@ -159,7 +182,7 @@ def process_markdown(row, filename):
         if key in ['summary', 'sources', 'tech'] or type(val) != str or '(' not in val:
             continue
 
-        if key in ['loc', 'license', 'language', 'repository', 'github', 'parser', 'runtime', 'vm']:
+        if key in ['loc', 'license', 'language', 'repository', 'github', 'parser', 'runtime']:
             m = re.match(r'([^(]+) \(((?:)([^(]|`[^`]+`|\(http[^)]+\))+)\)$', val)
             assert m, (key, val)
             row[key + '_note'] = m[2]
@@ -171,7 +194,7 @@ def process_markdown(row, filename):
                     row['loc_command'] = mm[1]
                     if mm[2] == '':
                         del row['loc_note']
-        elif key not in ['standard']:
+        elif key not in ['standard', 'type', 'jit', 'vm']:
             print(f'Unprocessed note in {key}: {val}')
 
     for key in ['loc']:

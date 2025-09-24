@@ -1,17 +1,18 @@
 # QuickJS
 
-* Summary:    Lightweight embeddable JavaScript engine by Fabrice Bellard and Charlie Gordon.
+Lightweight embeddable JavaScript engine by Fabrice Bellard and Charlie Gordon.
+
 * URL:        https://bellard.org/quickjs/
 * Repository: https://github.com/bellard/quickjs.git
-* GC:         reference counting
 * LOC:        73590 (`cloc *.c *.h`)
 * Language:   C
 * License:    MIT
-* Parser:     recursive descent, directly emits bytecode
-* Runtime:    stack-based VM (`JS_CallInternal()` at [quickjs.c:16850](https://github.com/bellard/quickjs/blob/master/quickjs.c#L16850))
 * Standard:   ES2023
-* Tech:       stack VM, hidden classes w/o PIC, refcounting GC
 * Years:      2019-
+* Parser:     recursive descent, directly emits bytecode
+* Runtime:    stack-based VM, hidden classes
+* VM:         `JS_CallInternal()` at [quickjs.c:16850](https://github.com/bellard/quickjs/blob/master/quickjs.c#L16850)
+* GC:         reference counting
 
 ## Users
 

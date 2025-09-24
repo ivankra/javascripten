@@ -1,15 +1,16 @@
 # NGS
 
-* Summary:    An independent implementation of JavaScript from late 1990s.
+An independent implementation of JavaScript from late 1990s.
+
 * URL:        https://web.archive.org/web/20000817004334/http://www.ngs.fi/js/
-* Sources:    https://web.archive.org/web/20070705224001/http://www.njs-javascript.org/js-0.2.5.tar.gz
 * Repository: https://github.com/markkurossi/js.git
+* Sources:    https://web.archive.org/web/20070705224001/http://www.njs-javascript.org/js-0.2.5.tar.gz
 * LOC:        36390 (`cloc --not_match_d="(?i)(test)" src`)
 * Language:   C
 * License:    LGPL-2.0-only
 * Standard:   ES1, JS1.4
-* Tech:       stack VM
 * Years:      1998-1999
+* Runtime:    stack-based VM
 
 Shipped as ngs-js package in early Debian releases.
 

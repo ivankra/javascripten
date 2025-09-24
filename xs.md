@@ -1,6 +1,7 @@
 # XS
 
-* Summary:    Lightweight engine for microcontrollers/IoT by Kinoma/Marvell.
+Lightweight engine for microcontrollers/IoT by Kinoma/Marvell.
+
 * URL:        https://www.moddable.com/faq#what-is-xs
 * Repository: https://github.com/Moddable-OpenSource/moddable.git
 * LOC:        88837 (`cloc xs/sources xs/includes`)
@@ -9,7 +10,7 @@
 * Note:       Open-sourced in 2015
 * Org:        Kinoma
 * Standard:   ESnext
-* Tech:       stack VM
 * Years:      2002-
+* Runtime:    stack-based VM
 
 Originally developed by [Kinoma](https://en.wikipedia.org/wiki/Kinoma). First open-sourced in 2015 as part of KinomaJS IoT framework: https://github.com/Kinoma/kinomajs.git (the repo has older XS6 version with ES6/ES2015 support). Now hosted in Moddable repo: https://github.com/Moddable-OpenSource/moddable

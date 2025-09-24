@@ -1,6 +1,7 @@
 # Rhino
 
-* Summary:    JavaScript engine from Mozilla for the Java platform, bundled with JDK 6-7.
+JavaScript engine from Mozilla for the Java platform, bundled with JDK 6-7.
+
 * URL:        https://rhino.github.io/
 * Repository: https://github.com/mozilla/rhino.git
 * LOC:        83848 (`cloc --not_match_d="(?i)(test)" rhino`)
@@ -8,8 +9,8 @@
 * License:    MPL-2.0
 * Org:        Mozilla
 * Standard:   ES6-ES2023 (partial)
-* Tech:       tree walker, compiler to unoptimized JVM bytecode
 * Years:      1997-
+* Tech:       tree walker / compiler to unoptimized JVM bytecode
 
 ## Users
 

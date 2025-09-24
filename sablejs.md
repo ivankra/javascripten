@@ -1,6 +1,7 @@
 # sablejs
 
-* Summary:    Sandboxed ES5 interpreter written in JavaScript.
+Sandboxed ES5 interpreter written in JavaScript.
+
 * Repository: https://github.com/sablejs/sablejs.git
 * Language:   JavaScript
 * License:    Custom

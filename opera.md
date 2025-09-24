@@ -1,6 +1,7 @@
 # Opera
 
-* Summary:    Early JavaScript engines of Opera browser: Linear A, Linear B, Futhark.
+Early JavaScript engines of Opera browser: Linear A, Linear B, Futhark.
+
 * URL:        https://help.opera.com/en/operas-archived-history/
 * Language:   C++
 * License:    Proprietary

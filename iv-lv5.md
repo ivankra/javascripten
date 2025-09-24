@@ -1,13 +1,15 @@
 # iv / lv5
 
-* Summary:    JIT-enabled ES5 engine in C++.
+JIT-enabled ES5 engine in C++.
+
 * Repository: https://github.com/Constellation/iv.git
 * LOC:        69771 (`cloc --not_match_d="(?i)(test|third_party)" iv`)
 * Language:   C++
 * License:    BSD-2-Clause
 * Standard:   ES5
-* Tech:       register VM, context-threaded/method JIT (x64), PIC
 * Years:      2009-2015
+* Runtime:    register-based VM, PIC
+* JIT:        context-threaded/method JIT, x64
 
 ## Components
 

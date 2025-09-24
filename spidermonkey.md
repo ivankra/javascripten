@@ -1,16 +1,18 @@
 # SpiderMonkey
 
-* Summary:    JavaScript engine of Firefox.
+JavaScript engine of Firefox.
+
 * URL:        https://spidermonkey.dev/
 * Repository: https://github.com/mozilla-firefox/firefox.git
 * LOC:        1028123 (`cloc --not_match_d="(?i)(test|octane)" js/src`)
 * Language:   C++
 * License:    MPL-2.0
 * Org:        Mozilla
-* Regex:      Irregexp
 * Standard:   ESnext
-* Tech:       stack VM, 2-tier JIT
 * Years:      1996-
+* Runtime:    stack-based VM
+* JIT:        2-tier JIT
+* Regex:      Irregexp
 
 ## History
 

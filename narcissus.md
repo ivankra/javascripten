@@ -1,6 +1,7 @@
 # Narcissus
 
-* Summary:    Metacircular JavaScript interpreter, was used for prototyping new language features in ES6.
+Metacircular JavaScript interpreter, was used for prototyping new language features in ES6.
+
 * Repository: https://github.com/mozilla/narcissus.git
 * LOC:        6308 (`cloc lib`)
 * Language:   JavaScript

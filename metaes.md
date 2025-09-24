@@ -1,6 +1,7 @@
 # metaes
 
-* Summary:    Metacircular JavaScript interpreter.
+Metacircular JavaScript interpreter.
+
 * Repository: https://github.com/metaes/metaes.git
 * LOC:        2833 (`cloc lib`)
 * Language:   TypeScript

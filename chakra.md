@@ -1,12 +1,13 @@
 # Chakra
 
-* Summary:    JavaScript engine of IE9-IE11 (jscript9.dll).
+JavaScript engine of IE9-IE11 (jscript9.dll).
+
 * Language:   C++
 * License:    Proprietary
 * Org:        Microsoft
 * Standard:   ES6 (partial)
-* Tech:       JIT
 * Years:      2009-2013
+* JIT:        yes
 
 ## History
 

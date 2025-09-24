@@ -1,11 +1,13 @@
 # IronJS
 
-* Summary:    ES3 implementation for .NET.
+ES3 implementation for .NET.
+
 * URL:        https://ironjs.wordpress.com/
 * Repository: https://github.com/fholm/IronJS.git
-* Standard:   ES3
+* LOC:        12608 (`cloc Src/IronJS*`)
 * Language:   C#
 * License:    Apache-2.0
-* LOC:        12608 (`cloc Src/IronJS*`)
-* Tech:       .NET DLR
+* Standard:   ES3
 * Years:      2010-2013
+* Tech:       .NET DLR
+* JIT:        via CLR

@@ -1,6 +1,7 @@
 # GraalJS
 
-* Summary:    High-performance JavaScript engine for GraalVM.
+High-performance JavaScript engine for GraalVM.
+
 * URL:        https://www.graalvm.org/javascript/
 * Repository: https://github.com/oracle/graaljs.git
 * LOC:        191606 (`cloc --not_match_d="(?i)(test)" graal-js/src`)
@@ -8,8 +9,9 @@
 * License:    UPL-1.0 (Universal Permissive License 1.0)
 * Org:        Oracle
 * Standard:   ESnext
-* Tech:       JVM, 2-tier JIT (HotSpot/Graal), Truffle framework
 * Years:      2018-
+* Tech:       JVM, Truffle framework
+* JIT:        2-tier JIT (HotSpot/Graal)
 
 ## Tech
 
