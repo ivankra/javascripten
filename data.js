@@ -2148,6 +2148,8 @@ kJavascriptZoo = [
     "gc": "reference counting",
     "github_forks": 27,
     "github_stars": 335,
+    "language": "C++",
+    "license": "Proprietary",
     "loc": 13728,
     "loc_note": "ns302 code",
     "parser": "recursive descent, directly emits bytecode",

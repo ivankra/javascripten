@@ -572,6 +572,15 @@ function renderCell(th, row) {
     while (size >= 1024 && i < suf.length - 1) { size /= 1024; i++; }
     td.innerHTML = size.toFixed(size < 20 ? 1 : 0) + suf[i];
     td.title = `${row.binary_size} bytes`;
+  } else if (col == 'github_stars') {
+    if (Number(row.github_stars)) {
+      if (row.github_stars >= 1000) {
+        td.innerHTML = (row.github_stars / 1000).toFixed(1) + 'k';
+      } else {
+        td.innerHTML = row.github_stars.toFixed(0);
+      }
+      td.title = row.github ? row.github : row.repository;
+    }
   } else if (col === 'license' && row.license) {
     let s = row.license
       .replace(/ (OR|AND) /g, ', ')

@@ -21,20 +21,17 @@ def main():
         nargs='?',
         metavar='TOKEN',
         const='',
-        help='Fetch GitHub metadata. Optionally provide a token for higher rate limits (GitHub Settings > Developer settings > Personal access tokens)',
+        help=('Fetch GitHub metadata. Optionally, provide API token from '
+              'GitHub Settings > Developer settings > Personal access tokens'),
     )
-    parser.add_argument(
-        '--sort-markdown',
-        action='store_true',
-        help="Reorder metadata lines in markdown files."
-    )
-    parser.add_argument(
-        '--dist',
-        action='store_true',
-        help="Build helper, generate .json for current build"
-    )
+    parser.add_argument('--sort-markdown', action='store_true', help="Sort metadata lines inside markdown files.")
+    parser.add_argument('--dist', action='store_true', help="Build helper, generate .json for current build")
+    parser.add_argument('--markdown-table', action='store_true', help="Print markdown table.")
 
     args = parser.parse_args()
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_dir)
 
     if args.dist:
         return
@@ -42,12 +39,8 @@ def main():
     update_data(args)
 
 def update_data(args):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(script_dir)
-
     rows = []
     if os.path.exists('data.json'):
-        print('Reading existing data.json')
         with open('data.json', 'r') as fp:
             rows = json.load(fp)
 
@@ -64,7 +57,8 @@ def update_data(args):
         if filename == 'README.md':
             continue
 
-        print(f'\033[1K\r{filename} ', end='', flush=True)
+        if os.isatty(1):
+            print(f'\033[1K\r{filename} ', end='', flush=True)
 
         engine = filename.replace('.md', '')
 
@@ -85,14 +79,26 @@ def update_data(args):
 
         rows.append(row)
 
+    if os.isatty(1):
+        print('\033[1K\rOK', flush=True)
+
     with open('data.json', 'w') as fp:
         json.dump(rows, fp, ensure_ascii=False, indent=2, sort_keys=False)
-    print('\033[1K\rWrote data.json', flush=True)
 
     with open('data.js', 'w') as fp:
         fp.write('kJavascriptZoo = ')
         json.dump(rows, fp, ensure_ascii=False, indent=2, sort_keys=False)
-    print('Wrote data.js', flush=True)
+
+    if args.markdown_table:
+        print_markdown_table(rows, fp=sys.stdout)
+
+    lines = open('README.md').readlines()
+    idx = lines.index('## List of JavaScript engines\n')
+    lines = lines[:(idx + 1)]
+
+    with open('README.md', 'w') as fp:
+        fp.write(''.join(lines) + '\n')
+        print_markdown_table(rows, fp=fp)
 
 # Parse markdown file and populate/update fields in row dict for that engine
 def process_markdown(row, filename, args):
@@ -203,18 +209,16 @@ def process_markdown(row, filename, args):
 
 # Populate fields with github data
 def process_github(row, args):
-    repo_url = row.get('github', row.get('repository', row.get('sources')))
-    if not repo_url:
+    gh_repo_url = row.get('github', row.get('repository', row.get('sources')))
+    if not gh_repo_url:
         return
 
-    m = re.match('https?://github.com/([^/]+)/([^/]+)(.git)?$', repo_url)
+    m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', gh_repo_url)
     if not m:
         return
 
     owner = m[1]
     repo = m[2]
-    if repo.endswith('.git'):
-        repo = repo[:-4]
 
     api_url = f"https://api.github.com/repos/{owner}/{repo}"
     cache_filename = f'.cache/github/{row["engine"]}.json'
@@ -284,7 +288,7 @@ def process_dist(row):
                 dist_json = json.load(fp)
 
             if engine in ['quickjs'] and dist_json['engine'] != engine:
-                continue  # skip quickjs/quickjs-ng, verify for all others
+                continue
             assert dist_json.pop('engine') == engine, (filename, engine)
 
             assert dist_json.get('arch', arch) == arch
@@ -329,6 +333,83 @@ def summarize_scores(scores):
     sd = (sum([(x - mean)**2 for x in scores]) / (n - 1.0)) ** 0.5
     sem = sd / (n ** 0.5)
     return f'N={n} median={median} mean={mean:.2f}±{sem:.2f} max={max(scores)}'
+
+def print_markdown_table(rows, fp):
+    pinned = 'v8 spidermonkey jsc'.split()
+
+    for row in rows:
+        s = row.get('license', '')
+        s = re.sub('BSD-([0-9])-Clause', r'BSD-\1', s)
+        s = re.sub('-([0-9.]+)-only', r'-\1', s)
+        s = re.sub('-([0-9.]+)-or-later', r'-\1+', s)
+        s = re.sub(' OR ', ', ', s)
+        s = re.sub(' WITH.*', '', s)
+        s = re.sub('MPL[-0-9.+,]* GPL[-0-9.+,]* LGPL[-0-9.+]*', 'MPL/GPL/LGPL', s)
+        s = re.sub('Apache[-0-9.+,]* LGPL[-0-9.+]*', 'Apache/LGPL', s)
+        s = re.sub('Apache[-0-9.+,]* MIT', 'Apache/MIT', s)
+        s = re.sub('LGPL, GPL, Qt', 'Qt/GPL/LGPL', s)
+        s = re.sub('Artistic[-0-9.+A-Za-z]*, GPL[-0-9.+]+', 'Artistic/GPL', s)
+        s = re.sub(', ', '/', s)
+        row['license'] = '%s' % s
+
+        s = row.get('language', '')
+        s = re.sub(', .*', '', s)
+        row['language_pad'] = '%-10s' % s
+
+        if row['engine'] in pinned:
+            row['sort_key'] = 'A%02d' % pinned.index(row['engine'])
+        else:
+            row['sort_key'] = ' '.join([
+                s.replace('TypeScript', 'JavaScriptT').replace('C++', 'C'),
+                '%06d' % (999999 - row.get('github_stars', 0)),
+                row['engine'].lower()
+            ])
+
+        # link to .md
+        row['title_pad'] = '%-32s' % f'[{row["title"]}]({row["engine"]}.md)'
+
+        repo_link = row.get('github', row.get('repository', ''))
+        repo_text = row['engine']
+        if not repo_link and row.get('url', '').startswith('http'):
+            repo_link = row['url']
+            repo_text = 'link'
+        m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
+        if m:
+            repo_text = f'{m[1]}/{m[2]}'
+        if re.match(r'https?://github.com/.*\.git$', repo_link):
+            repo_link = repo_link[:-4]
+        if repo_link:
+            row['repository_link'] = f'[{repo_text}]({repo_link})'
+
+        m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
+        if m:
+            row['last_commit_shield'] = f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=plastic" />'
+            row['github_stars'] = f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=plastic" />'
+            row['repository_link'] += (
+                ' ' + row['github_stars'] +
+                ' ' + row['last_commit_shield']
+            )
+        else:
+            row['github_stars'] = ''
+
+        #if row.get('github_stars', 0) >= 1000:
+        #    row['github_stars'] = '%.1fk' % (row['github_stars'] / 1000)
+
+    rows.sort(key=lambda row: row['sort_key'])
+
+    cols = {
+        'title_pad': 'Engine',
+        'language_pad': 'Language',
+        'license': 'License',
+        'repository_link': 'Repository/URL',
+        #'github_stars': 'Stars',
+        #'last_commit_shield': 'Last commit',
+    }
+    print('| %s |' % (' | '.join(cols.values())), file=fp)
+    print('|---' * len(cols) + '|', file=fp)
+    for row in rows:
+        values = [str(row.get(c, '')) for c in cols.keys()]
+        print('| %s |' % (' | '.join(values)), file=fp)
 
 if __name__ == '__main__':
     main()
