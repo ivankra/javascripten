@@ -3,7 +3,7 @@
 JavaScript engine of Safari/WebKit.
 
 * URL:        https://trac.webkit.org/wiki/JavaScriptCore
-* Repository: https://github.com/WebKit/WebKit.git
+* Repository: https://github.com/WebKit/WebKit.git <img src="https://img.shields.io/github/stars/WebKit/WebKit?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/WebKit/WebKit?label=&style=flat-square" />
 * LOC:        770374 (`cloc --not_match_d="(?i)(test)" Source/JavaScriptCore`)
 * Language:   C++
 * License:    LGPL-2.0-only (LGLP 2.0+ for most of original KJS files, BSD-2/3 for most of Apple's contributions)

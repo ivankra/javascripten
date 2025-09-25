@@ -7,7 +7,7 @@ JavaScript engine of IE3-IE8 (jscript.dll).
 * Org:        Microsoft
 * Standard:   ES3
 * Years:      1996-2011
-* Tech:       stack-based VM
+* Runtime:    stack-based VM
 
 ## History
 

@@ -2,7 +2,7 @@
 
 Interpreter for a JavaScript subset written in Python.
 
-* Repository: https://github.com/polydojo/jispy.git
+* Repository: https://github.com/polydojo/jispy.git <img src="https://img.shields.io/github/stars/polydojo/jispy?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/polydojo/jispy?label=&style=flat-square" />
 * LOC:        1182 (`cloc jispy.py`)
 * Language:   Python
 * License:    MPL-2.0

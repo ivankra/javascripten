@@ -3,7 +3,7 @@
 JavaScript engine from Facebook optimized for running mobile React Native apps.
 
 * URL:        https://hermesengine.dev/
-* Repository: https://github.com/facebook/hermes.git
+* Repository: https://github.com/facebook/hermes.git <img src="https://img.shields.io/github/stars/facebook/hermes?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/facebook/hermes?label=&style=flat-square" />
 * LOC:        169845 (`cloc include lib tools/hermes`)
 * Language:   C++
 * License:    MIT

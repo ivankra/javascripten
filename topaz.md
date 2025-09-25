@@ -2,7 +2,7 @@
 
 Multithreaded JavaScript engine for .NET.
 
-* Repository: https://github.com/koculu/Topaz.git
+* Repository: https://github.com/koculu/Topaz.git <img src="https://img.shields.io/github/stars/koculu/Topaz?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/koculu/Topaz?label=&style=flat-square" />
 * LOC:        21794 (`cloc --not_match_d="(?i)(test)" src`)
 * Language:   C#
 * License:    MIT

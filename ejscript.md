@@ -3,7 +3,7 @@
 Embeddable JavaScript engine.
 
 * URL:        https://www.embedthis.com/ejscript/doc/
-* Repository: https://github.com/embedthis/ejscript.git
+* Repository: https://github.com/embedthis/ejscript.git <img src="https://img.shields.io/github/stars/embedthis/ejscript?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/embedthis/ejscript?label=&style=flat-square" />
 * LOC:        106690 (`cloc --not_match_d="(?i)(test|pcre|zlib|ejs.web)" src`)
 * Language:   C
 * License:    GPL-2.0-only

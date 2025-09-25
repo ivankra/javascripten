@@ -2,7 +2,7 @@
 
 JavaScript engine for .NET.
 
-* Repository: https://github.com/paulbartrum/jurassic.git
+* Repository: https://github.com/paulbartrum/jurassic.git <img src="https://img.shields.io/github/stars/paulbartrum/jurassic?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/paulbartrum/jurassic?label=&style=flat-square" />
 * LOC:        34639 (`cloc Jurassic`)
 * Language:   C#
 * License:    MIT

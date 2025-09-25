@@ -3,7 +3,7 @@
 Original JavaScript engine of KDE's Konqueror browser.
 
 * URL:        https://invent.kde.org/frameworks/kjs
-* Repository: https://github.com/KDE/kjs.git
+* Repository: https://github.com/KDE/kjs.git <img src="https://img.shields.io/github/stars/KDE/kjs?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/KDE/kjs?label=&style=flat-square" />
 * LOC:        42352 (`cloc src`)
 * Language:   C++
 * License:    LGPL-2.1-only (most source files are LGPL 2.0+)

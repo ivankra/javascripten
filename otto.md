@@ -2,7 +2,7 @@
 
 JavaScript engine in pure Go.
 
-* Repository: https://github.com/robertkrimen/otto.git
+* Repository: https://github.com/robertkrimen/otto.git <img src="https://img.shields.io/github/stars/robertkrimen/otto?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/robertkrimen/otto?label=&style=flat-square" />
 * LOC:        26462 (`cloc --fullpath --not_match_f="(?i)(test)" .`)
 * Language:   Go
 * License:    MIT

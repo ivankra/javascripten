@@ -2,7 +2,7 @@
 
 JavaScript interpreter for .NET.
 
-* Repository: https://github.com/sebastienros/jint.git
+* Repository: https://github.com/sebastienros/jint.git <img src="https://img.shields.io/github/stars/sebastienros/jint?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/sebastienros/jint?label=&style=flat-square" />
 * LOC:        53487 (`cloc Jint`)
 * Language:   C#
 * License:    BSD-2-Clause

@@ -24,7 +24,7 @@ def main():
         help=('Fetch GitHub metadata. Optionally, provide API token from '
               'GitHub Settings > Developer settings > Personal access tokens'),
     )
-    parser.add_argument('--sort-markdown', action='store_true', help="Sort metadata lines inside markdown files.")
+    parser.add_argument('--reformat-markdown', action='store_true', help="Reformat metadata in markdown files.")
     parser.add_argument('--dist', action='store_true', help="Build helper, generate .json for current build")
     parser.add_argument('--markdown-table', action='store_true', help="Print markdown table.")
 
@@ -169,14 +169,30 @@ def process_markdown(row, filename, args):
 
         key = metadata_map[m[1].strip()]
         val = m[2].strip()
+
+        if key in ['repository', 'github'] and '<img' in val:
+            val = re.sub(' *<img src="[^"]+" */?>', '', val).rstrip()
+
         row[key] = val
 
         metadata_lines.append((key, line))
 
     metadata_end = line_no
-    if args.sort_markdown:
+    if args.reformat_markdown:
+        # Sort metadata in metadata_map's order
         metadata_lines = [(metadata_order.index(k), v) for (k, v) in metadata_lines]
         metadata_lines = [v for (k, v) in sorted(metadata_lines)]
+
+        # Also update shields
+        for i in range(len(metadata_lines)):
+            line = metadata_lines[i]
+            shields = ''
+            m = re.match(r'^\* (GitHub|Repository): *(https://github.com/[^/]+/[^/ ]+?(.git))', line)
+            if m:
+                shields = get_shields_for_repo(m[2])
+            if shields:
+                line = re.sub(' *<img src="[^"]+" */?>', '', line) + shields
+                metadata_lines[i] = line
 
         reordered = lines[:metadata_start] + metadata_lines + lines[metadata_end:]
         with open(filename, 'w') as fp:
@@ -334,6 +350,14 @@ def summarize_scores(scores):
     sem = sd / (n ** 0.5)
     return f'N={n} median={median} mean={mean:.2f}±{sem:.2f} max={max(scores)}'
 
+def get_shields_for_repo(repo_link):
+    m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
+    if m:
+        return f' <img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=flat-square" />' + \
+               f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square" />'
+    else:
+        return ''
+
 def print_markdown_table(rows, fp):
     pinned = 'v8 spidermonkey jsc'.split()
 
@@ -381,16 +405,8 @@ def print_markdown_table(rows, fp):
         if repo_link:
             row['repository_link'] = f'[{repo_text}]({repo_link})'
 
-        m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
-        if m:
-            row['last_commit_shield'] = f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=plastic" />'
-            row['github_stars'] = f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=plastic" />'
-            row['repository_link'] += (
-                ' ' + row['github_stars'] +
-                ' ' + row['last_commit_shield']
-            )
-        else:
-            row['github_stars'] = ''
+        if repo_link:
+            row['repository_link'] += get_shields_for_repo(repo_link)
 
         #if row.get('github_stars', 0) >= 1000:
         #    row['github_stars'] = '%.1fk' % (row['github_stars'] / 1000)

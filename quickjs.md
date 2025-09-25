@@ -3,7 +3,7 @@
 Lightweight embeddable JavaScript engine by Fabrice Bellard and Charlie Gordon.
 
 * URL:        https://bellard.org/quickjs/
-* Repository: https://github.com/bellard/quickjs.git
+* Repository: https://github.com/bellard/quickjs.git <img src="https://img.shields.io/github/stars/bellard/quickjs?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/bellard/quickjs?label=&style=flat-square" />
 * LOC:        73590 (`cloc *.c *.h`)
 * Language:   C
 * License:    MIT

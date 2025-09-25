@@ -3,7 +3,7 @@
 High-performance JavaScript engine for GraalVM.
 
 * URL:        https://www.graalvm.org/javascript/
-* Repository: https://github.com/oracle/graaljs.git
+* Repository: https://github.com/oracle/graaljs.git <img src="https://img.shields.io/github/stars/oracle/graaljs?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/oracle/graaljs?label=&style=flat-square" />
 * LOC:        191606 (`cloc --not_match_d="(?i)(test)" graal-js/src`)
 * Language:   Java
 * License:    UPL-1.0 (Universal Permissive License 1.0)

@@ -3,7 +3,7 @@
 Lightweight JavaScript engine for microcontrollers.
 
 * URL:        https://jerryscript.net/
-* Repository: https://github.com/jerryscript-project/jerryscript.git
+* Repository: https://github.com/jerryscript-project/jerryscript.git <img src="https://img.shields.io/github/stars/jerryscript-project/jerryscript?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/jerryscript-project/jerryscript?label=&style=flat-square" />
 * LOC:        108762 (`cloc jerry-*`)
 * Language:   C
 * License:    Apache-2.0

@@ -2,7 +2,7 @@
 
 JavaScript engine of Microsoft Edge Legacy.
 
-* Repository: https://github.com/chakra-core/ChakraCore.git
+* Repository: https://github.com/chakra-core/ChakraCore.git <img src="https://img.shields.io/github/stars/chakra-core/ChakraCore?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/chakra-core/ChakraCore?label=&style=flat-square" />
 * LOC:        779986 (`cloc --fullpath --not_match_f="(?i)(test)" lib pal`)
 * Language:   C++
 * License:    MIT

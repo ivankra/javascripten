@@ -2,7 +2,7 @@
 
 JavaScript engine in pure Go.
 
-* Repository: https://github.com/dop251/goja.git
+* Repository: https://github.com/dop251/goja.git <img src="https://img.shields.io/github/stars/dop251/goja?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/dop251/goja?label=&style=flat-square" />
 * LOC:        46141 (`cloc --fullpath --not_match_f="(?i)(test)" --exclude-lang=Markdown,YAML .`)
 * Language:   Go
 * License:    MIT
