@@ -392,6 +392,7 @@ kBenchData = [
   {
     "arch": "arm64",
     "engine": "nashorn",
+    "binary_size": 2565636,
     "revision": "4923f1e70e460d87c0eeb1f5232344487d46108d",
     "revision_date": "2025-08-21",
     "version": "15.7",

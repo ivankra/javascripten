@@ -49,12 +49,6 @@
     "years": "2024-",
     "bench": [
       {
-        "arch": "arm64",
-        "revision": "70ae6ad64a16ebb95306eeb498814a7551090f56",
-        "revision_date": "2025-09-10",
-        "version": "0.8.0-5-g70ae6ad"
-      },
-      {
         "arch": "x64",
         "binary_size": 3174496,
         "revision": "70ae6ad64a16ebb95306eeb498814a7551090f56",
@@ -2291,6 +2285,7 @@
     "bench": [
       {
         "arch": "arm64",
+        "binary_size": 2565636,
         "revision": "4923f1e70e460d87c0eeb1f5232344487d46108d",
         "revision_date": "2025-08-21",
         "version": "15.7",
@@ -3438,12 +3433,6 @@
     "title": "Starlight",
     "years": "2021",
     "bench": [
-      {
-        "arch": "arm64",
-        "revision": "503e789b9ef53594aee30c45a621018e855dcc17",
-        "revision_date": "2021-10-31",
-        "version": "nightly"
-      },
       {
         "arch": "x64",
         "binary_size": 3096168,

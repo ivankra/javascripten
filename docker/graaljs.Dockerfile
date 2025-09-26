@@ -1,12 +1,15 @@
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/oracle/graaljs
+ARG JS_REV=graal-25.0.0
 
-WORKDIR /opt
-RUN cd /opt && wget "https://github.com/oracle/graaljs/releases/download/graal-24.2.2/graaljs-24.2.2-linux-$(uname -m | sed -e 's/x86_64/amd64/').tar.gz" && \
-    tar xf graaljs*.tar.gz && \
-    ln -s /opt/graal*/bin/js /usr/local/bin/graaljs
+WORKDIR /dist
+RUN wget "https://github.com/oracle/graaljs/releases/download/$JS_REV/$(echo "$JS_REV" | sed -e 's/graal/graaljs/')-linux-$(uname -m | sed -e 's/x86_64/amd64/').tar.gz" && \
+    tar xf graaljs-*.tar.gz && \
+    rm -f graaljs-*.tar.gz && \
+    ln -s graaljs-*/bin/js graaljs
 
-ENV JS_BINARY=/usr/local/bin/graaljs
-RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >version
+ENV JS_BINARY=/dist/graaljs
+RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >version && \
+    du -bs /dist/graaljs-* | cut -f 1 >binary_size
 CMD ${JS_BINARY}

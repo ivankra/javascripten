@@ -25,16 +25,12 @@ def main():
               'GitHub Settings > Developer settings > Personal access tokens'),
     )
     parser.add_argument('--reformat-markdown', action='store_true', help="Reformat metadata in markdown files.")
-    parser.add_argument('--dist', action='store_true', help="Build helper, generate .json for current build")
     parser.add_argument('--markdown-table', action='store_true', help="Print markdown table.")
 
     args = parser.parse_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_dir)
-
-    if args.dist:
-        return
 
     update_data(args)
 
@@ -47,9 +43,6 @@ def update_data(args):
     orig_row_by_engine = {}
     for row in rows:
         orig_row_by_engine[row['engine']] = row
-
-    for arch in ARCH_LIST:
-        migrate_dist(arch)
 
     rows = []
 
@@ -264,34 +257,6 @@ def process_github(row, args):
 
     row['github_stars'] = github_data['stargazers_count']
     row['github_forks'] = github_data['forks_count']
-
-def migrate_dist(arch):
-    if not os.path.exists(f'bench/metadata-{arch}.json'):
-        return
-
-    js = json.load(open(f'bench/metadata-{arch}.json'))
-    for engine_var in js.keys():
-        d = js[engine_var]
-        d = {k: v for (k, v) in d.items() if k in ('binarySize', 'version', 'revision', 'revisionDate') and v}
-        if len(d) == 0:
-            continue
-        d['arch'] = arch
-        if 'binarySize' in d:
-            d['binary_size'] = int(d.pop('binarySize'))
-        if 'revisionDate' in d:
-            d['revision_date'] = d.pop('revisionDate')
-
-        for var in ['-jitless']:
-            if engine_var.endswith(var):
-                d['engine'] = engine_var[:len(engine_var)-len(var)]
-                d['variant'] = var[1:]
-                break
-        else:
-            d['engine'] = engine_var
-
-        os.makedirs(f'dist/{arch}', exist_ok=True)
-        with open(f'dist/{arch}/{engine_var}.json', 'w') as fp:
-            json.dump(d, fp, ensure_ascii=False, indent=2, sort_keys=True)
 
 # Populate row.bench from dist/arch/engine-variant.json
 def process_dist(row):

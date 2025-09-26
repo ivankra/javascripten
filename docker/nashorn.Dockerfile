@@ -1,24 +1,29 @@
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/openjdk/nashorn.git
-ARG JS_COMMIT=main
+ARG JS_REV=main
 
 WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 
 RUN apt-get install -y --no-install-recommends openjdk-25-jdk-headless ant
 RUN cd make/nashorn && ant jar
 
-RUN mkdir /opt/nashorn && \
-    cp /work/build/nashorn/dist/*.jar /opt/nashorn && \
-    cp /work/build/nashorn/dependencies/*.jar /opt/nashorn && \
-    echo >/usr/local/bin/nashorn \
+RUN VERSION=$(git describe --tags | sed -e 's/^release-//') && \
+    mkdir -p /dist/nashorn-$VERSION && \
+    cp /work/build/nashorn/dist/*.jar /dist/nashorn-$VERSION && \
+    cp /work/build/nashorn/dependencies/*.jar /dist/nashorn-$VERSION && \
+    echo >/dist/nashorn \
       '#!/bin/bash'"\n" \
-      'java --add-exports=jdk.internal.le/jdk.internal.org.jline.{reader,reader.impl,reader.impl.completer,terminal,keymap}=ALL-UNNAMED -cp "/opt/nashorn/*" org.openjdk.nashorn.tools.jjs.Main "$@"' && \
-    chmod a+rx /usr/local/bin/nashorn
+      'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" '"\n" \
+      'java --add-exports=jdk.internal.le/jdk.internal.org.jline.{reader,reader.impl,reader.impl.completer,terminal,keymap}=ALL-UNNAMED -cp "$SCRIPT_DIR/nashorn-'$VERSION'/*" org.openjdk.nashorn.tools.jjs.Main --language=es6 "$@"' && \
+    chmod a+rx /dist/nashorn && \
+    echo "$VERSION" >version && \
+    du -bs /dist/nashorn-$VERSION | cut -f 1 >binary_size
 
-# --language=es5/es6
-# -ot (optimistic types): may or may not help on some tests
-ENV JS_BINARY=/usr/local/bin/nashorn
-RUN git describe --tags | sed -e 's/^release-//' >version
-CMD ${JS_BINARY} --language=es6
+ENV JS_BINARY=/dist/nashorn
+CMD ${JS_BINARY}
+
+# Useful flags:
+#   --language=es5/es6
+#   -ot (optimistic types): may or may not help on some tests

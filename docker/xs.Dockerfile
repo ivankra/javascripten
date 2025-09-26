@@ -2,13 +2,14 @@
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/Moddable-OpenSource/moddable.git
-ARG JS_COMMIT=public
+ARG JS_REV=public
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends libncurses-dev
-RUN cd xs/makefiles/lin && MODDABLE=/work make -j
+RUN cd xs/makefiles/lin && MODDABLE=/src make -j
 
-ENV JS_BINARY=/work/build/bin/lin/release/xst
+ENV JS_BINARY=/src/build/bin/lin/release/xst
+RUN ${JS_BINARY} -v | sed -e 's/^XS \([^, ]*\).*/\1/' >version
 # No REPL
