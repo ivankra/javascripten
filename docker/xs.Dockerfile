@@ -8,7 +8,7 @@ WORKDIR /src
 RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends libncurses-dev
-RUN cd xs/makefiles/lin && MODDABLE=/src make -j
+RUN cd xs/makefiles/lin && MODDABLE=/src make -j release  # -O3
 
 ENV JS_BINARY=/src/build/bin/lin/release/xst
 RUN ${JS_BINARY} -v | sed -e 's/^XS \([^, ]*\).*/\1/' >version

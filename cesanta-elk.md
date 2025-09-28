@@ -8,3 +8,4 @@ Toy interpreter for microcontrollers that can hardly run any JavaScript.
 * License:    AGPL
 * Years:      2019-
 * Runtime:    interprets from source
+* Standard:   ❌ (ES1 compliance issues)

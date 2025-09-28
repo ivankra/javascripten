@@ -1,12 +1,12 @@
 # Mocha
 
-The very first JavaScript engine that defined early JavaScript language (JS1.0/1.1), used in Netscape 2.0-3.0.
+The very first JavaScript engine that defined early JavaScript language (JS1.0/1.1), shipped in Netscape Navigator 2.0-3.0.
 
 * GitHub:     https://github.com/doodlewind/mocha1995.git (ns302 version ported to modern toolchain) <img src="https://img.shields.io/github/stars/doodlewind/mocha1995?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/doodlewind/mocha1995?label=&style=flat-square" />
 * LOC:        13728 (ns302 version)
 * Language:   C++
 * License:    Proprietary
-* Standard:   JS1.1 (≈ ES1)
+* Standard:   JS1.1 (≈ES1)
 * Years:      1995-1996
 * Parser:     recursive descent, directly emits bytecode ([mo_parse.c](https://github.com/doodlewind/mocha1995/blob/main/src/mo_parse.c), 953 LOC)
 * Runtime:    stack-based VM ([mocha.c](https://github.com/doodlewind/mocha1995/blob/main/src/mocha.c))
@@ -20,7 +20,9 @@ The very first JavaScript engine that defined early JavaScript language (JS1.0/1
 * Dec 1995: Sun/Netscape press release announcing JavaScript
 * Aug 1996: Netscape Navigator 3.0 came out - JavaScript 1.1 version, completed initial development of JavaScript.
 
-## References
+## Links
 
 * Allen Wirfs-Brock and Brendan Eich. 2020. [JavaScript: the first 20 years](https://dl.acm.org/doi/pdf/10.1145/3386327). Proc. ACM Program. Lang. 4, HOPL, Article 77.
 * [Netscape Communicator 3.0.2 Source Tree](https://archive.org/details/netscape-communicator-3-0-2-source) (archive.org)
+* https://oldweb.today/?browser=ns3-mac ([github](https://github.com/oldweb-today/netcapsule))
+* https://mocha1995.js.org/

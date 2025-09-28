@@ -40,14 +40,17 @@ all: v9.js
 
 # Generate self-contained test files from octane benchmark
 # with fixes to help buggy engines get through some tests.
-v9.js: octane/zlib.js
+v9.js: octane/zlib.js Makefile
 	echo '// Single self-contained test from octane benchmark' >head.js
 	echo '// https://github.com/chromium/octane' >>head.js
 	echo 'if (typeof print === "undefined" && typeof "console" !== "undefined") print = console.log;' >>head.js
 	# Some engines don't like undeclared variables.
 	echo 'var alert=print, read, require, setupEngine, nValue, eValue, dValue, pValue, qValue, dmp1Value, dmq1Value, coeffValue, result, Mandreel_timeouts, Mandreel_XMLHttpRequest, Mandreel_document, Mandreel_window;' >>head.js
 	echo '' >>head.js
-	cat octane/base.js >>head.js
+	# indexOf is ES5 method
+	cat octane/base.js \
+	  | sed -e 's/if (skipBenchmarks.indexOf(/if (skipBenchmarks.indexOf \&\& skipBenchmarks.indexOf(/' \
+	  >>head.js
 	# Don't print overall score for individual tests
 	cat octane/run.js | sed -Ee 's|^load|//load|; s|^(function PrintScore.*)|\1 return;|' >tail.js
 	for x in $(OCTANE_PARTS); do \

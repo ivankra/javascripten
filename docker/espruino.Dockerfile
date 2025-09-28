@@ -1,13 +1,13 @@
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/espruino/Espruino.git
-ARG JS_COMMIT=master
+ARG JS_REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 
-RUN sed -i -e 's/ -Os / -O2 /' Makefile  # -Os by default
 RUN make -j RELEASE=1
 
-ENV JS_BINARY=/work/bin/espruino
+ENV JS_BINARY=/src/bin/espruino
+RUN ${JS_BINARY} -e 'print(process.version)' | tail -2 | head -1 | tr -d '\r' >version
 CMD ${JS_BINARY}

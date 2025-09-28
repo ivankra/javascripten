@@ -8,7 +8,7 @@ An independent implementation of JavaScript from late 1990s.
 * LOC:        36390 (`cloc --not_match_d="(?i)(test)" src`)
 * Language:   C
 * License:    LGPL-2.0-only
-* Standard:   ES1, JS1.4
+* Standard:   JS1.4 (≈ES3)
 * Years:      1998-1999
 * Runtime:    stack-based VM
 

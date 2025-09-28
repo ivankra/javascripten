@@ -57,6 +57,8 @@
 | [Opera](opera.md)                | C++        | Proprietary | [link](https://help.opera.com/en/operas-archived-history/) |
 | [ScriptEase](scriptease.md)      | C          | Proprietary | [link](https://brent-noorda.com/nombas/history/HistoryOfNombas.html) |
 | [SEE](see.md)                    | C          | BSD-3 | [link](https://web.archive.org/web/20100328145240/http://www.adaptive-enterprises.com.au/~d/software/see/) |
+| [SpiderMonkey 1.5](spidermonkey-1.5.md) | C          | MPL-2.0 | [link](https://web.archive.org/web/20210420113930/https://developer.mozilla.org/en-US/docs/Archive/Web/JavaScript/New_in_JavaScript/1.5) |
+| [SpiderMonkey 1.8.5](spidermonkey-1.8.5.md) | C++        | MPL-2.0 | [link](https://web.archive.org/web/20210420113930/https://developer.mozilla.org/en-US/docs/Archive/Web/JavaScript/New_in_JavaScript/1.8.5) |
 | [Jint](jint.md)                  | C#         | BSD-2 | [sebastienros/jint](https://github.com/sebastienros/jint) <img src="https://img.shields.io/github/stars/sebastienros/jint?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/sebastienros/jint?label=&style=flat-square" /> |
 | [Jurassic](jurassic.md)          | C#         | MIT | [paulbartrum/jurassic](https://github.com/paulbartrum/jurassic) <img src="https://img.shields.io/github/stars/paulbartrum/jurassic?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/paulbartrum/jurassic?label=&style=flat-square" /> |
 | [IronJS](ironjs.md)              | C#         | Apache-2.0 | [fholm/IronJS](https://github.com/fholm/IronJS) <img src="https://img.shields.io/github/stars/fholm/IronJS?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/fholm/IronJS?label=&style=flat-square" /> |

@@ -3,7 +3,7 @@ FROM javascripten-debian:stable
 ARG JS_REPO=https://github.com/openjdk/nashorn.git
 ARG JS_REV=main
 
-WORKDIR /work
+WORKDIR /src
 RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 
 RUN apt-get install -y --no-install-recommends openjdk-25-jdk-headless ant
@@ -11,8 +11,8 @@ RUN cd make/nashorn && ant jar
 
 RUN VERSION=$(git describe --tags | sed -e 's/^release-//') && \
     mkdir -p /dist/nashorn-$VERSION && \
-    cp /work/build/nashorn/dist/*.jar /dist/nashorn-$VERSION && \
-    cp /work/build/nashorn/dependencies/*.jar /dist/nashorn-$VERSION && \
+    cp /src/build/nashorn/dist/*.jar /dist/nashorn-$VERSION && \
+    cp /src/build/nashorn/dependencies/*.jar /dist/nashorn-$VERSION && \
     echo >/dist/nashorn \
       '#!/bin/bash'"\n" \
       'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" '"\n" \

@@ -63,6 +63,12 @@ def main():
 
     test_files = [os.path.realpath(os.path.abspath(s)) for s in test_files]
 
+    metadata_json = {}
+    if os.path.exists(args[0] + '.json'):
+        metadata_json = json.loads(open(args[0] + '.json').read())
+    if len(args) > 1:
+        metadata_json['cmd'] = ' '.join(args)
+
     results = {}
 
     for test_file in test_files:
@@ -123,16 +129,17 @@ def main():
                 'time_avg': round(avg_wall_time, 2),
                 'scores': scores,
             }
-            print(f"'{test_name}': {res},")
+            print(f'"{test_name}": {json.dumps(res)},')
             sys.stdout.flush()
             results[test_name] = res
 
-    comment = ''
-    if len(args) > 1:
-        comment = '  // ' + ' '.join(args)
-    print("Full results:\n  '%s': {%s" % (os.path.basename(args[0]), comment))
-    for test_name, res in results.items():
-        print(f"    '{test_name}': {str(res)},")
+    print('-' * 79)
+    print('  "%s": {' % os.path.basename(args[0]))
+    for key, val in metadata_json.items():
+        print(f'    "{key}": {json.dumps(val)},')
+    for i, (test_name, res) in enumerate(results.items()):
+        comma = ',' if i+1 < len(results) else ''
+        print(f'    "{test_name}": {json.dumps(res)}{comma}')
     print('  },')
 
 def print_warning(msg):
@@ -150,14 +157,6 @@ def extract_scores(output):
             score = float(score)
         scores.append((name, score))
     return scores
-
-def interquartile_mean(values):
-    values = sorted(values)
-    n = len(values)
-    k = n // 4
-    assert n == 0 or n-2*k >= 1
-    values = values[k:(n-k)]
-    return sum(values) / len(values) if len(values) > 0 else None
 
 def median(arr):
     arr = list(sorted(arr))

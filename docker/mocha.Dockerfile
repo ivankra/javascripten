@@ -1,12 +1,15 @@
 FROM javascripten-debian:stable
 
 ARG JS_REPO=https://github.com/doodlewind/mocha1995
-ARG JS_COMMIT=main
+ARG JS_REV=main
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 
-RUN bash -c 'source ./build.sh && compile_native'
+# Workaround for a crash in PR_cnvtf/PR_dtoa on arm64
+RUN sed -i -e 's/PR_cnvtf(buf, sizeof buf, 20, fval);/snprintf(buf, sizeof(buf), "%.16g", fval);/' src/mo_num.c
 
-ENV JS_BINARY=/work/out/mo_shell
+RUN sed -i -e 's/CC=clang/CC="clang -O3"/' build.sh && bash -c 'source ./build.sh && compile_native'
+
+ENV JS_BINARY=/src/out/mo_shell
 CMD ${JS_BINARY}

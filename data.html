@@ -548,7 +548,7 @@ function renderCell(th, row) {
       }
     }
     if (row.revision_date) {
-      if (!ver || ver.includes(row.revision.slice(0, 7))) {
+      if (!ver || (row.revision && ver.includes(row.revision.slice(0, 7)))) {
         revLink = `<a class="engine-version" href="${revLink}" title="${row.version}" target="_blank"}>${row.revision_date}</a>`;
       } else {
         revLink = `<a class="engine-version" href="${revLink}" title="${row.version}" target="_blank"}>${row.revision_date} (${ver})</a>`;
@@ -604,7 +604,10 @@ function renderCell(th, row) {
       td.classList.add('red');
     }
   } else if (col === 'standard' && row.standard) {
-    let s = row.standard.replace(/ \(.*\)/, '<sup>*</sup>');
+    let s = row.standard
+      .replace(/(❌) \(.*\)/, '$1')
+      .replace(/ \(≈ *ES.\)/, '')
+      .replace(/ \(.*\)/, '<sup>*</sup>');
     td.innerHTML = s;
     if (s != row.standard) {
       td.title = row.standard;
@@ -717,6 +720,9 @@ function sortCollate(val, col) {
   }
   val = String(val).trim()
   if (col === 'standard') {
+    val = val.replace(/JS1.[0-2]/, 'ES0000');
+    val = val.replace(/JS1.[3-4]/, 'ES0001');
+    val = val.replace(/JS1.[5-8]/, 'ES0003');
     val = val.replace('ESnext', 'ES9999');
     val = val.replace(/([0-9]+)/g, (g) => g.padStart(4, '0'));
     val = val.replace('+', '9');

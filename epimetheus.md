@@ -8,5 +8,5 @@ Netscape's experimental "JavaScript 2.0" implementation towards ES4 proposal.
 * Language:   C++
 * License:    MPL-1.1 OR GPL-2.0-or-later OR LGPL-2.1-or-later
 * Org:        Mozilla
-* Standard:   ES4
+* Standard:   ES4 (draft)
 * Years:      2000-2006

@@ -264,13 +264,11 @@ def process_dist(row):
 
     for arch in ARCH_LIST:
         for filename in glob.glob(f'dist/{arch}/{engine}.json') + \
-                        glob.glob(f'dist/{arch}/{engine}-*.json'):
+                        glob.glob(f'dist/{arch}/{engine}_*.json'):
             with open(filename, 'r') as fp:
                 dist_json = json.load(fp)
 
-            if engine in ['quickjs'] and dist_json['engine'] != engine:
-                continue
-            assert dist_json.pop('engine') == engine, (filename, engine)
+            assert dist_json.pop('engine') == engine, f'Expected {filename} to have engine: {engine}'
 
             assert dist_json.get('arch', arch) == arch
             dist_json['arch'] = arch

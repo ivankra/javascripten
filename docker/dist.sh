@@ -1,11 +1,12 @@
 #!/bin/bash
 # Run after a successful build to prepare /dist directory.
 # Strips binary, writes <image>.json, copies files out to ../dist/<arch>,
+
 set -e
 
 ID="$1"
 if [[ -z "$ID" ]]; then
-  echo "Usage: ./dist.sh <image>"
+  echo "Usage: ./dist.sh <name>[.Dockerfile]"
   exit 1
 fi
 

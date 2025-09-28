@@ -7,8 +7,9 @@ Lightweight JavaScript engine for microcontrollers.
 * LOC:        108762 (`cloc jerry-*`)
 * Language:   C
 * License:    Apache-2.0
-* Note:       Built with --mem-heap=10240 for octane tests.
 * Org:        Samsung
 * Standard:   ES2022 (partial, missing ES2018 regex and a few other features)
 * Years:      2014-
 * Runtime:    stack-based VM
+
+Slow memory manager/GC (Splay benchmark score <0 with extremely slow SplaySetup())

@@ -4,7 +4,8 @@ DOCKER   := $(shell command -v podman 2>/dev/null || echo docker)
 IID_DIR  := ../.cache/iid
 DIST_DIR := ../dist/$(ARCH)
 
-ENGINES := $(filter-out base sh rhino, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile)))
+ENGINES := $(filter-out base sh, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile)))
+#EXTRA_VARIANTS := $(shell grep '[-]f' args.txt | egrep -o '^[^#:]+' | sort -u)
 
 ifeq ($(ARCH),arm64)
   # chakracode: doesn't support arm64 on linux platform
@@ -42,14 +43,8 @@ $(1): $(1)-image $(1)-dist
 
 $(1)-image: $(IID_DIR)/$(1)
 
-$(IID_DIR)/$(1): $(1).Dockerfile $(IID_DIR)/base
-	$(DOCKER) build \
-	  -f $(1).Dockerfile \
-	  -t javascripten-$(1) \
-	  --iidfile=$(IID_DIR)/$(1) \
-	  `sed -ne 's/^$(1): //p' args.txt 2>/dev/null` \
-	  .
-	@rm -f $(DIST_DIR)/$(1).json
+$(IID_DIR)/$(1): $(1).Dockerfile $(IID_DIR)/base args.txt
+	./build.sh $(1).Dockerfile
 
 $(1)-dist: $(DIST_DIR)/$(1).json
 
