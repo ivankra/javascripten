@@ -14,5 +14,5 @@ RUN cmake --build build_release
 # Ahead-of-time compile to bytecode engine.
 # Run with -O (enable expensive optimization) for fair comparison.
 ENV JS_BINARY=/work/build_release/bin/hermes
-RUN ${JS_BINARY} -version | grep Hermes.release | egrep -o [0-9.]+ >version
+RUN ${JS_BINARY} -version | grep Hermes.release | egrep -o [0-9.]+ >json.version
 CMD ${JS_BINARY} -O

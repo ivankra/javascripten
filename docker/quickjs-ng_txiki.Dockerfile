@@ -18,5 +18,5 @@ RUN CC=clang CXX=clang++ CFLAGS=-Wno-stringop-overread \
 # ffi submodule build fails
 
 ENV JS_BINARY=/src/build/tjs
-RUN ${JS_BINARY} -v | egrep -o '[0-9.]+.*' >version
+RUN ${JS_BINARY} -v | egrep -o '[0-9.]+.*' >json.version
 CMD ${JS_BINARY}

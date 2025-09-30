@@ -9,5 +9,5 @@ RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
 RUN make -j RELEASE=1
 
 ENV JS_BINARY=/src/bin/espruino
-RUN ${JS_BINARY} -e 'print(process.version)' | tail -2 | head -1 | tr -d '\r' >version
+RUN ${JS_BINARY} -e 'print(process.version)' | tail -2 | head -1 | tr -d '\r' >json.version
 CMD ${JS_BINARY}

@@ -20,5 +20,5 @@ RUN export CXXFLAGS="-O2" && \
     cmake --build build
 
 ENV JS_BINARY=/src/kjs/build/bin/kjs5
-RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >version
+RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >json.version
 CMD ${JS_BINARY}

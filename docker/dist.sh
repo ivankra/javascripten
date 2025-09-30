@@ -36,13 +36,20 @@ fi
 
 SRC="\$(pwd)"
 
-if [[ -d .git ]]; then
-  git rev-parse HEAD >/dist/revision
-  git log -1 --format='%ad' --date=short HEAD >/dist/revision_date
+for f in json.*; do
+  if [[ -f "$f" && ! -f /dist/$f ]]; then
+    cp -f "$f" "/dist/$f"
+  fi
+done
 
-  if ! [[ -f version ]]; then
+if [[ -d .git ]]; then
+  git rev-parse HEAD >/dist/json.revision
+  git log -1 --format='%ad' --date=short HEAD >/dist/json.revision_date
+  git remote get-url origin >/dist/json.repository
+
+  if ! [[ -f /dist/json.version ]]; then
     (git describe --tags HEAD 2>/dev/null || git rev-parse --short=8 HEAD) \
-      | sed -e s/^v// >/dist/version
+      | sed -e s/^v// >/dist/json.version
   fi
 fi
 
@@ -54,34 +61,28 @@ if [[ "$ID" == *_* ]]; then
   JS_VARIANT="\${JS_VARIANT:-\${ID#*_}}"
 fi
 
-echo "$ARCH" >arch
-echo "\$JS_ENGINE" >engine
+echo "$ARCH" >json.arch
+echo "\$JS_ENGINE" >json.engine
 if [[ -n "\$JS_VARIANT" ]]; then
-  echo "\$JS_VARIANT" >variant
+  echo "\$JS_VARIANT" >json.variant
 fi
 
-if [[ ! -f binary_size && \$(file -b --mime-type "$ID" 2>/dev/null) == */*-executable ]]; then
-  ls -l "$ID" 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' ' >binary_size
+if [[ ! -f json.binary_size && \$(file -b --mime-type "$ID" 2>/dev/null) == */*-executable ]]; then
+  ls -l "$ID" 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' ' >json.binary_size
 fi
 
-# Assemble /dist/$ID.json from value fragments in /dist
+# Assemble /dist/$ID.json from value fragments in /dist/json.*
 {
   echo "{"
-  for key in arch engine variant binary_size revision revision_date version; do
-    if [[ -f \$key ]]; then
-      val=\$(cat "\$key")
-    elif [[ -f "\$SRC/\$key" ]]; then
-      val=\$(cat "\$SRC/\$key")
-    else
-      continue
-    fi
-
+  for f in json.*; do
+    key=\${f#json.}
+    val=\$(cat "\$f")
     if [[ \$key == binary_size ]]; then
       echo "  \"binary_size\": \$val,"
     else
       echo "  \"\$key\": \\"\$val\\","
     fi
-    rm -f "\$key"
+    rm -f "\$f"
   done
 } | sed '$ s/,$//' >$ID.json
 echo "}" >>$ID.json

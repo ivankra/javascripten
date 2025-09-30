@@ -25,6 +25,6 @@ RUN mv js-1.8.5/js ./ && cd js/src && \
     make
 
 ENV JS_BINARY=/src/js/src/shell/js
-RUN ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) .*$/\1/p' >version && \
-    ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) (.* )?([0-9]{4}-[-0-9]+)$/\3/p' >revision_date
+RUN ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) .*$/\1/p' >json.version && \
+    ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) (.* )?([0-9]{4}-[-0-9]+)$/\3/p' >json.revision_date
 CMD ${JS_BINARY}

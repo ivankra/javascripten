@@ -18,8 +18,8 @@ RUN VERSION=$(git describe --tags | sed -e 's/^release-//') && \
       'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" '"\n" \
       'java --add-exports=jdk.internal.le/jdk.internal.org.jline.{reader,reader.impl,reader.impl.completer,terminal,keymap}=ALL-UNNAMED -cp "$SCRIPT_DIR/nashorn-'$VERSION'/*" org.openjdk.nashorn.tools.jjs.Main --language=es6 "$@"' && \
     chmod a+rx /dist/nashorn && \
-    echo "$VERSION" >version && \
-    du -bs /dist/nashorn-$VERSION | cut -f 1 >binary_size
+    echo "$VERSION" >json.version && \
+    du -bs /dist/nashorn-$VERSION | cut -f 1 >json.binary_size
 
 ENV JS_BINARY=/dist/nashorn
 CMD ${JS_BINARY}

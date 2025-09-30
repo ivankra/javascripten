@@ -12,5 +12,5 @@ RUN wget -O /opt/zig.tar.xz "https://ziglang.org/download/0.14.1/zig-$(uname -m)
 RUN zig build --release=fast
 
 ENV JS_BINARY=/work/zig-out/bin/kiesel
-RUN ${JS_BINARY} --version | grep kiesel | grep -o '[0-9].*' >version
+RUN ${JS_BINARY} --version | grep kiesel | grep -o '[0-9].*' >json.version
 CMD ${JS_BINARY}

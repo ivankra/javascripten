@@ -59,5 +59,5 @@ RUN gn gen out/release/
 RUN autoninja -C out/release/ d8
 
 ENV JS_BINARY=/work/src/out/release/d8
-RUN ${JS_BINARY} -e 'console.log(version())' >version
+RUN ${JS_BINARY} -e 'console.log(version())' >json.version
 CMD ${JS_BINARY}

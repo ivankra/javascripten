@@ -1,12 +1,17 @@
 # Extra flags for docker build.
 # Format: "<engine>: <flags>", one per line.
 
-v8:          --build-arg=JS_COMMIT=14.2.3
-rhino:       --build-arg=JS_REV=Rhino1_8_0_Release
-espruino:    --build-arg=JS_REV=RELEASE_2V27
-jerryscript: --build-arg=JS_REV=v3.0.0
-mujs:        --build-arg=JS_REV=1.3.7
-xs:          --build-arg=JS_REV=5.11.0
+espruino:           --build-arg=JS_REV=RELEASE_2V27
+jerryscript:        --build-arg=JS_REV=v3.0.0
+mujs:               --build-arg=JS_REV=1.3.7
+rhino:              --build-arg=JS_REV=Rhino1_8_0_Release
+v8:                 --build-arg=JS_COMMIT=14.2.3
+xs:                 --build-arg=JS_REV=5.11.0
+qv4:                --build-arg=JS_REV=v6.9.1
+qv4_jitless:        --build-arg=JS_REV=v6.9.1 --build-arg=JS_VARIANT=jitless -f qv4.Dockerfile
+
+chakracore_jitless: --build-arg=JS_VARIANT=jitless -f chakracore.Dockerfile
+iv-lv5_jitless:     --build-arg=JS_VARIANT=jitless -f iv-lv5.Dockerfile
 
 spidermonkey_1.4:   -f spidermonkey_1.5.Dockerfile --build-arg=TARBALL=https://archive.mozilla.org/pub/js/older-packages/js-1.4-2.tar.gz
 spidermonkey_1.6:   -f spidermonkey_1.5.Dockerfile --build-arg=TARBALL=https://archive.mozilla.org/pub/js/js-1.60.tar.gz

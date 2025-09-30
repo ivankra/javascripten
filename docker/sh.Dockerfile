@@ -7,14 +7,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
         libreadline-dev \
         openjdk-25-jdk-headless \
         # Guile has a primitive unfinished ES3 engine, run 'guile --language=ecmascript' \
-        guile-3.0 \
-        # Rhino: slow engine shipped with early JDK versions \
-        rhino
-
-# GraalJS
-RUN cd /opt && wget "https://github.com/oracle/graaljs/releases/download/graal-24.2.2/graaljs-24.2.2-linux-$(uname -m | sed -e 's/x86_64/amd64/').tar.gz" && \
-    tar xf graaljs*.tar.gz && \
-    ln -s /opt/graal*/bin/js /usr/local/bin/graaljs
+        guile-3.0
 
 # Install node/npm and some popular JavaScript runtimes:
 #

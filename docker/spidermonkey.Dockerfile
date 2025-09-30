@@ -26,5 +26,5 @@ RUN MOZCONFIG=/work/MOZCONFIG ./mach build
 RUN ln -s obj-*/ obj
 
 ENV JS_BINARY=/work/obj/dist/bin/js
-RUN ${JS_BINARY} -v | egrep -o [0-9.]+ >version
+RUN ${JS_BINARY} -v | egrep -o [0-9.]+ >json.version
 CMD ${JS_BINARY}

@@ -19,8 +19,8 @@ RUN VERSION=$(git describe --tags | sed -Ee 's/^Rhino([0-9_]+)_Release/\1/; s/_/
       'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" '"\n" \
       'java -jar "$SCRIPT_DIR/'$(cd /dist; ls rhino-all-*.jar)'" "$@"' && \
     chmod a+rx /dist/rhino && \
-    echo "$VERSION" >version && \
-    du -bs /dist/rhino-all-*.jar | cut -f 1 >binary_size
+    echo "$VERSION" >json.version && \
+    du -bs /dist/rhino-all-*.jar | cut -f 1 >json.binary_size
 
 ENV JS_BINARY=/dist/rhino
 CMD ${JS_BINARY}

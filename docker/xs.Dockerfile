@@ -11,5 +11,5 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends libncurses-d
 RUN cd xs/makefiles/lin && MODDABLE=/src make -j release  # -O3
 
 ENV JS_BINARY=/src/build/bin/lin/release/xst
-RUN ${JS_BINARY} -v | sed -e 's/^XS \([^, ]*\).*/\1/' >version
+RUN ${JS_BINARY} -v | sed -e 's/^XS \([^, ]*\).*/\1/' >json.version
 # No REPL
