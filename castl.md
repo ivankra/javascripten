@@ -2,7 +2,7 @@
 
 JavaScript to Lua compiler with runtime library.
 
-* Repository: https://github.com/PaulBernier/castl.git <img src="https://img.shields.io/github/stars/PaulBernier/castl?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/PaulBernier/castl?label=&style=flat-square" />
+* Repository: https://github.com/PaulBernier/castl.git <img src="https://img.shields.io/github/stars/PaulBernier/castl?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/PaulBernier/castl?label=&style=flat-square" alt="Last commit">
 * LOC:        6366 (`cloc --not_match_d="(test|jscompile)" lua *.js`)
 * Language:   Lua, JavaScript
 * License:    LGPL-3.0-or-later

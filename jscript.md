@@ -2,6 +2,7 @@
 
 JavaScript engine of IE3-IE8 (jscript.dll).
 
+* URL:        https://learn.microsoft.com/en-us/previous-versions/hbxc2t98%28v=vs.85%29
 * Language:   C++
 * License:    Proprietary
 * Org:        Microsoft

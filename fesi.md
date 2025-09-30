@@ -15,4 +15,4 @@ JavaScript interpreter written in Java.
 
 https://web.archive.org/web/20040607013039/http://www.lugrin.ch/fesi/history.html
 
-Forked by [YAJI][yaji.md] in 2011.
+Forked by [YAJI](yaji.md) in 2011.

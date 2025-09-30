@@ -3,7 +3,7 @@
 Lightweight engine for microcontrollers/IoT by Kinoma/Marvell.
 
 * URL:        https://www.moddable.com/faq#what-is-xs
-* Repository: https://github.com/Moddable-OpenSource/moddable.git <img src="https://img.shields.io/github/stars/Moddable-OpenSource/moddable?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/Moddable-OpenSource/moddable?label=&style=flat-square" />
+* Repository: https://github.com/Moddable-OpenSource/moddable.git <img src="https://img.shields.io/github/stars/Moddable-OpenSource/moddable?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/Moddable-OpenSource/moddable?label=&style=flat-square" alt="Last commit">
 * LOC:        88837 (`cloc xs/sources xs/includes`)
 * Language:   C
 * License:    Apache-2.0, LGPL-3.0-or-later

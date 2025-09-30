@@ -2,7 +2,7 @@
 
 Small embeddable JavaScript-ish interpreter.
 
-* Repository: https://github.com/pcmacdon/jsish.git <img src="https://img.shields.io/github/stars/pcmacdon/jsish?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/pcmacdon/jsish?label=&style=flat-square" />
+* Repository: https://github.com/pcmacdon/jsish.git <img src="https://img.shields.io/github/stars/pcmacdon/jsish?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/pcmacdon/jsish?label=&style=flat-square" alt="Last commit">
 * LOC:        50896 (`cloc src`)
 * Language:   C
 * License:    MIT

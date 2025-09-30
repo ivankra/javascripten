@@ -3,10 +3,10 @@
 JavaScript engine of Qt's QML framework (QJSEngine).
 
 * URL:        https://wiki.qt.io/V4
-* Repository: https://github.com/qt/qtdeclarative.git <img src="https://img.shields.io/github/stars/qt/qtdeclarative?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/qt/qtdeclarative?label=&style=flat-square" />
+* Repository: https://github.com/qt/qtdeclarative.git <img src="https://img.shields.io/github/stars/qt/qtdeclarative?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/qt/qtdeclarative?label=&style=flat-square" alt="Last commit">
 * LOC:        50221 (`cloc qtdeclarative/src/{qml/{jsruntime,jsapi,jit}`, +extra 50k in qtdeclarative/src/3rdparty - JSC's macroassembler and YARR)
 * Language:   C++
-* License:    LGPL, GPL, Qt
+* License:    Qt, GPL, LGPL
 * Org:        Qt
 * Standard:   ES2016
 * Years:      2012-

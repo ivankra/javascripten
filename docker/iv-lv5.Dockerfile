@@ -14,4 +14,5 @@ RUN export CXXFLAGS="-Wno-implicit-fallthrough -Wno-deprecated-copy -Wno-depreca
     make -C release lv5 -j
 
 ENV JS_BINARY=/work/release/iv/lv5/lv5
+RUN if [ ${JS_BINARY} -v | grep -q "JIT..off" ]; then echo "" >json.jit; fi
 CMD ${JS_BINARY}

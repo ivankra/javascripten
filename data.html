@@ -113,6 +113,7 @@ a {
 
 a:hover {
   text-decoration: underline;
+  text-decoration-skip-ink: none;
 }
 
 main {
@@ -255,6 +256,20 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
     font-weight: 500;
   }
 
+  .engine-name-variant {
+    white-space: nowrap;
+  }
+
+  .engine-variant {
+    color: var(--bg-primary);
+    background-color: var(--text-accent);
+    border-radius: 6px;
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 4px;
+    font-size: 12px;
+  }
+
   .engine-version {
     color: var(--text-muted);
     font-size: 12px;
@@ -318,7 +333,7 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
       </select>
     </div>
     <div class="control">
-      <label><input data-state="jitless" type="checkbox" /> Show JIT-less variants</label>
+      <label><input data-state="variants" type="checkbox" /> Show variants</label>
     </div>
     <div class="control">
       <label><input data-state="v8" type="checkbox" /> Only v8-v7 benchmarks</label>
@@ -368,7 +383,7 @@ th.sort-desc:not(.benchmark)::after, th.benchmark.sort-desc div.control::after {
 <script>
 const state = {
   arch: 'arm64',
-  jitless: false,
+  variants: false,
   v8: false,
   sort: [
     { col: 'score', dir: 'desc' },  // main sort criterion
@@ -391,7 +406,7 @@ window.addEventListener('load', () => {
 function loadState() {
   const params = new URLSearchParams(window.location.search);
   state.v8 = params.has('v8');
-  state.jitless = params.has('jitless');
+  state.variants = params.has('variants');
   state.arch = params.get('arch') ?? state.arch;
   let m = (params.get('sort') ?? '').match(/^(-?)(\w+)$/);
   if (m && document.querySelector(`th[data-col="${m[2]}"]`)) {
@@ -413,7 +428,7 @@ function loadState() {
 function saveState() {
   const params = new URLSearchParams();
   if (state.arch !== 'arm64') params.set('arch', state.arch);
-  if (state.jitless) params.set('jitless', true);
+  if (state.variants) params.set('variants', true);
   if (state.v8) params.set('v8', true);
   const sortVal = (state.sort[0].dir == 'desc' ? '-' : '') + state.sort[0].col;
   if (sortVal !== '-score') params.set('sort', sortVal);
@@ -478,7 +493,7 @@ function setupListeners() {
 function render() {
   document.querySelector('[data-state=arch]').value = state.arch;
   document.querySelector('[data-state=v8]').checked = state.v8;
-  document.querySelector('[data-state=jitless]').checked = state.jitless;
+  document.querySelector('[data-state=variants]').checked = state.variants;
 
   let lastCol = '';
 
@@ -558,9 +573,13 @@ function renderCell(th, row) {
     } else {
       revLink = '';
     }
+    variantDiv = '';
+    if (row.variant) {
+      variantDiv = `<div class="engine-variant">${row.variant}</div>`;
+    }
     td.innerHTML = `
       <div class="engine-cell">
-        <a href="https://github.com/ivankra/javascript-zoo/blob/main/${row.engine}.md" class="engine-name" target="_blank">${row.title ?? row.engine}</a>
+        <div class="engine-name-variant"><a href="https://github.com/ivankra/javascript-zoo/blob/main/${row.engine}.md" class="engine-name" target="_blank">${row.title ?? row.engine}</a>${variantDiv}</div>
         <div class="engine-version">${revLink}</div>
       </div>`;
   } else if (col === 'loc' && Number(row.loc)) {
@@ -583,14 +602,7 @@ function renderCell(th, row) {
       td.title = row.github ? row.github : row.repository;
     }
   } else if (col === 'license' && row.license) {
-    let s = row.license
-      .replace(/ (OR|AND) /g, ', ')
-      .replace(/(-Clause|-only)/g, '')
-      .replace(/-or-later/g, '+')
-      .replace(/ WITH[^,]*/i, '<sup>*</sup>')
-      .replace(/MPL.*GPL.*LGPL.*/, 'MPL/(L)GPL')
-      .replace(/LGPL.*Qt/, 'Qt/(L)GPL')
-      .replace(/Artistic.*GPL.*/, 'Artistic/GPL');
+    let s = row.license_abbr ?? row.license;
     if (row.license === 'UPL-1.0') {
       td.title = 'Universal Permissive License 1.0';
     } else if (row.license === 'BSL-1.0') {
@@ -598,7 +610,7 @@ function renderCell(th, row) {
     } else if (s != row.license) {
       td.title = row.license;
     }
-    s = '<nobr>' + s.split(/ /).join('</nobr> <nobr>') + '</nobr>';
+    s = '<nobr>' + s.split('/').join('</nobr>/<nobr>') + '</nobr>';
     td.innerHTML = s;
     if (row.license.match(/(proprietary|custom|agpl)/i)) {
       td.classList.add('red');
@@ -623,7 +635,10 @@ function renderCell(th, row) {
     td.innerHTML = row.years.replace(/-/, '-<br>');
     td.classList.toggle('red', !row.years.endsWith('-'));
   } else if (col === 'jit') {
-    td.innerHTML = row.jit ? 'Y' : '';
+    if (row.jit) {
+      td.innerHTML = 'Y';
+      td.title = row.jit;
+    }
   } else if (col === 'description') {
     td.innerHTML = row.summary ?? '';
     if (row.tech)
@@ -664,8 +679,8 @@ function processRawData() {
       joined = [engineRow];
     }
 
-    if (!state.jitless) {
-      joined = joined.filter(row => row.variant != 'jitless');
+    if (!state.variants) {
+      joined = joined.filter(row => !Boolean(row.variant));
     }
 
     outputRows.push(...joined);
@@ -682,12 +697,6 @@ function processRawData() {
     if (selectedScores.length > 0) {
       row.score = Math.round(geometricMean(selectedScores));
     }
-
-    row.jit = (
-      row.tech?.match(/\bJIT\b/) &&
-      !row.engine.includes('jitless') &&
-      !(row.tech?.includes('JIT (x') && state.arch === 'arm64')
-    );
   }
 
   return outputRows;

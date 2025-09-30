@@ -10,7 +10,8 @@ ENGINES := $(filter-out base sh, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Doc
 ifeq ($(ARCH),arm64)
   # chakracode: doesn't support arm64 on linux platform
   # iv-lv5: no JIT on arm64
-  ENGINES := $(filter-out chakracore% iv-lv5_jitless bali hako starlight,$(ENGINES))
+  # spidermonkey_1.8.5: JIT doesn't support arm64, crash in JIT-less build
+  ENGINES := $(filter-out chakracore% iv-lv5_jitless spidermonkey_1.8.5 bali hako starlight,$(ENGINES))
 endif
 
 all: base $(ENGINES)
@@ -65,6 +66,11 @@ $(1)-sh: $(IID_DIR)/$(1)
 	  -it \
 	  javascripten-$(1) \
 	  /bin/bash -c 'ln -sv "$$$$JS_BINARY" "/bin/`basename $$$$JS_BINARY`"; /bin/bash -i'
+
+$(1)-clean:
+	$(DOCKER) container prune
+	$(DOCKER) image rm -f javascripten-$(1)
+	$(DOCKER) image prune
 endef
 
 $(foreach var,$(ENGINES),$(eval $(call rules,$(var))))

@@ -24,8 +24,7 @@ def main():
         help=('Fetch GitHub metadata. Optionally, provide API token from '
               'GitHub Settings > Developer settings > Personal access tokens'),
     )
-    parser.add_argument('--reformat-markdown', action='store_true', help="Reformat metadata in markdown files.")
-    parser.add_argument('--markdown-table', action='store_true', help="Print markdown table.")
+    parser.add_argument('-f', '--format', action='store_true', help="Reformat metadata in markdown files.")
 
     args = parser.parse_args()
 
@@ -47,7 +46,7 @@ def update_data(args):
     rows = []
 
     for filename in sorted(glob.glob('*.md')):
-        if filename == 'README.md':
+        if filename == 'README.md' or '_' in filename:
             continue
 
         if os.isatty(1):
@@ -61,9 +60,23 @@ def update_data(args):
         process_markdown(row, filename=filename, args=args)
         process_github(row, args=args)
 
+        # Variants metadata are only used as base template in process_dist/process_bench()
+        # If there's no built binary / benchmark data for a variant, it will be ignored.
+        variants_metadata = {}
+        for variant_filename in sorted(glob.glob(f'{engine}_*.md')):
+            variant = variant_filename[len(engine)+1:-3]
+            variants_metadata[variant] = {
+                'engine': engine,
+                'variant': variant,
+            }
+            if os.isatty(1):
+                print(f'\033[1K\r{variant_filename} ', end='', flush=True)
+            process_markdown(variants_metadata[variant], filename=variant_filename, args=args)
+            del variants_metadata[variant]['title']
+
         row['bench'] = {}
-        process_dist(row)
-        process_bench(row)
+        process_dist(row, variants_metadata=variants_metadata)
+        process_bench(row, variants_metadata=variants_metadata)
 
         bench = row.pop('bench')
         row = {k: row[k] for k in sorted(row.keys())}
@@ -82,9 +95,6 @@ def update_data(args):
         fp.write('kJavascriptZoo = ')
         json.dump(rows, fp, ensure_ascii=False, indent=2, sort_keys=False)
 
-    if args.markdown_table:
-        print_markdown_table(rows, fp=sys.stdout)
-
     lines = open('README.md').readlines()
     idx = lines.index('## List of JavaScript engines\n')
     lines = lines[:(idx + 1)]
@@ -98,7 +108,8 @@ def process_markdown(row, filename, args):
     lines = [s.rstrip() for s in open(filename).readlines()]
 
     assert lines[0].startswith('# ') and lines[1] == ''
-    row['title'] = lines[0][1:].strip()
+    if 'title' not in row:
+        row['title'] = lines[0][1:].strip()
 
     metadata_map = {
         'URL': 'url',
@@ -164,14 +175,14 @@ def process_markdown(row, filename, args):
         val = m[2].strip()
 
         if key in ['repository', 'github'] and '<img' in val:
-            val = re.sub(' *<img src="[^"]+" */?>', '', val).rstrip()
+            val = re.sub(' *<img .*', '', val).rstrip()
 
         row[key] = val
 
         metadata_lines.append((key, line))
 
     metadata_end = line_no
-    if args.reformat_markdown:
+    if args.format:
         # Sort metadata in metadata_map's order
         metadata_lines = [(metadata_order.index(k), v) for (k, v) in metadata_lines]
         metadata_lines = [v for (k, v) in sorted(metadata_lines)]
@@ -182,9 +193,9 @@ def process_markdown(row, filename, args):
             shields = ''
             m = re.match(r'^\* (GitHub|Repository): *(https://github.com/[^/]+/[^/ ]+?(.git))', line)
             if m:
-                shields = get_shields_for_repo(m[2])
+                shields = get_shields_for_repo(m[2], short=True)
             if shields:
-                line = re.sub(' *<img src="[^"]+" */?>', '', line) + shields
+                line = re.sub(' *<img .*', '', line) + ' ' + shields
                 metadata_lines[i] = line
 
         reordered = lines[:metadata_start] + metadata_lines + lines[metadata_end:]
@@ -212,6 +223,22 @@ def process_markdown(row, filename, args):
         elif key not in ['standard', 'type', 'jit', 'vm']:
             print(f'Unprocessed note in {key}: {val}')
 
+    # license_abbr
+    if row.get('license'):
+        s = row['license']
+        s = re.sub('BSD-([0-9])-Clause', r'BSD-\1', s)
+        s = re.sub('-([0-9.]+)-only', r'-\1', s)
+        s = re.sub('-([0-9.]+)-or-later', r'-\1+', s)
+        s = re.sub(' *( OR| AND|,) *', '/', s)
+        s = re.sub(' WITH[^,/]*', '', s)
+        #s = re.sub('Apache[-0-9.+]', 'Apache', s)
+        s = re.sub('Apache[-0-9.+]*/LGPL[-0-9.+]*', 'Apache/LGPL', s)
+        s = re.sub('Apache[-0-9.+]*/MIT', 'Apache/MIT', s)
+        s = re.sub('MPL[-0-9.+]*/GPL[-0-9.+]*/LGPL[-0-9.+]*', 'MPL/GPL/LGPL', s)
+        s = re.sub('Artistic[-0-9.+A-Za-z]*/GPL[-0-9.+]+', 'Artistic/GPL', s)
+        row['license_abbr'] = s
+
+    # Integer keys
     for key in ['loc']:
         if key in row:
             row[key] = int(row[key])
@@ -259,7 +286,7 @@ def process_github(row, args):
     row['github_forks'] = github_data['forks_count']
 
 # Populate row.bench from dist/arch/engine-variant.json
-def process_dist(row):
+def process_dist(row, variants_metadata):
     engine = row['engine']
 
     for arch in ARCH_LIST:
@@ -276,32 +303,44 @@ def process_dist(row):
             variant = dist_json.get('variant', '')
             assert filename.endswith(variant + '.json')
 
-            row['bench'][f'{arch}/{engine}/{variant}'] = dist_json
+            row['bench'][f'{arch}/{engine}/{variant}'] = merge_jsons(
+                variants_metadata.get(variant), dist_json)
 
 # Populate row.bench from benchmarking data in bench/data.py
-def process_bench(out_row):
-    engine = out_row['engine']
+def process_bench(row, variants_metadata):
+    engine = row['engine']
 
-    for row in kBenchData:
-        if row['engine'] != engine: continue
+    for bench_json in kBenchData:
+        if bench_json['engine'] != engine: continue
 
         head_cols = ['arch', 'variant', 'binary_size', 'revision', 'revision_date', 'version']
-        row = {k: row[k] for k in head_cols + sorted(row.keys()) if k in row}
+        bench_json = {k: bench_json[k] for k in head_cols + sorted(bench_json.keys()) if k in bench_json}
 
-        assert row.pop('engine') == engine
-        arch = row['arch']
-        variant = row.get('variant', '')
+        assert bench_json.pop('engine') == engine
+        arch = bench_json['arch']
+        variant = bench_json.get('variant', '')
 
-        for col in sorted(row.keys()):
-            if type(row[col]) is not dict: continue
-            if 'scores' not in row[col]: continue
-            scores = row[col]['scores']
+        for col in sorted(bench_json.keys()):
+            if type(bench_json[col]) is not dict: continue
+            if 'scores' not in bench_json[col]: continue
+            scores = bench_json[col]['scores']
             scores = list(sorted(scores))
             assert len(scores) >= 1
-            row[col] = scores[len(scores) // 2]
-            row[col + '_note'] = summarize_scores(scores)
+            bench_json[col] = scores[len(scores) // 2]
+            bench_json[col + '_note'] = summarize_scores(scores)
 
-        out_row['bench'][f'{arch}/{engine}/{variant}'] = row
+        if variant == 'jitless':
+            bench_json['jit'] = ''
+
+        row['bench'][f'{arch}/{engine}/{variant}'] = merge_jsons(
+            variants_metadata.get(variant), bench_json)
+
+def merge_jsons(*jsons):
+    res = {}
+    for json in jsons:
+        if json is not None:
+            res.update(json)
+    return res
 
 def summarize_scores(scores):
     n = len(scores)
@@ -313,32 +352,33 @@ def summarize_scores(scores):
     sem = sd / (n ** 0.5)
     return f'N={n} median={median} mean={mean:.2f}±{sem:.2f} max={max(scores)}'
 
-def get_shields_for_repo(repo_link):
+def get_shields_for_repo(repo_link, short=True):
     m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
-    if m:
-        return f' <img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=flat-square" />' + \
-               f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square" />'
-    else:
+    if not m:
         return ''
+    if short:
+        return (
+            f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=flat-square" alt="Stars">' +
+            f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square" alt="Last commit">'
+        )
+    else:
+        return (
+            f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=stars&style=flat-square" alt="GitHub"><br>' +
+            f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square">'
+        )
+
+def get_domain(url):
+    m = re.match('^https?://?([^/]+).*', url)
+    if m:
+        host = m[1]
+        if host.count('.') > 1:
+            return '.'.join(host.split('.')[-2:])
+        return host
 
 def print_markdown_table(rows, fp):
     pinned = 'v8 spidermonkey jsc'.split()
 
     for row in rows:
-        s = row.get('license', '')
-        s = re.sub('BSD-([0-9])-Clause', r'BSD-\1', s)
-        s = re.sub('-([0-9.]+)-only', r'-\1', s)
-        s = re.sub('-([0-9.]+)-or-later', r'-\1+', s)
-        s = re.sub(' OR ', ', ', s)
-        s = re.sub(' WITH.*', '', s)
-        s = re.sub('MPL[-0-9.+,]* GPL[-0-9.+,]* LGPL[-0-9.+]*', 'MPL/GPL/LGPL', s)
-        s = re.sub('Apache[-0-9.+,]* LGPL[-0-9.+]*', 'Apache/LGPL', s)
-        s = re.sub('Apache[-0-9.+,]* MIT', 'Apache/MIT', s)
-        s = re.sub('LGPL, GPL, Qt', 'Qt/GPL/LGPL', s)
-        s = re.sub('Artistic[-0-9.+A-Za-z]*, GPL[-0-9.+]+', 'Artistic/GPL', s)
-        s = re.sub(', ', '/', s)
-        row['license'] = '%s' % s
-
         s = row.get('language', '')
         s = re.sub(', .*', '', s)
         row['language_pad'] = '%-10s' % s
@@ -356,10 +396,11 @@ def print_markdown_table(rows, fp):
         row['title_pad'] = '%-32s' % f'[{row["title"]}]({row["engine"]}.md)'
 
         repo_link = row.get('github', row.get('repository', ''))
-        repo_text = row['engine']
+        repo_text = ''
         if not repo_link and row.get('url', '').startswith('http'):
             repo_link = row['url']
-            repo_text = 'link'
+        if repo_link:
+            repo_text = get_domain(repo_link) or 'link'
         m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
         if m:
             repo_text = f'{m[1]}/{m[2]}'
@@ -367,23 +408,20 @@ def print_markdown_table(rows, fp):
             repo_link = repo_link[:-4]
         if repo_link:
             row['repository_link'] = f'[{repo_text}]({repo_link})'
-
-        if repo_link:
-            row['repository_link'] += get_shields_for_repo(repo_link)
-
-        #if row.get('github_stars', 0) >= 1000:
-        #    row['github_stars'] = '%.1fk' % (row['github_stars'] / 1000)
+            shields = get_shields_for_repo(repo_link, short=False).strip()
+            if shields:
+                row['repository_link'] = f'[{shields}]({repo_link})'
 
     rows.sort(key=lambda row: row['sort_key'])
 
     cols = {
         'title_pad': 'Engine',
         'language_pad': 'Language',
-        'license': 'License',
-        'repository_link': 'Repository/URL',
-        #'github_stars': 'Stars',
-        #'last_commit_shield': 'Last commit',
+        'summary': 'Description',
+        'license_abbr': 'License',
+        'repository_link': 'GitHub/URL',
     }
+    print('<!-- Do not edit: autogenerated by data-gen.py -->', file=fp)
     print('| %s |' % (' | '.join(cols.values())), file=fp)
     print('|---' * len(cols) + '|', file=fp)
     for row in rows:

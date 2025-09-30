@@ -4,7 +4,7 @@ Embeddable JavaScript engine from MuPDF.
 
 * URL:        https://mujs.com/
 * Repository: https://codeberg.org/ccxvii/mujs.git
-* GitHub:     https://github.com/ccxvii/mujs.git <img src="https://img.shields.io/github/stars/ccxvii/mujs?label=&style=flat-square" /><img src="https://img.shields.io/github/last-commit/ccxvii/mujs?label=&style=flat-square" />
+* GitHub:     https://github.com/ccxvii/mujs.git <img src="https://img.shields.io/github/stars/ccxvii/mujs?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/ccxvii/mujs?label=&style=flat-square" alt="Last commit">
 * LOC:        18490 (`cloc *.c *.h`)
 * Language:   C
 * License:    ISC
