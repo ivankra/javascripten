@@ -1,12 +1,13 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/cesanta/elk.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/cesanta/elk.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
-RUN gcc -o elk -O2 -I. -DJS_DUMP elk.c examples/cmdline/main.c
+RUN gcc -o elk -O3 -I. -DJS_DUMP elk.c examples/cmdline/main.c
 
-ENV JS_BINARY=/work/elk
+ENV JS_BINARY=/src/elk
 # No REPL, no script running - pass expression on command-line.

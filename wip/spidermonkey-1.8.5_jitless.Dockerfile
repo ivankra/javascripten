@@ -1,4 +1,5 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc14
+FROM $BASE
 
 ARG TARBALL=https://archive.mozilla.org/pub/js/js185-1.0.0.tar.gz
 
@@ -14,7 +15,7 @@ RUN mv js-1.8.5/js ./ && cd js/src && \
     # python 2 fixups \
     sed -i -e 's/"import sys; sys.exit.*"/""/' configure && \
     sed -i -E -e 's/print "(.*)"/print("\1")/' imacro_asm.py && \
-    ./configure --host="$(uname -m)-unknown-linux" --enable-static --enable-optimize="-g" --disable-warnings-as-errors --disable-tracerjit --disable-methodjit && \
+    ./configure --host="$(uname -m)-unknown-linux" --enable-static --enable-optimize="-g" --disable-warnings-as-errors --disable-tracerjit --disable-methodjit --disable-monoic --disable-polyic && \
     # buggy script \
-    sed -i -e 's/CXX=.*/$CXX $*; exit $?/' build/hcpp && \
-    make -j
+    sed -i -e 's/CXX=.*/$*; exit $?/' build/hcpp && \
+    true

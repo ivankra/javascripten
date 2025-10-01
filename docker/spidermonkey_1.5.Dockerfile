@@ -30,7 +30,8 @@
 # ARG TARBALL=https://ftp.mozilla.org/pub/mozilla/source/mozilla-19981008.tar.gz
 # https://github.com/mozilla-firefox/firefox.git 5858e3255b42cdd854bc3fa597abb65c07707de6
 
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
 ARG TARBALL=https://archive.mozilla.org/pub/js/older-packages/js-1.5.tar.gz
 
@@ -40,7 +41,7 @@ RUN wget "$TARBALL" && tar xf "$(basename "$TARBALL")"
 RUN if [ -d src ]; then ln -s . js; fi && \
     cd js/src && \
     # -fPIC: workaround for some linker errors \
-    export CFLAGS="--std=c99 -Wno-implicit-function-declaration -fPIC -O3" && \
+    export CFLAGS="--std=c99 -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -fPIC -O3" && \
     # Make sure to use -O3 for BUILD_OPT=1 \
     sed -i -E -e 's/^((INTERP_)?OPTIMIZER) *= .*/\1 = -O3/' config.mk && \
     # Fix JS_STACK_GROWTH_DIRECTION misdetection at -O2 \
@@ -49,5 +50,7 @@ RUN if [ -d src ]; then ln -s . js; fi && \
 
 ENV JS_BINARY=/src/js/src/Linux_All_OPT.OBJ/js
 RUN ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) .*$/\1/p' >json.version && \
-    ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) (.* )?([0-9]{4}-[-0-9]+)$/\3/p' >json.revision_date
+    ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) (.* )?([0-9]{4}-[-0-9]+)$/\3/p' >json.revision_date && \
+    cloc js/src --csv --fullpath --not_match_f="(OBJ|test|/configure$|/(t|v8|octane|ctypes|metrics|config|ref-config|build|editline|perlconnect|liveconnect|fdlibm)/)" \
+      | sed -ne '$ s/.*,\([^,]*\)$/\1/p' >json.loc
 CMD ${JS_BINARY}

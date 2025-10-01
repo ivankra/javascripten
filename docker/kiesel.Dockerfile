@@ -1,16 +1,20 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://codeberg.org/kiesel-js/kiesel.git
-ARG JS_COMMIT=main
+ARG REPO=https://codeberg.org/kiesel-js/kiesel.git
+ARG REV=main
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
+
+ARG ZIG_VER=0.15.1
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends cargo
-RUN wget -O /opt/zig.tar.xz "https://ziglang.org/download/0.14.1/zig-$(uname -m)-linux-0.14.1.tar.xz" && \
-    cd /opt && tar vxf zig.tar.xz && ln -s /opt/zig-*/zig /usr/bin/zig
+RUN cd /opt && wget -O zig.tar.xz "https://ziglang.org/download/${ZIG_VER}/zig-$(uname -m)-linux-${ZIG_VER}.tar.xz" && \
+    tar vxf zig.tar.xz && rm -f zig.tar.xz && ln -s /opt/zig-*/zig /usr/bin/zig
+
 RUN zig build --release=fast
 
-ENV JS_BINARY=/work/zig-out/bin/kiesel
-RUN ${JS_BINARY} --version | grep kiesel | grep -o '[0-9].*' >json.version
+ENV JS_BINARY=/src/zig-out/bin/kiesel
+RUN ${JS_BINARY} --version | grep -i kiesel | grep -o '[0-9].*' >json.version
 CMD ${JS_BINARY}

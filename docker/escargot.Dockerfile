@@ -1,15 +1,19 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/Samsung/escargot.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/Samsung/escargot.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 RUN git submodule update --init third_party
 
-RUN apt-get update -y && apt-get install -y --no-install-recommends autoconf automake cmake libtool libicu-dev ninja-build pkg-config
+RUN apt-get update -y && apt-get install -y --no-install-recommends libicu-dev
+
+# Note: builds with -O2 by default
 RUN cmake -DESCARGOT_MODE=release -DESCARGOT_OUTPUT=shell -GNinja -Bbuild
 RUN ninja -C build
 
-ENV JS_BINARY=/work/build/escargot
+ENV JS_BINARY=/src/build/escargot
 CMD ${JS_BINARY}

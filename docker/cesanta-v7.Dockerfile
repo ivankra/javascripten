@@ -1,12 +1,16 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/cesanta/v7.git
-ARG JS_COMMIT=ce5212ae42dfd93247c56fbc233f65367e9def27
+# HEAD is broken
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+ARG REPO=https://github.com/cesanta/v7.git
+ARG REV=ce5212ae42dfd93247c56fbc233f65367e9def27
+
+WORKDIR /src
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
 RUN gcc -o v7 -O3 -DV7_LARGE_AST -DV7_EXE -DCS_ENABLE_UTF8 v7.c -lm
 
-ENV JS_BINARY=/work/v7
+ENV JS_BINARY=/src/v7
 # No REPL

@@ -1,12 +1,13 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/pcmacdon/jsish.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/pcmacdon/jsish.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
-RUN CFLAGS=-O2 make -j1
+RUN CFLAGS="-O3" make -j1
 
-ENV JS_BINARY=/work/jsish
+ENV JS_BINARY=/src/jsish
 CMD ${JS_BINARY}

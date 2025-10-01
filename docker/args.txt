@@ -1,19 +1,46 @@
 # Extra flags for docker build.
-# Format: "<engine>: <flags>", one per line.
+# Format: "<engine>[_<variant>]: <flags>", one per line.
 
-espruino:           --build-arg=JS_REV=RELEASE_2V27
-jerryscript:        --build-arg=JS_REV=v3.0.0
-mujs:               --build-arg=JS_REV=1.3.7
-rhino:              --build-arg=JS_REV=Rhino1_8_0_Release
-v8:                 --build-arg=JS_COMMIT=14.2.3
-xs:                 --build-arg=JS_REV=5.11.0
-qv4:                --build-arg=JS_REV=v6.9.1
-qv4_jitless:        --build-arg=JS_REV=v6.9.1 --build-arg=JS_VARIANT=jitless -f qv4.Dockerfile
+# Pinned revisions per end of Sep 2025
 
-chakracore_jitless: --build-arg=JS_VARIANT=jitless -f chakracore.Dockerfile
-iv-lv5_jitless:     --build-arg=JS_VARIANT=jitless -f iv-lv5.Dockerfile
+bali:                 --build-arg REV=8cb0b593839a9fe2fa6ec3c2a88b2efd02d2cc7c
+boa:                  --build-arg REV=9d0de12228d938b4f835f2cdca22c9dc7dc4e995
+chakracore_jitless:   --build-arg VARIANT=jitless -f chakracore.Dockerfile
+escargot:             --build-arg REV=v4.3.0
+espruino:             --build-arg REV=RELEASE_2V27
+hermes:               --build-arg REV=100fe4068fcefcacb0f192bd3202d29dec70ab46
+iv-lv5_jitless:       --build-arg VARIANT=jitless -f iv-lv5.Dockerfile
+jerryscript:          --build-arg REV=v3.0.0
+kiesel:               --build-arg REV=fc80d0e6f43c5ff303516cfe02dfb16f6f907d8e --build-arg ZIG_VER=0.15.1
+libjs:                --build-arg REV=cb6ca85564abb57517b82754b4ac1ba78785707a
+mujs:                 --build-arg REV=1.3.7
+nashorn:              --build-arg REV=release-15.7
+njs:                  --build-arg REV=0.9.2
+nova:                 --build-arg REV=81774d30bd814d8b7ea050e252557890f76c9b69
+quickjs-ng:           --build-arg REV=07214197c24bb60066a0378ebd7690041f86e361
+quickjs:              --build-arg REV=fa628f8c523ecac8ce560c081411e91fcaba2d20
+quickjs_clang:        --build-arg REV=fa628f8c523ecac8ce560c081411e91fcaba2d20 --build-arg BASE=jszoo-clang -f quickjs.Dockerfile
+qv4:                  --build-arg REV=v6.9.3
+qv4_jitless:          --build-arg REV=v6.9.3 --build-arg VARIANT=jitless -f qv4.Dockerfile
+rhino:                --build-arg REV=Rhino1_8_0_Release
+spidermonkey:         --build-arg REV=FIREFOX_143_0_3_RELEASE
+spidermonkey_jitless: --build-arg REV=FIREFOX_143_0_3_RELEASE --build-arg VARIANT=jitless -f spidermonkey.Dockerfile
+xs:                   --build-arg REV=5.11.0
 
-spidermonkey_1.4:   -f spidermonkey_1.5.Dockerfile --build-arg=TARBALL=https://archive.mozilla.org/pub/js/older-packages/js-1.4-2.tar.gz
-spidermonkey_1.6:   -f spidermonkey_1.5.Dockerfile --build-arg=TARBALL=https://archive.mozilla.org/pub/js/js-1.60.tar.gz
-spidermonkey_1.7:   -f spidermonkey_1.5.Dockerfile --build-arg=TARBALL=https://archive.mozilla.org/pub/js/js-1.7.0.tar.gz
-spidermonkey_1.8.0: -f spidermonkey_1.5.Dockerfile --build-arg=TARBALL=https://archive.mozilla.org/pub/js/js-1.8.0-rc1.tar.gz
+# https://developer.apple.com/documentation/safari-technology-preview-release-notes/stp-release-228
+# 8d2ed2e4 299754@main 2025-09-10
+jsc:                  --build-arg REV=8d2ed2e447fadb4bce5db43cbc54af8f37c00042
+jsc_jitless:          --build-arg REV=8d2ed2e447fadb4bce5db43cbc54af8f37c00042 --build-arg VARIANT=jitless -f jsc.Dockerfile
+jsc_gcc:              --build-arg REV=8d2ed2e447fadb4bce5db43cbc54af8f37c00042 --build-arg BASE=jszoo-gcc -f jsc.Dockerfile
+
+# Pick from latest Chrome's stable release:
+# https://chromiumdash.appspot.com/releases?platform=Linux
+v8:                   --build-arg REV=14.1.146.11
+v8_jitless:           --build-arg REV=14.1.146.11 --build-arg VARIANT=jitless -f v8.Dockerfile
+v8_pgo:               --build-arg REV=141.0.7390.54
+#v8_gcc:               --build-arg REV=14.1.146.11 --build-arg BASE=jszoo-gcc -f v8.Dockerfile
+
+#spidermonkey_1.4:     -f spidermonkey_1.5.Dockerfile --build-arg TARBALL=https://archive.mozilla.org/pub/js/older-packages/js-1.4-2.tar.gz
+spidermonkey_1.6:     -f spidermonkey_1.5.Dockerfile --build-arg TARBALL=https://archive.mozilla.org/pub/js/js-1.60.tar.gz
+spidermonkey_1.7:     -f spidermonkey_1.5.Dockerfile --build-arg TARBALL=https://archive.mozilla.org/pub/js/js-1.7.0.tar.gz
+spidermonkey_1.8.0:   -f spidermonkey_1.5.Dockerfile --build-arg TARBALL=https://archive.mozilla.org/pub/js/js-1.8.0-rc1.tar.gz

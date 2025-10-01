@@ -1,12 +1,13 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/cesanta/mjs.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/cesanta/mjs.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
-RUN gcc -O2 -DMJS_MAIN -o mjs mjs.c
+RUN gcc -O3 -DMJS_MAIN -o mjs mjs.c
 
-ENV JS_BINARY=/work/mjs
+ENV JS_BINARY=/src/mjs
 # No REPL

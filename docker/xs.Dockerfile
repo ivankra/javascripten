@@ -1,11 +1,13 @@
 # https://github.com/Moddable-OpenSource/moddable/blob/public/documentation/Moddable%20SDK%20-%20Getting%20Started.md#lin-instructions
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/Moddable-OpenSource/moddable.git
-ARG JS_REV=public
+ARG REPO=https://github.com/Moddable-OpenSource/moddable.git
+ARG REV=public
 
 WORKDIR /src
-RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends libncurses-dev
 RUN cd xs/makefiles/lin && MODDABLE=/src make -j release  # -O3

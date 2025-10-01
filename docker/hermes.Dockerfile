@@ -1,18 +1,21 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc14
+FROM $BASE
 
-ARG JS_REPO=https://github.com/facebook/hermes.git
-ARG JS_COMMIT=main
+ARG REPO=https://github.com/facebook/hermes.git
+ARG REV=main
 
-WORKDIR /work
-RUN git clone --depth=1 --branch="$JS_COMMIT" "$JS_REPO" .
+WORKDIR /src
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
 # https://github.com/facebook/hermes/blob/main/doc/BuildingAndRunning.md
 RUN apt-get update -y && apt-get install -y libicu-dev libreadline-dev
 RUN cmake -S . -B build_release -G Ninja -DCMAKE_BUILD_TYPE=Release
 RUN cmake --build build_release
 
-# Ahead-of-time compile to bytecode engine.
-# Run with -O (enable expensive optimization) for fair comparison.
-ENV JS_BINARY=/work/build_release/bin/hermes
+ENV JS_BINARY=/src/build_release/bin/hermes
 RUN ${JS_BINARY} -version | grep Hermes.release | egrep -o [0-9.]+ >json.version
 CMD ${JS_BINARY} -O
+
+# Ahead-of-time compiler to bytecode engine.
+# Run with -O (enable expensive optimization) for fair comparison.

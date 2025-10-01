@@ -3,26 +3,31 @@
 #   * https://v8.dev/docs/compile-arm64
 #   * https://www.chromium.org/developers/gn-build-configuration/
 #   * https://github.com/just-js/v8
+#
+# Versions:
+#   * https://v8.dev/docs/version-numbers
+#   * https://chromiumdash.appspot.com/releases?platform=Linux
 
-FROM javascripten-debian:stable
+ARG BASE=jszoo-clang
+FROM $BASE
 
-ARG JS_REPO=https://chromium.googlesource.com/v8/v8.git
-
-WORKDIR /work
-RUN git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git /work/depot_tools
-ENV PATH=/work/depot_tools:$PATH
+WORKDIR /src
+RUN git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git /src/depot_tools
+ENV PATH=/src/depot_tools:$PATH
 
 RUN fetch --nohooks --nohistory v8
 
-# lkgr='last known good revision'
-#ARG JS_COMMIT=lkgr
-ARG JS_COMMIT=14.2.3
-RUN gclient sync --no-history --revision "v8@${JS_COMMIT}"
+ARG REPO=https://chromium.googlesource.com/v8/v8.git
+ARG REV=lkgr
 
-WORKDIR /work/v8
+RUN gclient sync --no-history --revision "v8@$REV"
+
+WORKDIR /src/v8
 
 # Build deps
 RUN sed -i -e 's/ stable-updates$/ stable-updates bookworm/' /etc/apt/sources.list.d/debian.sources  # for the missing libpcre3-dev in trixie
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends rustc cargo build-essential gcc g++
 RUN build/install-build-deps.sh --no-prompt
 
 # Can do basic x64 build, but no customizations, fails for arm64 on linux
@@ -36,23 +41,23 @@ RUN build/install-build-deps.sh --no-prompt
 #    fi
 #RUN tools/rust/build_rust.py  # fails on linux arm64 => enable_rust=false
 
-# Use debian's clang for //build/toolchain/linux/unbundle
-RUN apt-get update -y && apt-get install -y clang lld rustc cargo
-ENV CC=/usr/bin/clang CXX=/usr/bin/clang++ AR=/usr/bin/llvm-ar NM=/usr/bin/llvm-nm
+ARG VARIANT=
 
 RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/') && \
+    export IS_CLANG=$(bash -c '[[ "$CC" == *gcc* ]] && echo false || echo true'); \
     mkdir -p out/release && \
     { \
-      # third_party/llvm-build doesn't have prebuilt arm64 linux binaries so \
-      # use host toolchain. Might also need to enable_rust=false \
-      if [ "$ARCH" = "arm64" ]; then echo \
+      # third_party/llvm-build doesn't have prebuilt arm64 linux binaries, \
+      # tell it to use host toolchain via //build/toolchain/linux/unbundle. \
+      # CC, CXX, AR, NM must be set. \
+      # Might also need to enable_rust=false \
+      [ "$ARCH" = arm64 ] && echo \
         clang_use_chrome_plugins=false \
         clang_warning_suppression_file=\"\" \
         custom_toolchain=\"//build/toolchain/linux/unbundle:default\" \
         host_toolchain=\"//build/toolchain/linux/unbundle:default\" \
-        is_clang=true \
+        is_clang=${IS_CLANG} \
         use_sysroot=false; \
-      fi; \
       # Full release build, trim some fat. \
       # PGO profiles not available => chrome_pgo_phase=0 \
       echo \
@@ -72,11 +77,17 @@ RUN export ARCH=$(uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/') && \
         v8_enable_webassembly=false \
         v8_target_cpu='"'$ARCH'"' \
         v8_use_external_startup_data=false; \
+      # Disable JIT compilers \
+      [ "$VARIANT" = jitless ] && echo \
+        v8_jitless=true \
+        v8_enable_sparkplug=false \
+        v8_enable_maglev=false \
+        v8_enable_turbofan=false; \
     } | tr ' ' '\n' >out/release/args.gn
 
 RUN gn gen out/release/
 RUN autoninja -C out/release/ d8
 
-ENV JS_BINARY=/work/v8/out/release/d8
+ENV JS_BINARY=/src/v8/out/release/d8
 RUN ${JS_BINARY} -e 'console.log(version())' >json.version
 CMD ${JS_BINARY}

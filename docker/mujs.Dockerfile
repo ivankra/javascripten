@@ -1,11 +1,11 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-# https://github.com/ccxvii/mujs
-ARG JS_REPO=https://codeberg.org/ccxvii/mujs.git
-ARG JS_REV=master
+ARG REPO=https://codeberg.org/ccxvii/mujs.git
+ARG REV=master
 
 WORKDIR /src
-RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
+RUN git clone "$REPO" . && git checkout "$REV"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends libreadline-dev
 RUN make -j release  # by default builds with -O3

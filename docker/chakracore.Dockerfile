@@ -1,15 +1,17 @@
-FROM javascripten-ubuntu:22.04
+ARG BASE=jszoo-ubuntu22
+FROM $BASE
 
-ARG JS_REPO=https://github.com/chakra-core/ChakraCore.git
-ARG JS_REV=master
+ARG REPO=https://github.com/chakra-core/ChakraCore.git
+ARG REV=master
 
 WORKDIR /src
-RUN git clone --depth=1 --branch="$JS_REV" "$JS_REPO" .
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
-ARG JS_VARIANT=
+ARG VARIANT=
 
 RUN apt-get update -y && apt-get install -y clang
-RUN ./build.sh --ninja --static --no-icu --without-intl $([ $JS_VARIANT = jitless ] && echo --no-jit)
+RUN ./build.sh --ninja --static --no-icu --without-intl $([ "$VARIANT" = jitless ] && echo --no-jit)
 
 ENV JS_BINARY=/src/out/Release/ch
 # No REPL

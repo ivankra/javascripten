@@ -1,10 +1,11 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-clang
+FROM $BASE
 
-ARG JS_REPO=https://github.com/doodlewind/mocha1995
-ARG JS_REV=main
+ARG REPO=https://github.com/doodlewind/mocha1995
+ARG REV=main
 
 WORKDIR /src
-RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
+RUN git clone "$REPO" . && git checkout "$REV"
 
 # Workaround for a crash in PR_cnvtf/PR_dtoa on arm64
 RUN sed -i -e 's/PR_cnvtf(buf, sizeof buf, 20, fval);/snprintf(buf, sizeof(buf), "%.16g", fval);/' src/mo_num.c

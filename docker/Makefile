@@ -1,87 +1,90 @@
 SHELL    := /bin/bash
-ARCH     := $(shell uname -m | sed -e 's/aarch64/arm64/; s/x86_64/x64/')
-DOCKER   := $(shell command -v podman 2>/dev/null || echo docker)
+
+DOCKER       := $(shell command -v podman 2>/dev/null || echo docker)
+DOCKER_ARCH  := $(shell uname -m | sed -e 's/aarch64/arm64/; s/x86_64/amd64/')
+DOCKER_BUILD := $(DOCKER) build --platform linux/$(DOCKER_ARCH)
+DOCKER_RUN   := $(DOCKER) run --platform linux/$(DOCKER_ARCH)
+
 IID_DIR  := ../.cache/iid
-DIST_DIR := ../dist/$(ARCH)
+DIST_DIR := ../dist/$(DOCKER_ARCH)
 
-TARGETS:= $(filter-out base sh, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile)))
+FILE_TARGETS := $(filter-out build% sh, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile)))
+ARGS_TARGETS := $(shell cat args.txt | egrep -o '^[-a-z0-9_.]+' | sort -u)
+TARGETS := $(sort $(FILE_TARGETS) $(ARGS_TARGETS))
 
-VARIANTS := $(shell cat args.txt | egrep -o '^[-a-z0-9_.]+' | sort -u)
-TARGETS := $(sort $(TARGETS) $(VARIANTS))
-
-ifeq ($(ARCH),arm64)
-  # chakracode: doesn't support arm64 on linux platform
-  # iv-lv5: no JIT on arm64
-  # spidermonkey_1.8.5: JIT doesn't support arm64, crash in JIT-less build
+# chakracode: doesn't support arm64 on Linux
+# iv-lv5: no JIT on arm64 - main build is JIT-less
+# spidermonkey_1.8.5: JIT doesn't support arm64, crash in JIT-less build
+ifeq ($(DOCKER_ARCH),arm64)
   TARGETS := $(filter-out chakracore% iv-lv5_jitless spidermonkey_1.8.5 bali hako starlight,$(TARGETS))
 endif
 
 all: base $(TARGETS)
 
-base: $(IID_DIR)/base $(IID_DIR)/sh
-
-dist: $(patsubst %,%-dist,$(TARGETS))
+dist: $(patsubst %,%-dist,$(TARGETS)) .PHONY
 	@true
 
-sh: $(IID_DIR)/sh .PHONY
-	$(DOCKER) run \
-	  --rm \
-	  -v $(PWD)/../bench:/bench \
-	  -v $(PWD)/..:/work \
-	  -w /work/dist/$(ARCH) \
-	  -it \
-	  javascripten-sh
+base: $(IID_DIR)/base $(IID_DIR)/sh .PHONY
+	@true
 
-$(IID_DIR)/base: base.Dockerfile
+$(IID_DIR)/base: build*.Dockerfile
 	@mkdir -p $(IID_DIR)
-	$(DOCKER) build -f base.Dockerfile --build-arg SOURCE=debian:stable -t javascripten-debian:stable .
-	$(DOCKER) build -f base.Dockerfile --build-arg SOURCE=ubuntu:22.04 -t javascripten-ubuntu:22.04 .
-	$(DOCKER) image ls --format={{.Id}} javascripten-debian:stable >$(IID_DIR)/base
+	$(DOCKER_BUILD) -t jszoo-debian -t jszoo-debian13 -f build-debian.Dockerfile .
+	if [[ `uname -m` == x86_64 ]]; then \
+	  $(DOCKER_BUILD) -t jszoo-ubuntu22 -f build-debian.Dockerfile --build-arg BASE=ubuntu:22.04 .; \
+	fi
+	$(DOCKER_BUILD) -t jszoo-gcc14 -t jszoo-gcc -f build-gcc.Dockerfile --build-arg=VER=14 .
+	$(DOCKER_BUILD) -t jszoo-clang20 -t jszoo-clang -f build-clang.Dockerfile --build-arg=VER=20 .
+	#$(DOCKER_BUILD) -t jszoo-gcc15 -f build-gcc.Dockerfile --build-arg=VER=15 .
+	#$(DOCKER_BUILD) -t jszoo-clang21 -f build-clang.Dockerfile --build-arg=VER=21 .
+	$(DOCKER_BUILD) -t jszoo-rust -f build-rust.Dockerfile .
+	$(DOCKER) image ls --format={{.Id}} jszoo-debian >$(IID_DIR)/build
 
-$(IID_DIR)/sh: sh.Dockerfile $(IID_DIR)/base
-	$(DOCKER) build --iidfile=$(IID_DIR)/sh -f sh.Dockerfile -t javascripten-sh .
+sh: $(IID_DIR)/sh .PHONY
+	$(DOCKER_RUN) --rm -it \
+	  -v $(PWD)/../bench:/bench \
+	  -v $(PWD)/../dist/$(DOCKER_ARCH):/dist \
+	  jszoo-sh
+
+$(IID_DIR)/sh: sh.Dockerfile $(IID_DIR)/base Makefile
+	$(DOCKER_BUILD) --iidfile=$(IID_DIR)/sh -f sh.Dockerfile -t jszoo-sh .
+
+hub: $(IID_DIR)/hub .PHONY
+	@true
+
+$(IID_DIR)/hub: sh.Dockerfile $(IID_DIR)/base Makefile
+	$(DOCKER) build --platform=linux/arm64 -f sh.Dockerfile -t jszoo-hub:arm64 .
+	$(DOCKER) build --platform=linux/amd64 -f sh.Dockerfile -t jszoo-hub:amd64 .
 
 define rules
-$(1): $(1)-image $(1)-dist
+$(1): $(IID_DIR)/$(1) $(DIST_DIR)/$(1).json
+	@true
 
-$(1)-image: $(IID_DIR)/$(1)
-
-$(1)_DEPS = \
-  $(IID_DIR)/base \
-  $$(shell (egrep -o '^$(1):.* -f [^ ]+.Dockerfile\b' args.txt 2>/dev/null | egrep -o '[^ ]+.Dockerfile\b') || echo "$(1).Dockerfile") \
-  $$(shell egrep -q '^$(1):' args.txt 2>/dev/null && echo args.txt)
-
-$(IID_DIR)/$(1): $$($(1)_DEPS)
+$(IID_DIR)/$(1): $$(shell ./build.sh --dep $(1))
 	./build.sh $(1)
 
 $(1)-dist: $(DIST_DIR)/$(1).json
+	@true
 
-$(DIST_DIR)/$(1).json: $(IID_DIR)/$(1)
+$(DIST_DIR)/$(1).json: $(IID_DIR)/$(1) dist.sh
 	./dist.sh $(1)
 
 $(1)-repl: $(IID_DIR)/$(1)
-	$(DOCKER) run \
-	  --rm \
-	  -v $(PWD)/../bench:/bench \
-	  -it \
-	  javascripten-$(1)
+	$(DOCKER_RUN) --rm -it -v $(PWD)/../bench:/bench jszoo-$(1)
 
 $(1)-sh: $(IID_DIR)/$(1)
-	$(DOCKER) run \
-	  --rm \
-	  -v $(PWD)/../bench:/bench \
-	  -it \
-	  javascripten-$(1) \
-	  /bin/bash -c 'ln -sv "$$$$JS_BINARY" "/bin/`basename $$$$JS_BINARY`"; /bin/bash -i'
+	$(DOCKER_RUN) --rm -it -v $(PWD)/../bench:/bench jszoo-$(1) \
+	  /bin/bash -c '[[ -f $$$$JS_BINARY && ! -f $(1) ]] && ln -sv "$$$$JS_BINARY" "$(1)"; /bin/bash -i'
 endef
 
 $(foreach var,$(TARGETS),$(eval $(call rules,$(var))))
 
+# Also consider 'podman system reset' to delete whole podman storage
+# for the current user, if things get messed badly.
 clean-docker:
 	rm -rf "$(IID_DIR)"
 	-$(DOCKER) container prune
-	-$(DOCKER) image rm `$(DOCKER) image ls | grep javascripten- | cut -f 1 -d ' '`
-	-$(DOCKER) image rm javascripten-debian:stable javascripten-ubuntu:22.04
+	-$(DOCKER) image rm `$(DOCKER) image ls | grep jszoo- | cut -f 1 -d ' '`
 	$(DOCKER) image prune
 
 .PHONY:

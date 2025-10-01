@@ -1,12 +1,14 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
-ARG JS_REPO=https://github.com/bellard/quickjs.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/bellard/quickjs.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
-RUN make -j
+RUN ARGS=$(bash -c '[[ "$CC" == *clang* ]] && echo CONFIG_CLANG=y'); \
+    make -j $ARGS
 
-ENV JS_BINARY=/work/qjs
+ENV JS_BINARY=/src/qjs
 CMD ${JS_BINARY}

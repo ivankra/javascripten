@@ -1,16 +1,16 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-rust
+FROM $BASE
 
-ARG JS_REPO=https://github.com/boa-dev/boa.git
-ARG JS_COMMIT=main
+ARG REPO=https://github.com/boa-dev/boa.git
+ARG REV=main
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
-# Debian version is too old
-#RUN apt-get update -y && apt-get install -y --no-install-recommends rustc cargo libssl-dev
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash /dev/stdin -y
 RUN apt-get update -y && apt-get install -y --no-install-recommends libssl-dev
-RUN PATH="/root/.cargo/bin:$PATH" cargo build --release --bin boa
 
-ENV JS_BINARY=/work/target/release/boa
+RUN cargo build --release --bin boa
+
+ENV JS_BINARY=/src/target/release/boa
 CMD ${JS_BINARY}

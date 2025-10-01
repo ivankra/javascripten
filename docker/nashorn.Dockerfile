@@ -1,10 +1,12 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://github.com/openjdk/nashorn.git
-ARG JS_REV=main
+ARG REPO=https://github.com/openjdk/nashorn.git
+ARG REV=main
 
 WORKDIR /src
-RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
 RUN apt-get install -y --no-install-recommends openjdk-25-jdk-headless ant
 RUN cd make/nashorn && ant jar

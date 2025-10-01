@@ -1,15 +1,17 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://github.com/BeRo1985/besen.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/BeRo1985/besen.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends fpc
 RUN fpc -O3 -Mdelphi src/BESENShell.lpr
 
-# Use load() ro run a script.
-# echo "load('/bench/navier-stokes.js')" | ./src/BESENShell | head
-ENV JS_BINARY=/work/src/BESENShell
+ENV JS_BINARY=/src/src/BESENShell
 CMD ${JS_BINARY}
+
+# Use load() to run a script.
+# echo "load('/bench/navier-stokes.js')" | ./src/BESENShell | head

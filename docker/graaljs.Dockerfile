@@ -1,10 +1,13 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://github.com/oracle/graaljs
-ARG JS_REV=graal-25.0.0
+ARG REPO=https://github.com/oracle/graaljs
+ARG REV=graal-25.0.0
+
+# Download pre-built release
 
 WORKDIR /dist
-RUN wget "https://github.com/oracle/graaljs/releases/download/$JS_REV/$(echo "$JS_REV" | sed -e 's/graal/graaljs/')-linux-$(uname -m | sed -e 's/x86_64/amd64/').tar.gz" && \
+RUN wget "https://github.com/oracle/graaljs/releases/download/$REV/$(echo "$REV" | sed -e 's/graal/graaljs/')-linux-$(uname -m | sed -e 's/x86_64/amd64/').tar.gz" && \
     tar xf graaljs-*.tar.gz && \
     rm -f graaljs-*.tar.gz && \
     ln -s graaljs-*/bin/js graaljs

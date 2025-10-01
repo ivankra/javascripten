@@ -1,15 +1,21 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://github.com/ferus-web/bali.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/ferus-web/bali.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
 RUN sed -i -e 's/ stable-updates$/ stable-updates unstable/' /etc/apt/sources.list.d/debian.sources
-RUN apt-get update -y && apt-get install -y nim libgmp-dev libicu-dev libgc-dev
-RUN git clone https://github.com/simdutf/simdutf && cd simdutf && cmake . && sudo make install . -j
-RUN nimble refresh && nimble install && make NIMFLAGS="--define:release --define:baliTest262FyiDisableICULinkingCode --define:speed"
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends nim libgmp-dev libicu-dev libgc-dev
 
-ENV JS_BINARY=/work/bin/balde
+RUN git clone https://github.com/simdutf/simdutf && cd simdutf && cmake . && sudo make install . -j
+
+RUN nimble refresh && \
+    nimble install && \
+    make NIMFLAGS="--define:release --define:baliTest262FyiDisableICULinkingCode --define:speed"
+
+ENV JS_BINARY=/src/bin/balde
 CMD ${JS_BINARY}

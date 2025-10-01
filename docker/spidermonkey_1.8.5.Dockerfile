@@ -3,7 +3,8 @@
 #
 # Doesn't work on arm64, JIT doesn't support this target.
 
-FROM javascripten-debian:stable
+ARG BASE=jszoo-gcc
+FROM $BASE
 
 # JavaScript-C 1.8.5 2011-03-31
 ARG TARBALL=https://archive.mozilla.org/pub/js/js185-1.0.0.tar.gz
@@ -21,10 +22,12 @@ RUN mv js-1.8.5/js ./ && cd js/src && \
     sed -i -E -e 's/print "(.*)"/print("\1")/' imacro_asm.py && \
     ./configure --host="$(uname -m)-unknown-linux" --enable-static --enable-optimize="-O3" --disable-warnings-as-errors && \
     # buggy script \
-    sed -i -e 's/CXX=.*/$CXX $*; exit $?/' build/hcpp && \
+    sed -i -e 's/CXX=.*/$*; exit $?/' build/hcpp && \
     make
 
 ENV JS_BINARY=/src/js/src/shell/js
 RUN ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) .*$/\1/p' >json.version && \
-    ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) (.* )?([0-9]{4}-[-0-9]+)$/\3/p' >json.revision_date
+    ${JS_BINARY} --help 2>&1 | sed -Ene 's/JavaScript-C (1[.0-9]*) (.* )?([0-9]{4}-[-0-9]+)$/\3/p' >json.revision_date && \
+    cloc js/src --csv --fullpath --not_match_f="(OBJ|test|/configure$|/(t|v8|octane|ctypes|metrics|config|ref-config|build|editline|perlconnect|liveconnect|fdlibm)/)" \
+      | sed -ne '$ s/.*,\([^,]*\)$/\1/p' >json.loc
 CMD ${JS_BINARY}

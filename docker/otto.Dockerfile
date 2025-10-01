@@ -1,13 +1,14 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://github.com/robertkrimen/otto.git
-ARG JS_COMMIT=master
+ARG REPO=https://github.com/robertkrimen/otto.git
+ARG REV=master
 
-WORKDIR /work
-RUN git clone "$JS_REPO" . && git checkout "$JS_COMMIT"
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
 
 RUN apt-get update -y && apt-get install -y golang
 RUN cd otto && go build
 
-ENV JS_BINARY=/work/otto/otto
+ENV JS_BINARY=/src/otto/otto
 CMD ${JS_BINARY}

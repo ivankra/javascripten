@@ -1,10 +1,12 @@
-FROM javascripten-debian:stable
+ARG BASE=jszoo-debian
+FROM $BASE
 
-ARG JS_REPO=https://github.com/mozilla/rhino
-ARG JS_REV=master
+ARG REPO=https://github.com/mozilla/rhino
+ARG REV=master
 
 WORKDIR /src
-RUN git clone "$JS_REPO" . && git checkout "$JS_REV"
+RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
 
 # Build fails with JDK 25
 RUN apt-get install -y --no-install-recommends openjdk-21-jdk-headless
