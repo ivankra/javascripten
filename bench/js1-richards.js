@@ -1,9 +1,3 @@
-<html>
-<body>
-<noscript>JavaScript disabled</noscript>
-<script>
-<!--
-
 // Richards benchmark adapted to pre-prototype JavaScript 1.0.
 // This is reportedly what Netscape Navigator 2.0 could run,
 // so is the lowest bar for any JavaScript engine.
@@ -39,15 +33,13 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function document_write(msg) {
-  document.write(msg); /*
-  if (typeof window == "object") {
+  if (typeof window == "object" && typeof document == "object") {
     document.write(msg + "<br>");
   } else if (typeof print != "undefined") {
     print(msg);
   } else {
     console.log(msg);
   }
-  */
 }
 
 // This is a JavaScript implementation of the Richards
@@ -94,7 +86,7 @@ function runRichards() {
         ", holdCount = " + scheduler.holdCount + ".";
     document_write(msg);
   }
-}
+};
 
 var COUNT = 1000;
 
@@ -133,7 +125,7 @@ function Scheduler() {
   this.holdCurrent = Scheduler_holdCurrent;
   this.suspendCurrent = Scheduler_suspendCurrent;
   this.queue = Scheduler_queue;
-}
+};
 
 var ID_IDLE       = 0;
 var ID_WORKER     = 1;
@@ -184,7 +176,7 @@ function Scheduler_addHandlerTask(id, priority, queue) {
  * @param {Packet} queue the queue of work to be processed by the task
  */
 function Scheduler_addDeviceTask(id, priority, queue) {
-  this.addTask(id, priority, queue, new DeviceTask(this))
+  this.addTask(id, priority, queue, new DeviceTask(this));
 };
 
 /**
@@ -307,7 +299,7 @@ function TaskControlBlock(link, id, priority, queue, task) {
   this.run = TaskControlBlock_run;
   this.checkPriorityAdd = TaskControlBlock_checkPriorityAdd;
   this.toString = TaskControlBlock_toString;
-}
+};
 
 /**
  * The task is running and is currently scheduled.
@@ -410,7 +402,7 @@ function IdleTask(scheduler, v1, count) {
   this.count = count;
   this.run = IdleTask_run;
   this.toString = IdleTask_toString;
-}
+};
 
 function IdleTask_run(packet) {
   this.count--;
@@ -425,7 +417,7 @@ function IdleTask_run(packet) {
 };
 
 function IdleTask_toString() {
-  return "IdleTask"
+  return "IdleTask";
 };
 
 /**
@@ -439,7 +431,7 @@ function DeviceTask(scheduler) {
   this.v1 = null;
   this.run = DeviceTask_run;
   this.toString = DeviceTask_toString;
-}
+};
 
 function DeviceTask_run(packet) {
   if (packet == null) {
@@ -470,7 +462,7 @@ function WorkerTask(scheduler, v1, v2) {
   this.v2 = v2;
   this.run = WorkerTask_run;
   this.toString = WorkerTask_toString;
-}
+};
 
 function WorkerTask_run(packet) {
   if (packet == null) {
@@ -507,7 +499,7 @@ function HandlerTask(scheduler) {
   this.v2 = null;
   this.run = HandlerTask_run;
   this.toString = HandlerTask_toString;
-}
+};
 
 function HandlerTask_run(packet) {
   if (packet != null) {
@@ -567,7 +559,7 @@ function Packet(link, id, kind) {
   this.a2 = new Array(DATA_SIZE);
   this.addTo = Packer_addTo;
   this.toString = Packet_toString();
-}
+};
 
 /**
  * Add this packet to the end of a worklist, and return the worklist.
@@ -595,7 +587,7 @@ function Benchmark(name, doWarmup, doDeterministic, deterministicIterations, run
   this.doDeterministic = doDeterministic;
   this.deterministicIterations = deterministicIterations;
   this.run = run;
-}
+};
 
 // Runs a single benchmark for at least a second and computes the
 // average time it takes to run a single iteration.
@@ -614,8 +606,7 @@ function RunSingleBenchmarkWithRef(benchmark, reference) {
 
     // Run either for 1 second or for the number of iterations specified
     // by minIterations, depending on the config flag doDeterministic.
-    for (var i = 0; (doDeterministic ? 
-      i<benchmark.deterministicIterations : elapsed < 1000); i++) {
+    for (var i = 0; (doDeterministic ? i < benchmark.deterministicIterations : elapsed < 1000); i++) {
       benchmark.run();
       elapsed = new Date() - start;
     }
@@ -627,10 +618,6 @@ function RunSingleBenchmarkWithRef(benchmark, reference) {
   var usec = (data.elapsed * 1000) / data.runs;
   var score = (reference / usec) * 100;
   document_write(benchmark.name + ": " + score);
-}
+};
 
 RunSingleBenchmarkWithRef(new Benchmark("Richards", true, false, 8200, runRichards), 35302);
-
-// -->
-</script>
-</html>
