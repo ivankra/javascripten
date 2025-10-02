@@ -8,7 +8,7 @@ DOCKER_RUN   := $(DOCKER) run --platform linux/$(DOCKER_ARCH)
 IID_DIR  := ../.cache/iid
 DIST_DIR := ../dist/$(DOCKER_ARCH)
 
-FILE_TARGETS := $(filter-out build% sh, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile)))
+FILE_TARGETS := $(filter-out build% sh hub, $(patsubst %.Dockerfile,%,$(wildcard [a-z]*.Dockerfile)))
 ARGS_TARGETS := $(shell cat args.txt | egrep -o '^[-a-z0-9_.]+' | sort -u)
 TARGETS := $(sort $(FILE_TARGETS) $(ARGS_TARGETS))
 
@@ -47,14 +47,10 @@ sh: $(IID_DIR)/sh .PHONY
 	  jszoo-sh
 
 $(IID_DIR)/sh: sh.Dockerfile $(IID_DIR)/base Makefile
-	$(DOCKER_BUILD) --iidfile=$(IID_DIR)/sh -f sh.Dockerfile -t jszoo-sh .
+	$(DOCKER_BUILD) --iidfile=$(IID_DIR)/sh -t jszoo-sh -f sh.Dockerfile .
 
-hub: $(IID_DIR)/hub .PHONY
-	@true
-
-$(IID_DIR)/hub: sh.Dockerfile $(IID_DIR)/base Makefile
-	$(DOCKER) build --platform=linux/arm64 -f sh.Dockerfile -t jszoo-hub:arm64 .
-	$(DOCKER) build --platform=linux/amd64 -f sh.Dockerfile -t jszoo-hub:amd64 .
+hub: .PHONY
+	./hub.sh
 
 define rules
 $(1): $(IID_DIR)/$(1) $(DIST_DIR)/$(1).json

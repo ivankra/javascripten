@@ -28,3 +28,10 @@ Most engines are built statically from the original source code, without
 libicu and Intl (ECMA-402) as that adds a huge data dependency of ~10-20MB,
 that often gets embedded in the binary. Temporal and WASM are disabled
 as well when possible to save space.
+
+## Docker Hub
+
+Multiarch container with pre-built binaries on Docker Hub:
+
+  * https://hub.docker.com/r/ivankra/javascript-zoo
+  * `docker run -it ivankra/javascript-zoo`

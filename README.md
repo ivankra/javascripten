@@ -1,6 +1,8 @@
 # JavaScript engines zoo
 
-  * [docker/](docker/): Dockerfiles for building open-source JavaScript engines.
+  * [docker](docker/): Dockerfiles for building open-source JavaScript engines.
+    * https://hub.docker.com/r/ivankra/javascript-zoo
+    * `docker run -it ivankra/javascript-zoo`
   * [Benchmarks](https://ivankra.github.io/javascript-zoo/)
 
 ## List of JavaScript engines

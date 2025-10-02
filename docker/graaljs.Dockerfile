@@ -10,9 +10,14 @@ WORKDIR /dist
 RUN wget "https://github.com/oracle/graaljs/releases/download/$REV/$(echo "$REV" | sed -e 's/graal/graaljs/')-linux-$(uname -m | sed -e 's/x86_64/amd64/').tar.gz" && \
     tar xf graaljs-*.tar.gz && \
     rm -f graaljs-*.tar.gz && \
-    ln -s graaljs-*/bin/js graaljs
+    # Don't use symlinks - docker's COPY will f them up \
+    echo >/dist/graaljs \
+      '#!/bin/bash'"\n" \
+      'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" '"\n" \
+      '"$SCRIPT_DIR/'$(echo graaljs-*)'/bin/js" "$@"' && \
+    chmod a+rx /dist/graaljs && \
+    /dist/graaljs --version | egrep -o '[0-9.]+' >json.version && \
+    du -bs /dist/graaljs-*| cut -f 1 >json.binary_size
 
 ENV JS_BINARY=/dist/graaljs
-RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >json.version && \
-    du -bs /dist/graaljs-* | cut -f 1 >json.binary_size
 CMD ${JS_BINARY}
