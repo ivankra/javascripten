@@ -56,7 +56,7 @@ define rules
 $(1): $(IID_DIR)/$(1) $(DIST_DIR)/$(1).json
 	@true
 
-$(IID_DIR)/$(1): $$(shell ./build.sh --dep $(1))
+$(IID_DIR)/$(1): $$(shell ./build.sh --dep $(1)) build.sh
 	./build.sh $(1)
 
 $(1)-dist: $(DIST_DIR)/$(1).json

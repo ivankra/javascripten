@@ -15,5 +15,5 @@ RUN rustup toolchain install nightly-2021-08-01 && rustup override set nightly-2
 RUN cargo build --release
 
 ENV JS_BINARY=/src/target/release/sl
-RUN mkdir -p /dist && rustc --version >/dist/json.rustc
+RUN mkdir -p /dist && rustc --version >/dist/json.rustc && git tag -d nightly
 CMD ${JS_BINARY}

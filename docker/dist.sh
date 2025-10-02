@@ -56,13 +56,14 @@ if [[ -d .git ]]; then
   git log -1 --format='%ad' --date=short HEAD >/dist/json.revision_date
   git remote get-url origin >/dist/json.repository
 
-  if ! [[ -f /dist/json.version ]]; then
-    (git describe --tags HEAD 2>/dev/null || git rev-parse --short=8 HEAD) \
-      | sed -e s/^v// >/dist/json.version
+  if ! [[ -f /dist/json.version ]] && git describe --tags HEAD >/dev/null 2>/dev/null; then
+    git describe --tags HEAD >/dist/json.version 2>/dev/null
   fi
 fi
 
 cd /dist
+
+rm -f json.c  # XXX
 
 ID="$ID"
 
@@ -81,12 +82,12 @@ echo "$ARCH" >json.arch
   echo "{"
   for f in json.*; do
     key=\${f#json.}
-    val=\$(cat "\$f")
     if [[ \$key == binary_size || \$key == loc ]]; then
-      echo "  \"\$key\": \$val,"
+      val=\$(cat "\$f")
     else
-      echo "  \"\$key\": \\"\$val\\","
+      val=\$(cat "\$f" | python -c 'import sys, json; print(json.dumps(sys.stdin.read().strip()));')
     fi
+    echo "  \"\$key\": \$val,"
     rm -f "\$f"
   done
 } | sed '$ s/,$//' >$ID.json
