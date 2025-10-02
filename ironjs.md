@@ -3,7 +3,7 @@
 ES3 implementation for .NET.
 
 * URL:        https://ironjs.wordpress.com/
-* Repository: https://github.com/fholm/IronJS.git <img src="https://img.shields.io/github/stars/fholm/IronJS?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/fholm/IronJS?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/fholm/IronJS.git <img src="https://img.shields.io/github/stars/fholm/IronJS?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/fholm/IronJS?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        12608 (`cloc Src/IronJS*`)
 * Language:   C#
 * License:    Apache-2.0

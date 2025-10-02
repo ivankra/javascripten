@@ -3,11 +3,11 @@
 Embeddable JavaScript engine.
 
 * URL:        https://www.embedthis.com/ejscript/doc/
-* Repository: https://github.com/embedthis/ejscript.git <img src="https://img.shields.io/github/stars/embedthis/ejscript?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/embedthis/ejscript?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/embedthis/ejscript.git <img src="https://img.shields.io/github/stars/embedthis/ejscript?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/embedthis/ejscript?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        106690 (`cloc --not_match_d="(?i)(test|pcre|zlib|ejs.web)" src`)
 * Language:   C
 * License:    GPL-2.0-only
-* Standard:   ES6 (ES3, most of ES4/ES5, some ES6: let/const, modules, classes, Promise)
+* Standard:   ES3, ES4 (draft)
 * Years:      2003-2014
 * Regex:      PCRE2
 

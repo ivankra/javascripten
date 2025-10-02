@@ -3,7 +3,7 @@
 JavaScript engine of Firefox.
 
 * URL:        https://spidermonkey.dev/
-* Repository: https://github.com/mozilla-firefox/firefox.git <img src="https://img.shields.io/github/stars/mozilla-firefox/firefox?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/mozilla-firefox/firefox?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/mozilla-firefox/firefox.git <img src="https://img.shields.io/github/stars/mozilla-firefox/firefox?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/mozilla-firefox/firefox?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        1028123 (`cloc --not_match_d="(?i)(test|octane)" js/src`)
 * Language:   C++
 * License:    MPL-2.0

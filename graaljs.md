@@ -1,9 +1,9 @@
 # GraalJS
 
-High-performance JavaScript engine for GraalVM.
+High-performance JavaScript engine for JVM/GraalVM.
 
 * URL:        https://www.graalvm.org/javascript/
-* Repository: https://github.com/oracle/graaljs.git <img src="https://img.shields.io/github/stars/oracle/graaljs?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/oracle/graaljs?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/oracle/graaljs.git <img src="https://img.shields.io/github/stars/oracle/graaljs?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/oracle/graaljs?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        191606 (`cloc --not_match_d="(?i)(test)" graal-js/src`)
 * Language:   Java
 * License:    UPL-1.0 (Universal Permissive License 1.0)

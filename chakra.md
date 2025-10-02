@@ -1,6 +1,6 @@
 # Chakra
 
-JavaScript engine of IE9-IE11 (jscript9.dll).
+JavaScript engine of IE 9.0 – 11.0 (jscript9.dll).
 
 * Language:   C++
 * License:    Proprietary

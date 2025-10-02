@@ -2,7 +2,7 @@
 
 JavaScript engine written in Rust.
 
-* Repository: https://github.com/Starlight-JS/starlight.git <img src="https://img.shields.io/github/stars/Starlight-JS/starlight?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/Starlight-JS/starlight?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/Starlight-JS/starlight.git <img src="https://img.shields.io/github/stars/Starlight-JS/starlight?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/Starlight-JS/starlight?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        27826 (`cloc crates/starlight*`)
 * Language:   Rust
 * License:    MPL-2.0

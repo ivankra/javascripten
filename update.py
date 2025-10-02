@@ -12,7 +12,7 @@ import time
 
 from bench.data import kBenchData
 
-ARCH_LIST = ['arm64', 'x64']
+ARCH_LIST = ['arm64', 'amd64']
 
 def main():
     parser = argparse.ArgumentParser()
@@ -91,17 +91,19 @@ def update_data(args):
     with open('data.json', 'w') as fp:
         json.dump(rows, fp, ensure_ascii=False, indent=2, sort_keys=False)
 
+    # JSONP for ease of importing in .html
     with open('data.js', 'w') as fp:
         fp.write('kJavascriptZoo = ')
         json.dump(rows, fp, ensure_ascii=False, indent=2, sort_keys=False)
 
     lines = open('README.md').readlines()
     idx = lines.index('## List of JavaScript engines\n')
-    lines = lines[:(idx + 1)]
+    end_idx = lines.index('<!-- End of table -->\n')
 
     with open('README.md', 'w') as fp:
-        fp.write(''.join(lines) + '\n')
+        fp.write(''.join(lines[:(idx + 1)]) + '\n')
         print_markdown_table(rows, fp=fp)
+        fp.write(''.join(lines[end_idx:]))
 
 # Parse markdown file and populate/update fields in row dict for that engine
 def process_markdown(row, filename, args):
@@ -193,7 +195,7 @@ def process_markdown(row, filename, args):
             shields = ''
             m = re.match(r'^\* (GitHub|Repository): *(https://github.com/[^/]+/[^/ ]+?(.git))', line)
             if m:
-                shields = get_shields_for_repo(m[2], short=True)
+                shields = get_shields_for_repo(m[2], filename)
             if shields:
                 line = re.sub(' *<img .*', '', line) + ' ' + shields
                 metadata_lines[i] = line
@@ -226,7 +228,7 @@ def process_markdown(row, filename, args):
     # license_abbr
     if row.get('license'):
         s = row['license']
-        s = re.sub('BSD-([0-9])-Clause', r'BSD-\1', s)
+        s = re.sub('BSD-([0-9])-Clause(-Clear)?', r'BSD-\1', s)
         s = re.sub('-([0-9.]+)-only', r'-\1', s)
         s = re.sub('-([0-9.]+)-or-later', r'-\1+', s)
         s = re.sub(' *( OR| AND|,) *', '/', s)
@@ -263,7 +265,7 @@ def process_github(row, args):
         with open(cache_filename) as fp:
             github_data = json.load(fp)
     elif args.github is not None:
-        time.sleep(1)
+        time.sleep(0.25)
 
         headers = {}
         if args.github != '':
@@ -352,19 +354,19 @@ def summarize_scores(scores):
     sem = sd / (n ** 0.5)
     return f'N={n} median={median} mean={mean:.2f}±{sem:.2f} max={max(scores)}'
 
-def get_shields_for_repo(repo_link, short=True):
+def get_shields_for_repo(repo_link, filename):
     m = re.match('https?://github.com/([^/]+)/([^/]+?)(.git)?$', repo_link)
     if not m:
         return ''
-    if short:
+    if filename == 'README.md':
         return (
-            f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=flat-square" alt="Stars">' +
-            f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square" alt="Last commit">'
+            f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=flat-square" alt="GitHub stars" title="GitHub stars">' +
+            f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square" alt="Last commit" title="Last commit">'
         )
     else:
         return (
-            f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=stars&style=flat-square" alt="GitHub"><br>' +
-            f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square">'
+            f'<img src="https://img.shields.io/github/stars/{m[1]}/{m[2]}?label=&style=flat-square" alt="GitHub stars" title="GitHub stars">' +
+            f'<img src="https://img.shields.io/github/last-commit/{m[1]}/{m[2]}?label=&style=flat-square" alt="Last commit" title="Last commit">'
         )
 
 def get_domain(url):
@@ -381,19 +383,17 @@ def print_markdown_table(rows, fp):
     for row in rows:
         s = row.get('language', '')
         s = re.sub(', .*', '', s)
-        row['language_pad'] = '%-10s' % s
+        row['language_'] = s
+        row['title_'] = '%-32s' % f'[{row["title"]}]({row["engine"]}.md)'
 
         if row['engine'] in pinned:
             row['sort_key'] = 'A%02d' % pinned.index(row['engine'])
         else:
             row['sort_key'] = ' '.join([
                 s.replace('TypeScript', 'JavaScriptT').replace('C++', 'C'),
-                '%06d' % (999999 - row.get('github_stars', 0)),
+                '%06d' % (999998 - row.get('github_stars', -1)),
                 row['engine'].lower()
             ])
-
-        # link to .md
-        row['title_pad'] = '%-32s' % f'[{row["title"]}]({row["engine"]}.md)'
 
         repo_link = row.get('github', row.get('repository', ''))
         repo_text = ''
@@ -406,20 +406,30 @@ def print_markdown_table(rows, fp):
             repo_text = f'{m[1]}/{m[2]}'
         if re.match(r'https?://github.com/.*\.git$', repo_link):
             repo_link = repo_link[:-4]
+        shields = None
         if repo_link:
-            row['repository_link'] = f'[{repo_text}]({repo_link})'
-            shields = get_shields_for_repo(repo_link, short=False).strip()
+            # Non-breaking hyphen (<nobr> stripped by github).
+            # Force the column to be wide enough to not wrap images.
+            row['repository_'] = f'[{repo_text}]({repo_link})'.replace('[brent-', '[brent‑')
+            shields = get_shields_for_repo(repo_link, 'README.md').strip()
             if shields:
-                row['repository_link'] = f'[{shields}]({repo_link})'
+                row['repository_'] = f'[{shields}]({repo_link})'
+
+        row['title_'] = f'[{row["title"]}]({row["engine"]}.md)'
+        if shields:
+            row['title_'] += '<br>' + row['repository_']
+        elif repo_link:
+            row['title_'] += '<br>(%s)' % row['repository_']
 
     rows.sort(key=lambda row: row['sort_key'])
 
     cols = {
-        'title_pad': 'Engine',
-        'language_pad': 'Language',
+        'title_': 'Engine',
+        'language_': 'Language',
         'summary': 'Description',
+        'years': 'Years',
         'license_abbr': 'License',
-        'repository_link': 'GitHub/URL',
+        #'repository_': 'GitHub/URL',
     }
     print('<!-- Do not edit: autogenerated by data-gen.py -->', file=fp)
     print('| %s |' % (' | '.join(cols.values())), file=fp)

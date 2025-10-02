@@ -7,9 +7,10 @@ Features an unfinished ECMAScript interpreter as of version 1.9.
 * LOC:        1713 (`cloc module/language/ecmascript`)
 * Language:   C
 * License:    LGPL-3.0-or-later
-* Standard:   ES3 (partial)
+* Standard:   ❌ (struggles with basic JS1.0/ES1 code)
 * Years:      2009
 
-## REPL
-
 Run `guile --language=ecmascript` to start ECMAScript REPL.
+
+Related: [Kawa](https://www.gnu.org/software/kawa/)'s [ecmascript](https://gitlab.com/kashell/Kawa/-/tree/master/gnu/ecmascript)
+module - very incomplete implementation in another Scheme interpreter.

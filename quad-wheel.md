@@ -3,7 +3,7 @@
 ES3 engine written in ANSI C.
 
 * URL:        https://code.google.com/archive/p/quad-wheel/
-* Repository: https://github.com/radare/quad-wheel.git <img src="https://img.shields.io/github/stars/radare/quad-wheel?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/radare/quad-wheel?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/radare/quad-wheel.git <img src="https://img.shields.io/github/stars/radare/quad-wheel?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/radare/quad-wheel?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        7917 (`cloc *.{c,h}`)
 * Language:   C
 * License:    MIT

@@ -3,7 +3,7 @@
 An implementation of ECMA-262 in JavaScript aiming for 100% spec compliance, fast prototyping, validating new spec versions and test262.
 
 * URL:        https://engine262.js.org/
-* Repository: https://github.com/engine262/engine262.git <img src="https://img.shields.io/github/stars/engine262/engine262?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/engine262/engine262?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/engine262/engine262.git <img src="https://img.shields.io/github/stars/engine262/engine262?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/engine262/engine262?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        39329 (`cloc src`)
 * Language:   TypeScript
 * License:    MIT

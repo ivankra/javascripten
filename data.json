@@ -1,8 +1,8 @@
 [
   {
     "engine": "assemblyscript",
-    "github_forks": 676,
-    "github_stars": 17580,
+    "github_forks": 677,
+    "github_stars": 17588,
     "language": "TypeScript",
     "license": "Apache-2.0",
     "license_abbr": "Apache-2.0",
@@ -37,26 +37,28 @@
     "engine": "bali",
     "github_forks": 1,
     "github_stars": 100,
-    "jit": "2-tier JIT, x64",
+    "jit": "x64",
     "language": "Nim",
     "license": "BSD-3-Clause",
     "license_abbr": "BSD-3",
     "loc": 12642,
     "loc_command": "cloc src",
-    "note": "Can't parse octane test harness yet.",
     "repository": "https://github.com/ferus-web/bali.git",
     "runtime": "register-based VM",
+    "standard": "❌ (struggles to parse basic JS1.0/ES1 code)",
     "summary": "JavaScript engine written in Nim.",
     "title": "Bali",
     "url": "https://bali.xtrayambak.xyz/",
     "years": "2024-",
     "bench": [
       {
-        "arch": "x64",
-        "binary_size": 3174496,
-        "revision": "70ae6ad64a16ebb95306eeb498814a7551090f56",
-        "revision_date": "2025-09-10",
-        "version": "0.8.0-5-g70ae6ad"
+        "arch": "amd64",
+        "binary_sha256": "ec295ecb6e7546f462eb422db06c9a26ae23a7f1885b1583ca6c786382f5af6c",
+        "binary_size": "ec295ecb6e7546f462eb422db06c9a26ae23a7f1885b1583ca6c786382f5af6c",
+        "repository": "https://github.com/ferus-web/bali.git",
+        "revision": "8cb0b593839a9fe2fa6ec3c2a88b2efd02d2cc7c",
+        "revision_date": "2025-09-25",
+        "version": "0.8.1-7-g8cb0b59"
       }
     ]
   },
@@ -78,6 +80,14 @@
     "title": "BESEN",
     "years": "2009-2020",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "c2dfc723261f0959f59fc62154244dedf23bf19ecf997e1c568cf42fcf1a3188",
+        "binary_size": "c2dfc723261f0959f59fc62154244dedf23bf19ecf997e1c568cf42fcf1a3188",
+        "repository": "https://github.com/BeRo1985/besen.git",
+        "revision": "1c271815cf13291d3e4b636999ff7ecd7aa0993b",
+        "revision_date": "2020-10-21"
+      },
       {
         "arch": "arm64",
         "binary_size": 2261264,
@@ -125,8 +135,8 @@
   },
   {
     "engine": "boa",
-    "github_forks": 452,
-    "github_stars": 5910,
+    "github_forks": 453,
+    "github_stars": 5936,
     "language": "Rust",
     "license": "MIT, Unlicense",
     "license_abbr": "MIT/Unlicense",
@@ -140,6 +150,15 @@
     "url": "https://boajs.dev/",
     "years": "2018-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "86d063cd854e2d4dead863684843584565cddecb3c8f8119196b8666d3aa4104",
+        "binary_size": "86d063cd854e2d4dead863684843584565cddecb3c8f8119196b8666d3aa4104",
+        "repository": "https://github.com/boa-dev/boa.git",
+        "revision": "9d0de12228d938b4f835f2cdca22c9dc7dc4e995",
+        "revision_date": "2025-09-29",
+        "rustc": "rustc 1.90.0 (1159e78c4 2025-09-14)"
+      },
       {
         "arch": "arm64",
         "binary_size": 24256776,
@@ -219,6 +238,19 @@
     ]
   },
   {
+    "engine": "bramblex-jsjs",
+    "github_forks": 153,
+    "github_stars": 1357,
+    "language": "TypeScript",
+    "loc": 662,
+    "loc_command": "cloc src",
+    "parser": "Acorn",
+    "repository": "https://github.com/bramblex/jsjs.git",
+    "summary": "Toy metacircular JavaScript interpreter.",
+    "title": "bramblex/jsjs",
+    "years": "2018"
+  },
+  {
     "engine": "carakan",
     "jit": "yes",
     "language": "C++",
@@ -229,14 +261,14 @@
     "org": "Opera",
     "runtime": "register-based VM",
     "standard": "ES5",
-    "summary": "JavaScript engine of Opera 10.50–12.18.",
+    "summary": "JavaScript engine of Opera 10.50 – 12.18.",
     "title": "Carakan",
     "url": "https://web.archive.org/web/20170113134110/https://github.com/prestocore/browser",
     "years": "2010-2013"
   },
   {
     "engine": "castl",
-    "github_forks": 28,
+    "github_forks": 29,
     "github_stars": 378,
     "jit": "via LuaJIT",
     "language": "Lua, JavaScript",
@@ -256,7 +288,7 @@
   {
     "engine": "cesanta-elk",
     "github_forks": 93,
-    "github_stars": 1795,
+    "github_stars": 1801,
     "language": "C",
     "license": "AGPL",
     "license_abbr": "AGPL",
@@ -270,8 +302,21 @@
     "years": "2019-",
     "bench": [
       {
+        "arch": "amd64",
+        "binary_sha256": "a2b552803cd42697bca6e8db87fa0156d10f832383b2b8d4fddaa05716a4835f",
+        "binary_size": "a2b552803cd42697bca6e8db87fa0156d10f832383b2b8d4fddaa05716a4835f",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/cesanta/elk.git",
+        "revision": "a9bb85619c5cddf49dfa8bdf529770fc9943a7fd",
+        "revision_date": "2025-06-05",
+        "version": "2.2.0-30-ga9bb856"
+      },
+      {
         "arch": "arm64",
+        "binary_sha256": "00cdea762cfb6af39d705a9aba2bdd5cb3c8a9720a23bc69a9930294712db962",
         "binary_size": 67800,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/cesanta/elk.git",
         "revision": "a9bb85619c5cddf49dfa8bdf529770fc9943a7fd",
         "revision_date": "2025-06-05",
         "version": "2.2.0-30-ga9bb856"
@@ -295,8 +340,21 @@
     "years": "2016-",
     "bench": [
       {
+        "arch": "amd64",
+        "binary_sha256": "5b177d8114b7d0408e78d177e00c0d9fb6c79817209f9504011dc9fec5928cc7",
+        "binary_size": "5b177d8114b7d0408e78d177e00c0d9fb6c79817209f9504011dc9fec5928cc7",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/cesanta/mjs.git",
+        "revision": "ed70eac9e8b334b1bfc251fc860511b2cb4aa418",
+        "revision_date": "2025-08-06",
+        "version": "2.20.0-15-ged70eac"
+      },
+      {
         "arch": "arm64",
-        "binary_size": 133976,
+        "binary_sha256": "b79dbc29102fcbd861a34ccd37e37ccadcccf9d2dbe8ecc00ce7e5199818ea8d",
+        "binary_size": 199512,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/cesanta/mjs.git",
         "revision": "ed70eac9e8b334b1bfc251fc860511b2cb4aa418",
         "revision_date": "2025-08-06",
         "version": "2.20.0-15-ged70eac"
@@ -319,6 +377,15 @@
     "title": "cesanta/v7",
     "years": "2013-2017",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "246ae753cf7c8e93f9942b167accde515666cbfb16c981ea203bfca7f87fb325",
+        "binary_size": "246ae753cf7c8e93f9942b167accde515666cbfb16c981ea203bfca7f87fb325",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/cesanta/v7.git",
+        "revision": "ce5212ae42dfd93247c56fbc233f65367e9def27",
+        "revision_date": "2017-08-26"
+      },
       {
         "arch": "arm64",
         "binary_size": 399904,
@@ -345,14 +412,14 @@
     "license_abbr": "Proprietary",
     "org": "Microsoft",
     "standard": "ES6 (partial)",
-    "summary": "JavaScript engine of IE9-IE11 (jscript9.dll).",
+    "summary": "JavaScript engine of IE 9.0 – 11.0 (jscript9.dll).",
     "title": "Chakra",
     "years": "2009-2013"
   },
   {
     "engine": "chakracore",
     "github_forks": 1207,
-    "github_stars": 9213,
+    "github_stars": 9215,
     "jit": "2-tier JIT",
     "language": "C++",
     "license": "MIT",
@@ -368,6 +435,23 @@
     "title": "ChakraCore",
     "years": "2015-2021",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "89d178840b564c7ec4ce678d1ed12bd04a95aa0566c566e8c0cbd87f70c7df0f",
+        "binary_size": "89d178840b564c7ec4ce678d1ed12bd04a95aa0566c566e8c0cbd87f70c7df0f",
+        "repository": "https://github.com/chakra-core/ChakraCore.git",
+        "revision": "36becec43348f259e8bee08cf2fcd171bfe56f42",
+        "revision_date": "2025-02-22"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "d8c056e928f8f8476a15336459edb4a72c37f5540860e42799c852cdbfe33ab9",
+        "binary_size": "d8c056e928f8f8476a15336459edb4a72c37f5540860e42799c852cdbfe33ab9",
+        "repository": "https://github.com/chakra-core/ChakraCore.git",
+        "revision": "36becec43348f259e8bee08cf2fcd171bfe56f42",
+        "revision_date": "2025-02-22",
+        "variant": "jitless"
+      },
       {
         "arch": "x64",
         "binary_size": 12707112,
@@ -449,6 +533,19 @@
         "jit": ""
       }
     ]
+  },
+  {
+    "engine": "charon",
+    "language": "Limbo",
+    "license": "MIT",
+    "license_abbr": "MIT",
+    "loc": 7337,
+    "loc_note": "`cat appl/lib/ecmascript/*.b | sed -e 's/ *#.*//; /^$/d' | wc -l`",
+    "repository": "https://bitbucket.org/inferno-os/inferno-os.git",
+    "sources": "https://bitbucket.org/inferno-os/inferno-os/src/master/appl/lib/ecmascript/",
+    "summary": "JavaScript engine of Inferno OS (Plan 9's successor)'s Charon browser.",
+    "title": "Charon",
+    "years": "2006"
   },
   {
     "engine": "chowjs",
@@ -552,9 +649,22 @@
     "years": "2002-"
   },
   {
+    "engine": "dmonkey",
+    "language": "Pascal",
+    "license": "BSD-3-Clause",
+    "license_abbr": "BSD-3",
+    "loc": 55465,
+    "loc_command": "cloc --not_match_d=test dmonkey/dmonkey",
+    "sources": "https://web.archive.org/web/20240202004621/http://cvs.osdn.net/cvs/view/dmonkey/?view=tar",
+    "summary": "ECMAScript engine written in Delphi.",
+    "title": "DMonkey",
+    "url": "https://web.archive.org/web/20250331235827/https://osdn.net/projects/dmonkey/",
+    "years": "2005"
+  },
+  {
     "engine": "duktape",
     "github_forks": 533,
-    "github_stars": 6110,
+    "github_stars": 6113,
     "language": "C",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -567,6 +677,15 @@
     "title": "Duktape",
     "years": "2013-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "dfbd4437481e435fc61b025b5d7d417ebf0d8e06dbafdcfc3ee7f3afc37a3a84",
+        "binary_size": "dfbd4437481e435fc61b025b5d7d417ebf0d8e06dbafdcfc3ee7f3afc37a3a84",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/svaarala/duktape.git",
+        "revision": "50af773b1b32067170786c2b7c661705ec7425d4",
+        "revision_date": "2024-01-29"
+      },
       {
         "arch": "arm64",
         "binary_size": 527224,
@@ -659,6 +778,32 @@
     "years": "2012-2023"
   },
   {
+    "engine": "echosoar-jsi",
+    "github_forks": 7,
+    "github_stars": 92,
+    "language": "Rust",
+    "license": "MIT",
+    "license_abbr": "MIT",
+    "loc": 5945,
+    "loc_command": "cloc src",
+    "repository": "https://github.com/echosoar/jsi.git",
+    "standard": "no (can't handle ES1)",
+    "summary": "JavaScript interpreter written in Rust with QuickJS-inspired bytecode.",
+    "title": "echosoar/jsi",
+    "years": "2022-",
+    "bench": [
+      {
+        "arch": "arm64",
+        "binary_sha256": "492ffb189b4690511b88dca04f51f532bd34b3aea2063a61c06c40609846c3ba",
+        "binary_size": 1053392,
+        "repository": "https://github.com/echosoar/jsi.git",
+        "revision": "fe199b5c182341a94c9b340486c25acebe163f02",
+        "revision_date": "2025-08-24",
+        "rustc": "rustc 1.90.0 (1159e78c4 2025-09-14)"
+      }
+    ]
+  },
+  {
     "engine": "edbrowse",
     "language": "C",
     "license": "GPL",
@@ -698,7 +843,7 @@
     "loc_command": "cloc --not_match_d=\"(?i)(test|pcre|zlib|ejs.web)\" src",
     "regex": "PCRE2",
     "repository": "https://github.com/embedthis/ejscript.git",
-    "standard": "ES6 (ES3, most of ES4/ES5, some ES6: let/const, modules, classes, Promise)",
+    "standard": "ES3, ES4 (draft)",
     "summary": "Embeddable JavaScript engine.",
     "title": "Ejscript",
     "url": "https://www.embedthis.com/ejscript/doc/",
@@ -707,7 +852,7 @@
   {
     "engine": "engine262",
     "github_forks": 70,
-    "github_stars": 897,
+    "github_stars": 899,
     "language": "TypeScript",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -740,7 +885,7 @@
   {
     "engine": "escargot",
     "github_forks": 49,
-    "github_stars": 315,
+    "github_stars": 318,
     "language": "C++",
     "license": "LGPL-2.1",
     "license_abbr": "LGPL-2.1",
@@ -755,6 +900,16 @@
     "title": "Escargot",
     "years": "2016-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "9a940d21d282693fbd3276b4c69f4e7f8a63bda5a50af446e0ab78c56d195e08",
+        "binary_size": "9a940d21d282693fbd3276b4c69f4e7f8a63bda5a50af446e0ab78c56d195e08",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/Samsung/escargot.git",
+        "revision": "1577634b8f3e54f2934ae1739c77f812d2908f8e",
+        "revision_date": "2025-08-21",
+        "version": "v4.3.0"
+      },
       {
         "arch": "arm64",
         "binary_size": 4723208,
@@ -839,8 +994,8 @@
   },
   {
     "engine": "espruino",
-    "github_forks": 762,
-    "github_stars": 2893,
+    "github_forks": 760,
+    "github_stars": 2896,
     "language": "C",
     "license": "MPL-2.0",
     "license_abbr": "MPL-2.0",
@@ -854,6 +1009,16 @@
     "url": "https://www.espruino.com/",
     "years": "2013-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "da4f958830f44637fddefd20d9933abd606dd00bd7c90c06de2fe755a89cbae2",
+        "binary_size": "da4f958830f44637fddefd20d9933abd606dd00bd7c90c06de2fe755a89cbae2",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/espruino/Espruino.git",
+        "revision": "08502f84a2706a72c6ad0a525d93ec3c74f09565",
+        "revision_date": "2025-06-06",
+        "version": "2v27"
+      },
       {
         "arch": "arm64",
         "binary_size": 1183488,
@@ -873,20 +1038,13 @@
         "NavierStokes_note": "N=2 median=0.21833643526 mean=0.21±0.01 max=0.21833643526",
         "Richards_note": "N=3 median=13.18468720821 mean=13.20±0.05 max=13.29642184557",
         "Splay_note": "N=3 median=13.67298657718 mean=13.70±0.09 max=13.87080851063"
-      },
-      {
-        "arch": "x64",
-        "binary_size": 1105208,
-        "revision": "5acf953a074c91da20617156e5cb2f8c76dcaff6",
-        "revision_date": "2025-08-26",
-        "version": "RELEASE_2V27-36-g5acf953a0"
       }
     ]
   },
   {
     "engine": "eval5",
     "github_forks": 102,
-    "github_stars": 723,
+    "github_stars": 724,
     "language": "TypeScript",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -932,8 +1090,8 @@
   },
   {
     "engine": "goja",
-    "github_forks": 417,
-    "github_stars": 6453,
+    "github_forks": 419,
+    "github_stars": 6466,
     "language": "Go",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -948,6 +1106,14 @@
     "title": "goja",
     "years": "2016-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "019d673458b211b2b2e56866ddf9b6256c80e94ed81a959ffdd3a05314d3908c",
+        "binary_size": "019d673458b211b2b2e56866ddf9b6256c80e94ed81a959ffdd3a05314d3908c",
+        "repository": "https://github.com/dop251/goja.git",
+        "revision": "58d95d85e9949a7bad069058977368acf30c72dd",
+        "revision_date": "2025-06-30"
+      },
       {
         "arch": "arm64",
         "binary_size": 9439960,
@@ -1040,12 +1206,17 @@
     "org": "Oracle",
     "repository": "https://github.com/oracle/graaljs.git",
     "standard": "ESnext",
-    "summary": "High-performance JavaScript engine for GraalVM.",
+    "summary": "High-performance JavaScript engine for JVM/GraalVM.",
     "tech": "JVM, Truffle framework",
     "title": "GraalJS",
     "url": "https://www.graalvm.org/javascript/",
     "years": "2018-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_size": "amd64",
+        "version": "25.0.0"
+      },
       {
         "arch": "arm64",
         "binary_size": 197269652,
@@ -1132,7 +1303,7 @@
     "loc": 1713,
     "loc_command": "cloc module/language/ecmascript",
     "repository": "https://git.savannah.gnu.org/git/guile.git",
-    "standard": "ES3 (partial)",
+    "standard": "❌ (struggles with basic JS1.0/ES1 code)",
     "summary": "Features an unfinished ECMAScript interpreter as of version 1.9.",
     "title": "Guile",
     "url": "https://wingolog.org/archives/2009/02/22/ecmascript-for-guile",
@@ -1149,7 +1320,7 @@
     "loc_command": "cloc --not_match_d=\"(?i)(examples)\" .",
     "repository": "https://github.com/andrewmd5/hako.git",
     "standard": "ES2019",
-    "summary": "Embeddable WASM-sandboxed PrimJS fork.",
+    "summary": "Embeddable WebAssembly-sandboxed PrimJS fork.",
     "tech": "PrimJS compiled to WASM",
     "title": "Hako",
     "years": "2025-"
@@ -1157,8 +1328,8 @@
   {
     "engine": "hermes",
     "gc": "generational GC",
-    "github_forks": 712,
-    "github_stars": 10504,
+    "github_forks": 713,
+    "github_stars": 10523,
     "language": "C++",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -1168,12 +1339,22 @@
     "repository": "https://github.com/facebook/hermes.git",
     "runtime": "register-based VM",
     "standard": "ES6 (partial)",
-    "summary": "JavaScript engine from Facebook optimized for running mobile React Native apps.",
+    "summary": "JavaScript engine from Facebook optimized for running React Native mobile apps.",
     "tech": "optimizing AOT compiler to bytecode, SSA IR",
     "title": "Hermes",
     "url": "https://hermesengine.dev/",
     "years": "2019-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "8e045a18b5c63c2266b171fff14faa538782004fcf3a6565dda8b04b7a919e78",
+        "binary_size": "8e045a18b5c63c2266b171fff14faa538782004fcf3a6565dda8b04b7a919e78",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/facebook/hermes.git",
+        "revision": "100fe4068fcefcacb0f192bd3202d29dec70ab46",
+        "revision_date": "2025-09-24",
+        "version": "0.12.0"
+      },
       {
         "arch": "arm64",
         "binary_size": 4073424,
@@ -1275,6 +1456,21 @@
     "years": "2012-2015"
   },
   {
+    "engine": "hjs",
+    "language": "Haskell",
+    "license": "BSD-3-Clause",
+    "license_abbr": "BSD-3",
+    "loc": 2171,
+    "loc_command": "cloc hjs-0.2.1/src",
+    "runtime": "tree walker",
+    "sources": "https://hackage.haskell.org/package/hjs-0.2.1/hjs-0.2.1.tar.gz",
+    "standard": "ES3, JS1.5",
+    "summary": "Haskell JavaScript parser and interpreter.",
+    "title": "hjs",
+    "url": "https://hackage.haskell.org/package/hjs-0.2.1",
+    "years": "2007"
+  },
+  {
     "engine": "ironjs",
     "github_forks": 82,
     "github_stars": 685,
@@ -1295,7 +1491,7 @@
   {
     "engine": "iv-lv5",
     "github_forks": 34,
-    "github_stars": 422,
+    "github_stars": 423,
     "jit": "context-threaded/method JIT, x64",
     "language": "C++",
     "license": "BSD-2-Clause",
@@ -1309,6 +1505,28 @@
     "title": "iv / lv5",
     "years": "2009-2015",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "74d85a11aff7b5bf79f0f0e700bd875938161a2dd2436cfde122a37b5cdec89f",
+        "binary_size": "74d85a11aff7b5bf79f0f0e700bd875938161a2dd2436cfde122a37b5cdec89f",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/Constellation/iv.git",
+        "revision": "64c3a9c7c517063f29d90d449180ea8f6f4d946f",
+        "revision_date": "2015-03-24",
+        "version": "1.0.1-270-g64c3a9c7"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "8861bbed4303ffee880c74d37d45f3166d0920d7a6eaf993790c677470f653c7",
+        "binary_size": "8861bbed4303ffee880c74d37d45f3166d0920d7a6eaf993790c677470f653c7",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "jit": "",
+        "repository": "https://github.com/Constellation/iv.git",
+        "revision": "64c3a9c7c517063f29d90d449180ea8f6f4d946f",
+        "revision_date": "2015-03-24",
+        "variant": "jitless",
+        "version": "1.0.1-270-g64c3a9c7"
+      },
       {
         "arch": "arm64",
         "binary_size": 5108520,
@@ -1461,22 +1679,22 @@
   {
     "engine": "jawsm",
     "github_forks": 21,
-    "github_stars": 1024,
+    "github_stars": 1026,
     "language": "Rust",
     "license": "Apache-2.0",
     "license_abbr": "Apache-2.0",
     "loc": 11971,
     "loc_command": "cloc src",
     "repository": "https://github.com/drogus/jawsm.git",
-    "summary": "JavaScript to WASM compiler.",
+    "summary": "JavaScript to WebAssembly compiler.",
     "title": "Jawsm",
     "type": "compiler to WASM",
     "years": "2024-"
   },
   {
     "engine": "jerryscript",
-    "github_forks": 685,
-    "github_stars": 7292,
+    "github_forks": 686,
+    "github_stars": 7291,
     "language": "C",
     "license": "Apache-2.0",
     "license_abbr": "Apache-2.0",
@@ -1491,6 +1709,16 @@
     "url": "https://jerryscript.net/",
     "years": "2014-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "18ee407b043c754c7cd738fdf16268325ff25a3f6ee7a7d1c76aee0ee1c0f351",
+        "binary_size": "18ee407b043c754c7cd738fdf16268325ff25a3f6ee7a7d1c76aee0ee1c0f351",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/jerryscript-project/jerryscript.git",
+        "revision": "50200152feb724a74a5f64e44d7885151537cfad",
+        "revision_date": "2024-12-18",
+        "version": "v3.0.0"
+      },
       {
         "arch": "arm64",
         "binary_size": 461336,
@@ -1561,7 +1789,7 @@
   {
     "engine": "jint",
     "github_forks": 581,
-    "github_stars": 4418,
+    "github_stars": 4420,
     "language": "C#",
     "license": "BSD-2-Clause",
     "license_abbr": "BSD-2",
@@ -1592,7 +1820,7 @@
   {
     "engine": "js-interpreter",
     "github_forks": 361,
-    "github_stars": 2115,
+    "github_stars": 2118,
     "language": "JavaScript",
     "language_note": "ES5",
     "license": "Apache-2.0",
@@ -1610,7 +1838,7 @@
   {
     "engine": "js2py",
     "github_forks": 274,
-    "github_stars": 2550,
+    "github_stars": 2552,
     "language": "Python",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -1624,8 +1852,8 @@
   },
   {
     "engine": "jsc",
-    "github_forks": 1695,
-    "github_stars": 9163,
+    "github_forks": 1699,
+    "github_stars": 9196,
     "jit": "3-tier JIT",
     "language": "C++",
     "license": "LGPL-2.0-only",
@@ -1643,6 +1871,38 @@
     "url": "https://trac.webkit.org/wiki/JavaScriptCore",
     "years": "2001-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "52bb9f40fae13488b4c5929f1d17da2e0afef4abd1f819f1616d1a3a6e02e2ec",
+        "binary_size": "52bb9f40fae13488b4c5929f1d17da2e0afef4abd1f819f1616d1a3a6e02e2ec",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/WebKit/WebKit.git",
+        "revision": "8d2ed2e447fadb4bce5db43cbc54af8f37c00042",
+        "revision_date": "2025-09-09",
+        "version": "299754@main"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "4d98d5d57967db3410ca4eeeb3f6b9070a746bd1a17f7f05be92841060bc908d",
+        "binary_size": "4d98d5d57967db3410ca4eeeb3f6b9070a746bd1a17f7f05be92841060bc908d",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/WebKit/WebKit.git",
+        "revision": "8d2ed2e447fadb4bce5db43cbc54af8f37c00042",
+        "revision_date": "2025-09-09",
+        "variant": "gcc",
+        "version": "299754@main"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "db8f53364656fe7964645452b69c1e907c8b50ea56dc8d48ed4c26e49ebe3a0f",
+        "binary_size": "db8f53364656fe7964645452b69c1e907c8b50ea56dc8d48ed4c26e49ebe3a0f",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/WebKit/WebKit.git",
+        "revision": "8d2ed2e447fadb4bce5db43cbc54af8f37c00042",
+        "revision_date": "2025-09-09",
+        "variant": "jitless",
+        "version": "299754@main"
+      },
       {
         "arch": "arm64",
         "binary_size": 26741048,
@@ -1686,11 +1946,14 @@
       },
       {
         "arch": "arm64",
-        "variant": "dfg",
-        "binary_size": 19663160,
-        "revision": "f5b129fe96a89a4a8ce8e1169bfa3914a0c8405d",
-        "revision_date": "2025-08-27",
-        "version": "f5b129fe"
+        "binary_sha256": "d3ca42f57dc904b57621b1705de401194b2573481e9562b67607037244e50503",
+        "binary_size": 29860392,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/WebKit/WebKit.git",
+        "revision": "8d2ed2e447fadb4bce5db43cbc54af8f37c00042",
+        "revision_date": "2025-09-09",
+        "variant": "gcc",
+        "version": "299754@main"
       },
       {
         "arch": "arm64",
@@ -1830,10 +2093,22 @@
     "regex": "PCRE2",
     "repository": "https://github.com/tmikov/jscomp.git",
     "standard": "ES5 (partial)",
-    "summary": "AOT compiler targetting native code via C++",
+    "summary": "AOT compiler targetting native code via C++.",
     "title": "jscomp",
     "type": "compiler to native code (via C++)",
     "years": "2015-2016"
+  },
+  {
+    "engine": "jscript-net",
+    "language": "C#",
+    "license": "Proprietary",
+    "license_abbr": "Proprietary",
+    "org": "Microsoft",
+    "standard": "ES3, ES4 (draft)",
+    "summary": "Old Microsoft's JavaScript engine for .NET from early 2000s / ES4 era.",
+    "title": "JScript .NET",
+    "url": "http://msdn.microsoft.com/ms974588.aspx",
+    "years": "2000-2005"
   },
   {
     "engine": "jscript",
@@ -1843,7 +2118,7 @@
     "org": "Microsoft",
     "runtime": "stack-based VM",
     "standard": "ES3",
-    "summary": "JavaScript engine of IE3-IE8 (jscript.dll).",
+    "summary": "JavaScript engine of IE 3.0 – 8.0 (jscript.dll).",
     "title": "JScript",
     "url": "https://learn.microsoft.com/en-us/previous-versions/hbxc2t98%28v=vs.85%29",
     "years": "1996-2011"
@@ -1857,23 +2132,29 @@
     "license_abbr": "MIT",
     "loc": 50896,
     "loc_command": "cloc src",
-    "note": "Can't run test suite: bugs in ASI, != operator, no Date class.",
     "repository": "https://github.com/pcmacdon/jsish.git",
     "runtime": "stack-based VM",
-    "summary": "Small embeddable JavaScript-ish interpreter.",
+    "standard": "❌ (unfinished and buggy)",
+    "summary": "Unfinished embeddable JavaScript interpreter.",
     "title": "jsish",
     "years": "2020-2022",
     "bench": [
       {
-        "arch": "arm64",
-        "binary_size": 2422304,
+        "arch": "amd64",
+        "binary_sha256": "a7e316f9e0e71048bb02ad6bc27bf7c05a24d437956290966c5ee0a0388799f0",
+        "binary_size": "a7e316f9e0e71048bb02ad6bc27bf7c05a24d437956290966c5ee0a0388799f0",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/pcmacdon/jsish.git",
         "revision": "42c694c152f7f4fbee34d5e14be37d6e0d09673f",
         "revision_date": "2022-08-23",
         "version": "3.0-252-g42c694c"
       },
       {
-        "arch": "x64",
-        "binary_size": 2370216,
+        "arch": "arm64",
+        "binary_sha256": "bb475f0c8087d6697777d3cf66f55b2c21848236767e311a604d61d860d9f523",
+        "binary_size": 2422304,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/pcmacdon/jsish.git",
         "revision": "42c694c152f7f4fbee34d5e14be37d6e0d09673f",
         "revision_date": "2022-08-23",
         "version": "3.0-252-g42c694c"
@@ -1897,7 +2178,7 @@
   {
     "engine": "jurassic",
     "github_forks": 127,
-    "github_stars": 924,
+    "github_stars": 925,
     "jit": "via CLR",
     "language": "C#",
     "license": "MIT",
@@ -1926,6 +2207,15 @@
     "url": "https://kiesel.dev/",
     "years": "2023-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "27d776a195a9de6b67c7b999b726dfeb14bff05259c8305b6d9d689dd7bcbfd0",
+        "binary_size": "27d776a195a9de6b67c7b999b726dfeb14bff05259c8305b6d9d689dd7bcbfd0",
+        "repository": "https://codeberg.org/kiesel-js/kiesel.git",
+        "revision": "fc80d0e6f43c5ff303516cfe02dfb16f6f907d8e",
+        "revision_date": "2025-09-25",
+        "version": "0.1.0-dev+fc80d0e6f"
+      },
       {
         "arch": "arm64",
         "binary_size": 12814080,
@@ -2019,6 +2309,16 @@
     "years": "1998-2023",
     "bench": [
       {
+        "arch": "amd64",
+        "binary_sha256": "81ca661efec688e8911b200857903c5b5d88975601d6bf220c2207bd151f91f5",
+        "binary_size": "81ca661efec688e8911b200857903c5b5d88975601d6bf220c2207bd151f91f5",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/KDE/kjs.git",
+        "revision": "5824588da24f797b4255929918efbc8b484baa09",
+        "revision_date": "2025-07-28",
+        "version": "5.117.0"
+      },
+      {
         "arch": "arm64",
         "binary_size": 997072,
         "revision": "5824588da24f797b4255929918efbc8b484baa09",
@@ -2083,8 +2383,8 @@
   },
   {
     "engine": "libjs",
-    "github_forks": 2095,
-    "github_stars": 48411,
+    "github_forks": 2136,
+    "github_stars": 49118,
     "language": "C++",
     "license": "BSD-2-Clause",
     "license_abbr": "BSD-2",
@@ -2098,6 +2398,15 @@
     "url": "https://ladybirdbrowser.github.io/libjs-website/",
     "years": "2020-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "09c89afa248f6feb4a158062a9c1e03419213ec8c7be112e882234d9fe3ae84e",
+        "binary_size": "09c89afa248f6feb4a158062a9c1e03419213ec8c7be112e882234d9fe3ae84e",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/LadybirdBrowser/ladybird.git",
+        "revision": "cb6ca85564abb57517b82754b4ac1ba78785707a",
+        "revision_date": "2025-09-25"
+      },
       {
         "arch": "arm64",
         "binary_size": 46806288,
@@ -2197,6 +2506,20 @@
     "years": "2002-2007"
   },
   {
+    "engine": "malbrain",
+    "github_forks": 0,
+    "github_stars": 13,
+    "language": "C",
+    "loc": 12293,
+    "loc_command": "cloc *.[chly] system*.js",
+    "parser": "YACC",
+    "repository": "https://github.com/malbrain/javascript-database.git",
+    "runtime": "tree walker",
+    "summary": "JavaScript interpreter with a built-in NO-SQL database.",
+    "title": "malbrain",
+    "years": "2016-2020"
+  },
+  {
     "engine": "metaes",
     "github_forks": 8,
     "github_stars": 139,
@@ -2233,7 +2556,7 @@
     "github": "https://github.com/doodlewind/mocha1995.git",
     "github_forks": 27,
     "github_note": "ns302 version ported to modern toolchain",
-    "github_stars": 335,
+    "github_stars": 339,
     "language": "C++",
     "license": "Proprietary",
     "license_abbr": "Proprietary",
@@ -2249,6 +2572,15 @@
     "years": "1995-1996",
     "bench": [
       {
+        "arch": "amd64",
+        "binary_sha256": "6a9e8ad91b80a653f9a601dfed186b2fc831511ec86080de3ddd2fa3e73e6793",
+        "binary_size": "6a9e8ad91b80a653f9a601dfed186b2fc831511ec86080de3ddd2fa3e73e6793",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/doodlewind/mocha1995",
+        "revision": "3d109cbf6d185c3665da2982e92ce198406cca01",
+        "revision_date": "2024-10-12"
+      },
+      {
         "arch": "arm64",
         "binary_size": 206984,
         "revision": "3d109cbf6d185c3665da2982e92ce198406cca01",
@@ -2260,10 +2592,25 @@
     ]
   },
   {
+    "engine": "motet-a-toy",
+    "github_forks": 6,
+    "github_stars": 14,
+    "language": "C, JavaScript",
+    "license": "MIT",
+    "license_abbr": "MIT",
+    "loc": 1961,
+    "loc_command": "cloc *.c *.h *.js opcode.def",
+    "repository": "https://github.com/motet-a/toy.git",
+    "runtime": "stack-based VM",
+    "summary": "Tiny self-compiling interpreter for a subset of JavaScript.",
+    "title": "motet-a/toy",
+    "years": "2017"
+  },
+  {
     "engine": "mujs",
     "github": "https://github.com/ccxvii/mujs.git",
     "github_forks": 105,
-    "github_stars": 862,
+    "github_stars": 864,
     "language": "C",
     "license": "ISC",
     "license_abbr": "ISC",
@@ -2277,6 +2624,16 @@
     "url": "https://mujs.com/",
     "years": "2013-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "df36cae2856ec8558febed4f3a4c4b954adbc9abbfe31177bc1cd6f531afbbbc",
+        "binary_size": "df36cae2856ec8558febed4f3a4c4b954adbc9abbfe31177bc1cd6f531afbbbc",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://codeberg.org/ccxvii/mujs.git",
+        "revision": "05cd646bad083ed45e9e1c9846ea671d461ced30",
+        "revision_date": "2025-06-23",
+        "version": "1.3.7"
+      },
       {
         "arch": "arm64",
         "binary_size": 396408,
@@ -2345,6 +2702,20 @@
     ]
   },
   {
+    "engine": "muscalietjs",
+    "github_forks": 8,
+    "github_stars": 21,
+    "language": "C#",
+    "license": "BSD-3-Clause-Clear",
+    "license_abbr": "BSD-3",
+    "loc": 49527,
+    "loc_command": "cloc .",
+    "repository": "https://github.com/mcjs/mcjs.git",
+    "summary": "JavaScript interpreter / compiler to CIL. Abandoned prototype for a paper.",
+    "title": "MuscalietJS",
+    "years": "2014"
+  },
+  {
     "engine": "narcissus",
     "github_forks": 118,
     "github_stars": 919,
@@ -2363,7 +2734,7 @@
   {
     "engine": "nashorn",
     "github_forks": 48,
-    "github_stars": 469,
+    "github_stars": 472,
     "jit": "via JVM",
     "language": "Java",
     "license": "GPL-2.0-only WITH Classpath-exception-2.0",
@@ -2379,6 +2750,14 @@
     "url": "https://openjdk.org/projects/nashorn/",
     "years": "2011-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_size": "amd64",
+        "repository": "https://github.com/openjdk/nashorn.git",
+        "revision": "4923f1e70e460d87c0eeb1f5232344487d46108d",
+        "revision_date": "2025-08-21",
+        "version": "15.7"
+      },
       {
         "arch": "arm64",
         "binary_size": 2565636,
@@ -2463,6 +2842,22 @@
     ]
   },
   {
+    "engine": "nerd",
+    "github_forks": 128,
+    "github_stars": 3610,
+    "language": "C++",
+    "license": "MIT",
+    "license_abbr": "MIT",
+    "loc": 12245,
+    "loc_command": "cloc base compiler lib",
+    "repository": "https://github.com/NerdLang/nerd.git",
+    "standard": "no",
+    "summary": "Compiler for a subset of JavaScript targetting native binaries.",
+    "title": "Nerd / NectarJS",
+    "type": "compiler to native code",
+    "years": "2017-2022"
+  },
+  {
     "engine": "ngs",
     "github_forks": 1,
     "github_stars": 2,
@@ -2498,8 +2893,8 @@
   },
   {
     "engine": "njs",
-    "github_forks": 192,
-    "github_stars": 1477,
+    "github_forks": 193,
+    "github_stars": 1481,
     "language": "C",
     "license": "BSD-2-Clause",
     "license_abbr": "BSD-2",
@@ -2515,6 +2910,16 @@
     "url": "https://nginx.org/en/docs/njs/index.html",
     "years": "2015-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "4b84c42e3b37d715cc290db610c0569b0a100a6e8626e1f707fd07529d46f545",
+        "binary_size": "4b84c42e3b37d715cc290db610c0569b0a100a6e8626e1f707fd07529d46f545",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/nginx/njs.git",
+        "revision": "b31f7333c772ba837977363536297b2608f64047",
+        "revision_date": "2025-09-22",
+        "version": "0.9.2"
+      },
       {
         "arch": "arm64",
         "binary_size": 842680,
@@ -2585,7 +2990,7 @@
   {
     "engine": "nova",
     "github_forks": 66,
-    "github_stars": 1705,
+    "github_stars": 1707,
     "language": "Rust",
     "license": "MPL-2.0",
     "license_abbr": "MPL-2.0",
@@ -2599,6 +3004,16 @@
     "url": "https://trynova.dev/",
     "years": "2022-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "28498c0ed27bceb28f80e675c3cc53f772c2a07a9e303954bdae87b7cd5b7ba7",
+        "binary_size": "28498c0ed27bceb28f80e675c3cc53f772c2a07a9e303954bdae87b7cd5b7ba7",
+        "repository": "https://github.com/trynova/nova.git",
+        "revision": "81774d30bd814d8b7ea050e252557890f76c9b69",
+        "revision_date": "2025-09-30",
+        "rustc": "rustc 1.90.0 (1159e78c4 2025-09-14)",
+        "version": "latest-28-g81774d30"
+      },
       {
         "arch": "arm64",
         "binary_size": 8065864,
@@ -2677,7 +3092,7 @@
   {
     "engine": "otto",
     "github_forks": 596,
-    "github_stars": 8377,
+    "github_stars": 8381,
     "language": "Go",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -2691,6 +3106,15 @@
     "title": "otto",
     "years": "2012-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "3e3685b24580208379638defd9700336841a2f7b2ee694981c96019c2b56b014",
+        "binary_size": "3e3685b24580208379638defd9700336841a2f7b2ee694981c96019c2b56b014",
+        "repository": "https://github.com/robertkrimen/otto.git",
+        "revision": "3ca729876b8973d2faeb6f25d1c8e7dd6580063a",
+        "revision_date": "2025-06-13",
+        "version": "v0.5.1-2-g3ca7298"
+      },
       {
         "arch": "arm64",
         "binary_size": 4751352,
@@ -2760,8 +3184,8 @@
   },
   {
     "engine": "porffor",
-    "github_forks": 90,
-    "github_stars": 4207,
+    "github_forks": 89,
+    "github_stars": 4217,
     "language": "JavaScript, TypeScript",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -2769,7 +3193,7 @@
     "loc_command": "cloc compiler",
     "parser": "Acorn",
     "repository": "https://github.com/CanadaHonk/porffor.git",
-    "summary": "Optimizing AOT compiler for JavaScript/TypeScript targetting WASM and native binaries.",
+    "summary": "Optimizing AOT compiler for JavaScript/TypeScript targetting WebAssembly and native binaries.",
     "title": "Porffor",
     "type": "compiler to WASM",
     "url": "https://porffor.dev/",
@@ -2777,8 +3201,8 @@
   },
   {
     "engine": "primjs",
-    "github_forks": 44,
-    "github_stars": 1008,
+    "github_forks": 45,
+    "github_stars": 1014,
     "language": "C++",
     "license": "Apache-2.0",
     "license_abbr": "Apache-2.0",
@@ -2790,6 +3214,23 @@
     "summary": "QuickJS-based engine from ByteDance for their cross-platform mobile apps framework Lynx.",
     "title": "PrimJS",
     "years": "2024-"
+  },
+  {
+    "engine": "qsa",
+    "github_forks": 0,
+    "github_stars": 2,
+    "language": "C++",
+    "license": "GPL-2.0-only",
+    "license_abbr": "GPL-2.0",
+    "org": "Qt",
+    "parser": "YACC",
+    "repository": "https://github.com/aschet/qsaqt5",
+    "standard": "ES3, ES4 (draft)",
+    "summary": "Qt 3's JavaScript engine: Qt Script for Applications.",
+    "tech": "tree walker",
+    "title": "QSA",
+    "url": "https://web.archive.org/web/20060212090118/http://www.trolltech.com/products/qsa/",
+    "years": "2002-2007"
   },
   {
     "engine": "quad-wheel",
@@ -2813,7 +3254,7 @@
     "engine": "quickjs-ng",
     "gc": "reference counting",
     "github_forks": 201,
-    "github_stars": 2114,
+    "github_stars": 2134,
     "language": "C",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -2827,6 +3268,16 @@
     "url": "https://quickjs-ng.github.io/quickjs/",
     "years": "2023-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "04866f71bfe0e6dd72e90cd18d789947d3dd5fef16159e0fefa4453fb0a986a1",
+        "binary_size": "04866f71bfe0e6dd72e90cd18d789947d3dd5fef16159e0fefa4453fb0a986a1",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/quickjs-ng/quickjs.git",
+        "revision": "07214197c24bb60066a0378ebd7690041f86e361",
+        "revision_date": "2025-09-26",
+        "version": "v0.10.1-62-g0721419"
+      },
       {
         "arch": "arm64",
         "binary_size": 1117536,
@@ -2916,8 +3367,8 @@
   {
     "engine": "quickjs",
     "gc": "reference counting",
-    "github_forks": 1019,
-    "github_stars": 9611,
+    "github_forks": 1022,
+    "github_stars": 9629,
     "language": "C",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -2933,6 +3384,25 @@
     "vm": "`JS_CallInternal()` at [quickjs.c:16850](https://github.com/bellard/quickjs/blob/master/quickjs.c#L16850)",
     "years": "2019-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "d7f6c6e0649295e30ea30c0306d6425e20dccf6fd8658230dcce5a2195a96b38",
+        "binary_size": "d7f6c6e0649295e30ea30c0306d6425e20dccf6fd8658230dcce5a2195a96b38",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/bellard/quickjs.git",
+        "revision": "fa628f8c523ecac8ce560c081411e91fcaba2d20",
+        "revision_date": "2025-09-13"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "84ef71dd3b5cacd9584c55340b3bff061d351d0a94657c92502b3d5f67afcbff",
+        "binary_size": "84ef71dd3b5cacd9584c55340b3bff061d351d0a94657c92502b3d5f67afcbff",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/bellard/quickjs.git",
+        "revision": "fa628f8c523ecac8ce560c081411e91fcaba2d20",
+        "revision_date": "2025-09-13",
+        "variant": "clang"
+      },
       {
         "arch": "arm64",
         "binary_size": 920864,
@@ -2973,6 +3443,16 @@
         "SplayLatency_note": "N=100 median=12357 mean=12283.99±33.50 max=12774",
         "Typescript_note": "N=100 median=24305 mean=22534.12±251.81 max=25070",
         "zlib_note": "N=100 median=3905 mean=3872.99±10.12 max=4064"
+      },
+      {
+        "arch": "arm64",
+        "binary_sha256": "74f95a6cdbf8f8048501106d3fd56713652b6bdc2ffcdfd0999d4406d064607f",
+        "binary_size": 986496,
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/bellard/quickjs.git",
+        "revision": "fa628f8c523ecac8ce560c081411e91fcaba2d20",
+        "revision_date": "2025-09-13",
+        "variant": "clang"
       },
       {
         "arch": "x64",
@@ -3037,6 +3517,27 @@
     "url": "https://wiki.qt.io/V4",
     "years": "2012-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "a66eac384db91fb51811b116112a163cd748ced6be6563fc4500f225d6f6a1a8",
+        "binary_size": "a66eac384db91fb51811b116112a163cd748ced6be6563fc4500f225d6f6a1a8",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://code.qt.io/qt/qt5.git",
+        "revision": "28229ddfafcc0ea39526536b1998f3ef02459436",
+        "revision_date": "2025-09-26",
+        "version": "v6.9.3"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "e8234a791e92de762a48fae84395fc080173595222530f6eba866cf6e7752094",
+        "binary_size": "e8234a791e92de762a48fae84395fc080173595222530f6eba866cf6e7752094",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://code.qt.io/qt/qt5.git",
+        "revision": "28229ddfafcc0ea39526536b1998f3ef02459436",
+        "revision_date": "2025-09-26",
+        "variant": "jitless",
+        "version": "v6.9.3"
+      },
       {
         "arch": "arm64",
         "binary_size": 12751320,
@@ -3212,8 +3713,8 @@
   },
   {
     "engine": "rhino",
-    "github_forks": 900,
-    "github_stars": 4454,
+    "github_forks": 901,
+    "github_stars": 4459,
     "language": "Java",
     "license": "MPL-2.0",
     "license_abbr": "MPL-2.0",
@@ -3228,6 +3729,14 @@
     "url": "https://rhino.github.io/",
     "years": "1997-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_size": "amd64",
+        "repository": "https://github.com/mozilla/rhino",
+        "revision": "0dcc00f6b3e2623f732828186ef8464d69ba51d1",
+        "revision_date": "2025-01-02",
+        "version": "1.8.0"
+      },
       {
         "arch": "arm64",
         "binary_size": 1526757,
@@ -3311,7 +3820,7 @@
     "loc_command": "cloc py-js.py js",
     "repository": "https://github.com/progval/rpython-langjs.git",
     "runtime": "stack-based VM",
-    "summary": "JavaScript interpreter for RPython (PyPy).",
+    "summary": "JavaScript interpreter for PyPy.",
     "title": "rpython-langjs",
     "years": "2009-2013"
   },
@@ -3358,8 +3867,8 @@
   },
   {
     "engine": "spidermonkey",
-    "github_forks": 534,
-    "github_stars": 10038,
+    "github_forks": 550,
+    "github_stars": 10083,
     "jit": "2-tier JIT",
     "language": "C++",
     "license": "MPL-2.0",
@@ -3376,6 +3885,103 @@
     "url": "https://spidermonkey.dev/",
     "years": "1996-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "90e5c40eb85505f65f4c6ff58526a161880805b7be919ca2b7ba0a6c131e0495",
+        "binary_size": "90e5c40eb85505f65f4c6ff58526a161880805b7be919ca2b7ba0a6c131e0495",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/mozilla-firefox/firefox",
+        "revision": "5024f35d27488a1482b792f727cf880926575a71",
+        "revision_date": "2025-09-29",
+        "version": "143.0.3"
+      },
+      {
+        "engine": "spidermonkey",
+        "variant": "1.5",
+        "summary": "First ES3-compliant version. Shipped in Netscape Navigator 6.0 (2000) and Firefox 1.0 (2004).",
+        "url": "https://web.archive.org/web/20210420113930/https://developer.mozilla.org/en-US/docs/Archive/Web/JavaScript/New_in_JavaScript/1.5",
+        "sources": "https://archive.mozilla.org/pub/js/older-packages/js-1.5.tar.gz",
+        "loc": "spidermonkey",
+        "language": "C",
+        "license": "MPL-2.0",
+        "org": "Mozilla",
+        "standard": "ES3, JS1.5",
+        "years": "2000",
+        "runtime": "stack-based VM",
+        "loc_command": "cloc js/src",
+        "license_abbr": "MPL-2.0",
+        "arch": "amd64",
+        "binary_sha256": "8d0cc0d0d9e389fb23f706629623e79f727cc687aaa9ded2785ea44c89b4e319",
+        "binary_size": "8d0cc0d0d9e389fb23f706629623e79f727cc687aaa9ded2785ea44c89b4e319",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "revision_date": "2004-09-24",
+        "version": "1.5"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "3cf232ea6f0cef700c8c67ca80839479b366fbf67a337c23348110f90cf8f656",
+        "binary_size": "3cf232ea6f0cef700c8c67ca80839479b366fbf67a337c23348110f90cf8f656",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "loc": "spidermonkey",
+        "revision_date": "2006-11-19",
+        "variant": "1.6",
+        "version": "1.6"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "16a974bf7338a9210626d0cd9e24c319aa614588f73519736370c94e6f20442a",
+        "binary_size": "16a974bf7338a9210626d0cd9e24c319aa614588f73519736370c94e6f20442a",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "loc": "spidermonkey",
+        "revision_date": "2007-10-03",
+        "variant": "1.7",
+        "version": "1.7.0"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "655af3c656ad11c02517f05a5e4e302a1bfdfc456e80c7c8c83b3bf78a45d571",
+        "binary_size": "655af3c656ad11c02517f05a5e4e302a1bfdfc456e80c7c8c83b3bf78a45d571",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "loc": "spidermonkey",
+        "revision_date": "2009-02-16",
+        "variant": "1.8.0",
+        "version": "1.8.0"
+      },
+      {
+        "engine": "spidermonkey",
+        "variant": "1.8.5",
+        "summary": "First ES5-compliant version. Shipped in Firefox 4.0 (2011).",
+        "url": "https://web.archive.org/web/20210420113930/https://developer.mozilla.org/en-US/docs/Archive/Web/JavaScript/New_in_JavaScript/1.8.5",
+        "sources": "https://archive.mozilla.org/pub/js/js185-1.0.0.tar.gz",
+        "loc": "spidermonkey",
+        "language": "C++",
+        "license": "MPL-2.0",
+        "org": "Mozilla",
+        "standard": "ES5",
+        "years": "2011",
+        "runtime": "stack-based VM, PIC",
+        "jit": "TraceMonkey tracing JIT, JägerMonkey method JIT",
+        "regex": "YARR",
+        "loc_command": "cloc --fullpath --not_match_f='(test|/(v8|t|ctypes|metrics)/|configure)' js-1.8.5/js/src",
+        "license_abbr": "MPL-2.0",
+        "arch": "amd64",
+        "binary_sha256": "a6a844121e83fdd48a5276371d0372bd2f4db0e7335a8a93433c4eeaa054e4c8",
+        "binary_size": "a6a844121e83fdd48a5276371d0372bd2f4db0e7335a8a93433c4eeaa054e4c8",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "revision_date": "2011-03-31",
+        "version": "1.8.5"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "8eb218f9cfef80abbcbae5ef69cf5614fe139ce248f563ef1d1eebcacbbb0d03",
+        "binary_size": "8eb218f9cfef80abbcbae5ef69cf5614fe139ce248f563ef1d1eebcacbbb0d03",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://github.com/mozilla-firefox/firefox",
+        "revision": "5024f35d27488a1482b792f727cf880926575a71",
+        "revision_date": "2025-09-29",
+        "variant": "jitless",
+        "version": "143.0.3"
+      },
       {
         "arch": "arm64",
         "binary_size": 15605456,
@@ -3423,7 +4029,7 @@
         "summary": "First ES3-compliant version. Shipped in Netscape Navigator 6.0 (2000) and Firefox 1.0 (2004).",
         "url": "https://web.archive.org/web/20210420113930/https://developer.mozilla.org/en-US/docs/Archive/Web/JavaScript/New_in_JavaScript/1.5",
         "sources": "https://archive.mozilla.org/pub/js/older-packages/js-1.5.tar.gz",
-        "loc": 77008,
+        "loc": 58853,
         "language": "C",
         "license": "MPL-2.0",
         "org": "Mozilla",
@@ -3433,9 +4039,41 @@
         "loc_command": "cloc js/src",
         "license_abbr": "MPL-2.0",
         "arch": "arm64",
+        "binary_sha256": "cf3e1789241e33f544b79c9d51d18ac709798b92a4a3a9c25992ec9bd536e14c",
         "binary_size": 676912,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
         "revision_date": "2004-09-24",
         "version": "1.5"
+      },
+      {
+        "arch": "arm64",
+        "binary_sha256": "cd0a67929eb7d8d0596aaa9e7250c92c31d8cb006f2c61e95c7d54e872751edd",
+        "binary_size": 812688,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "loc": 71823,
+        "revision_date": "2006-11-19",
+        "variant": "1.6",
+        "version": "1.6"
+      },
+      {
+        "arch": "arm64",
+        "binary_sha256": "f6692f4ea39bcf8e1a5eabc763cc639c31ba34951ab7bab5ff9aa8ac252d376f",
+        "binary_size": 948328,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "loc": 79328,
+        "revision_date": "2007-10-03",
+        "variant": "1.7",
+        "version": "1.7.0"
+      },
+      {
+        "arch": "arm64",
+        "binary_sha256": "2d9952db774e274daff5cf27b4d4e7b83ba441b72b5c5a446eac10e4769564b4",
+        "binary_size": 948752,
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "loc": 85195,
+        "revision_date": "2009-02-16",
+        "variant": "1.8.0",
+        "version": "1.8.0"
       },
       {
         "arch": "arm64",
@@ -3563,9 +4201,24 @@
     ]
   },
   {
+    "engine": "stackluca-v3",
+    "github_forks": 1,
+    "github_stars": 8,
+    "language": "C",
+    "license": "MIT",
+    "license_abbr": "MIT",
+    "loc": 4299,
+    "loc_command": "cloc src",
+    "repository": "https://github.com/stackluca/v3.git",
+    "runtime": "tree walker",
+    "summary": "Toy JavaScript interpreter.",
+    "title": "stackluca/v3",
+    "years": "2016"
+  },
+  {
     "engine": "starlight",
     "github_forks": 9,
-    "github_stars": 527,
+    "github_stars": 528,
     "language": "Rust",
     "license": "MPL-2.0",
     "license_abbr": "MPL-2.0",
@@ -3578,6 +4231,16 @@
     "title": "Starlight",
     "years": "2021",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "a01629ea336d2327c9a5b58787539b32e6108060d4f3003c9b7ff681b77afc68",
+        "binary_size": "a01629ea336d2327c9a5b58787539b32e6108060d4f3003c9b7ff681b77afc68",
+        "repository": "https://github.com/Starlight-JS/starlight.git",
+        "revision": "503e789b9ef53594aee30c45a621018e855dcc17",
+        "revision_date": "2021-10-31",
+        "rustc": "rustc 1.56.0-nightly (4e282795d 2021-07-31)",
+        "version": "0.0.1-55-g503e789"
+      },
       {
         "arch": "x64",
         "binary_size": 3096168,
@@ -3646,7 +4309,7 @@
     "loc_command": "cloc --not_match_d=\"(?i)(test)\" core aot* esc eval nanojit shell util",
     "org": "Adobe",
     "repository": "https://github.com/adobe/avmplus.git",
-    "standard": "ES4 (draft)",
+    "standard": "ES3, ES4 (draft)",
     "summary": "JavaScript engine of Adobe Flash Player 9+.",
     "title": "Tamarin",
     "years": "2006-2013"
@@ -3671,8 +4334,8 @@
   },
   {
     "engine": "tiny-js",
-    "github_forks": 90,
-    "github_stars": 559,
+    "github_forks": 91,
+    "github_stars": 561,
     "language": "C++",
     "license": "MIT",
     "license_abbr": "MIT",
@@ -3687,7 +4350,7 @@
   {
     "engine": "tjs2",
     "github_forks": 123,
-    "github_stars": 847,
+    "github_stars": 852,
     "language": "C++",
     "license": "Custom",
     "license_abbr": "Custom",
@@ -3797,8 +4460,8 @@
   {
     "engine": "v8",
     "github": "https://github.com/v8/v8.git",
-    "github_forks": 4165,
-    "github_stars": 24460,
+    "github_forks": 4168,
+    "github_stars": 24471,
     "jit": "3-tier JIT",
     "language": "C++",
     "license": "BSD-3-Clause",
@@ -3816,6 +4479,38 @@
     "url": "https://v8.dev/",
     "years": "2008-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "186280ae44d166ed457c35c51e5309e69e794374ae900c3c06cd10191810d0ab",
+        "binary_size": "186280ae44d166ed457c35c51e5309e69e794374ae900c3c06cd10191810d0ab",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://chromium.googlesource.com/v8/v8.git",
+        "revision": "ad8af0fc661d278e87627fcaa3a7cf795ee80dd8",
+        "revision_date": "2025-09-22",
+        "version": "14.1.146.11"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "0601441438dd5361829f7229a02de6f71fdacc675c3436f739e6f7c4e4dde619",
+        "binary_size": "0601441438dd5361829f7229a02de6f71fdacc675c3436f739e6f7c4e4dde619",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://chromium.googlesource.com/v8/v8.git",
+        "revision": "ad8af0fc661d278e87627fcaa3a7cf795ee80dd8",
+        "revision_date": "2025-09-22",
+        "variant": "jitless",
+        "version": "14.1.146.11"
+      },
+      {
+        "arch": "amd64",
+        "binary_sha256": "829c485d11d187eed80df429121ea532148085c130ad42b227a3da2d5175845f",
+        "binary_size": "829c485d11d187eed80df429121ea532148085c130ad42b227a3da2d5175845f",
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://chromium.googlesource.com/chromium/src.git",
+        "revision": "b95610d5c4a562d9cd834bc0a098d3316e2f533f",
+        "revision_date": "2025-09-29",
+        "variant": "pgo",
+        "version": "14.1.146.11"
+      },
       {
         "arch": "arm64",
         "binary_size": 19477008,
@@ -3902,11 +4597,14 @@
       },
       {
         "arch": "arm64",
+        "binary_sha256": "720f213419e0a8c8322b110884b2cc5c757c1467df261e2522a76cabce959158",
+        "binary_size": 23148184,
+        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
+        "repository": "https://chromium.googlesource.com/chromium/src.git",
+        "revision": "b95610d5c4a562d9cd834bc0a098d3316e2f533f",
+        "revision_date": "2025-09-29",
         "variant": "pgo",
-        "binary_size": 20373536,
-        "revision": "a468e6b1e8d5649ddb2d9fecef04e6273ef97c8b",
-        "revision_date": "2025-07-15",
-        "version": "14.0.218"
+        "version": "14.1.146.11"
       },
       {
         "arch": "x64",
@@ -4019,7 +4717,7 @@
     "loc_command": "cloc --not_match_d=test src runtime-library",
     "org": "Intel",
     "repository": "https://github.com/web-devkits/Wasmnizer-ts.git",
-    "summary": "Compiler for a TypeScript subset targetting WebAssembly",
+    "summary": "Compiler for a TypeScript subset targetting WebAssembly.",
     "title": "wasmnizer-ts",
     "type": "compiler to WASM",
     "years": "2023-2024"
@@ -4027,7 +4725,7 @@
   {
     "engine": "xs",
     "github_forks": 246,
-    "github_stars": 1428,
+    "github_stars": 1431,
     "language": "C",
     "license": "Apache-2.0, LGPL-3.0-or-later",
     "license_abbr": "Apache/LGPL",
@@ -4043,6 +4741,16 @@
     "url": "https://www.moddable.com/faq#what-is-xs",
     "years": "2002-",
     "bench": [
+      {
+        "arch": "amd64",
+        "binary_sha256": "de5cf5d657ba92aea11d4df17403fc051614e33a8ed0b9bed06c234cd39f009c",
+        "binary_size": "de5cf5d657ba92aea11d4df17403fc051614e33a8ed0b9bed06c234cd39f009c",
+        "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
+        "repository": "https://github.com/Moddable-OpenSource/moddable.git",
+        "revision": "6ff5fb489fd5fe2557989265ae0ea10847e191ca",
+        "revision_date": "2025-09-11",
+        "version": "16.9.1"
+      },
       {
         "arch": "arm64",
         "binary_size": 2034712,
@@ -4148,7 +4856,7 @@
   {
     "engine": "yavashark",
     "github_forks": 2,
-    "github_stars": 23,
+    "github_stars": 30,
     "language": "Rust",
     "license": "MIT",
     "license_abbr": "MIT",

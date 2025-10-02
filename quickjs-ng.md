@@ -3,7 +3,7 @@
 Community-oriented fork of QuickJS.
 
 * URL:        https://quickjs-ng.github.io/quickjs/
-* Repository: https://github.com/quickjs-ng/quickjs.git <img src="https://img.shields.io/github/stars/quickjs-ng/quickjs?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/quickjs-ng/quickjs?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/quickjs-ng/quickjs.git <img src="https://img.shields.io/github/stars/quickjs-ng/quickjs?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/quickjs-ng/quickjs?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        74458 (`cloc *.c *.h`)
 * Language:   C
 * License:    MIT

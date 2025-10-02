@@ -2,7 +2,7 @@
 
 JavaScript to Lua compiler.
 
-* Repository: https://github.com/tessel/colony-compiler.git <img src="https://img.shields.io/github/stars/tessel/colony-compiler?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/tessel/colony-compiler?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/tessel/colony-compiler.git <img src="https://img.shields.io/github/stars/tessel/colony-compiler?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/tessel/colony-compiler?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        1763 (`cloc src`)
 * Language:   JavaScript
 * License:    Apache-2.0 OR MIT

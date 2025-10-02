@@ -1,4 +1,4 @@
-# docker
+# javascript-zoo/docker
 
 Dockerfiles for building open-source JavaScript engines.
 
@@ -31,7 +31,38 @@ as well when possible to save space.
 
 ## Docker Hub
 
-Multiarch container with pre-built binaries on Docker Hub:
+Container with pre-built binaries on
+[Docker Hub](https://hub.docker.com/r/ivankra/javascript-zoo):
 
-  * https://hub.docker.com/r/ivankra/javascript-zoo
   * `docker run -it ivankra/javascript-zoo`
+  * `podman run -it docker.io/ivankra/javascript-zoo`
+
+## Template
+
+Template for adding a new engine:
+
+```Dockerfile
+ARG BASE=jszoo-gcc
+FROM $BASE
+
+ARG REPO=
+ARG REV=master
+
+WORKDIR /src
+RUN git clone "$REPO" . && git checkout "$REV"
+
+# Or shallow clone for large repositories:
+#RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
+#    (git clone --depth=1 "$REPO" . && git fetch --depth=1 origin "$REV" && git checkout FETCH_HEAD)
+
+RUN make -j
+
+ENV JS_BINARY=<path to javascript shell binary>
+
+# Point WORKDIR to source directory for dist.sh to get metadata from git.
+# Tweak metadata if needed: drop json.<key> files in source or /dist dir.
+#RUN ${JS_BINARY} --version >json.version
+
+# REPL command:
+CMD ${JS_BINARY}
+```

@@ -2,7 +2,7 @@
 
 Toy interpreter for microcontrollers that can hardly run any JavaScript.
 
-* Repository: https://github.com/cesanta/elk.git <img src="https://img.shields.io/github/stars/cesanta/elk?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/cesanta/elk?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/cesanta/elk.git <img src="https://img.shields.io/github/stars/cesanta/elk?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/cesanta/elk?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        1247 (`cloc elk.c elk.h`)
 * Language:   C
 * License:    AGPL

@@ -2,7 +2,7 @@
 
 Metacircular JavaScript interpreter, was used for prototyping new language features in ES6.
 
-* Repository: https://github.com/mozilla/narcissus.git <img src="https://img.shields.io/github/stars/mozilla/narcissus?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/mozilla/narcissus?label=&style=flat-square" alt="Last commit">
+* Repository: https://github.com/mozilla/narcissus.git <img src="https://img.shields.io/github/stars/mozilla/narcissus?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/mozilla/narcissus?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        6308 (`cloc lib`)
 * Language:   JavaScript
 * License:    MPL-1.1-or-later OR GPL-2.0-or-later OR LGPL-2.1-or-later

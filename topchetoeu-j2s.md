@@ -3,7 +3,7 @@
 ES5 interpreter written in Java.
 
 * Repository: https://git.topcheto.eu/topchetoeu/j2s
-* GitHub:     https://github.com/TopchetoEU/jscript.git <img src="https://img.shields.io/github/stars/TopchetoEU/jscript?label=&style=flat-square" alt="Stars"><img src="https://img.shields.io/github/last-commit/TopchetoEU/jscript?label=&style=flat-square" alt="Last commit">
+* GitHub:     https://github.com/TopchetoEU/jscript.git <img src="https://img.shields.io/github/stars/TopchetoEU/jscript?label=&style=flat-square" alt="GitHub stars" title="GitHub stars"><img src="https://img.shields.io/github/last-commit/TopchetoEU/jscript?label=&style=flat-square" alt="Last commit" title="Last commit">
 * LOC:        15692 (`cloc --not_match_d="(test)" */src`)
 * Language:   Java
 * License:    MIT
