@@ -1,4 +1,4 @@
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 ARG REPO=https://github.com/oracle/graaljs
@@ -16,8 +16,8 @@ RUN wget "https://github.com/oracle/graaljs/releases/download/$REV/$(echo "$REV"
       'SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" '"\n" \
       '"$SCRIPT_DIR/'$(echo graaljs-*)'/bin/js" "$@"' && \
     chmod a+rx /dist/graaljs && \
-    /dist/graaljs --version | egrep -o '[0-9.]+' >json.version && \
-    du -bs /dist/graaljs-*| cut -f 1 >json.binary_size
+    /dist/graaljs --version | egrep -o '[0-9.]+' >jsz_version && \
+    du -bs /dist/graaljs-*| cut -f 1 >jsz_binary_size
 
 ENV JS_BINARY=/dist/graaljs
 CMD ${JS_BINARY}

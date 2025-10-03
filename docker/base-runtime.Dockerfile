@@ -1,9 +1,10 @@
+# Test container for running built binaries and common JavaScript runtimes.
+
 ARG BASE=debian:stable
-FROM $BASE
+FROM $BASE AS jsz-runtime
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update -y && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update -y && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
@@ -11,7 +12,7 @@ RUN apt-get update -y && \
         less \
         libatomic1 \
         libedit-dev \
-        libgc-dev \
+        libgc1 \
         libicu-dev \
         libpcre2-dev \
         libreadline-dev \
@@ -25,8 +26,7 @@ RUN apt-get update -y && \
         unzip \
         vim \
         wget \
-        xz-utils \
-        zip && \
+        xz-utils && \
     echo "en_US.UTF-8 UTF-8" >/etc/locale.gen && \
     locale-gen
 
@@ -36,9 +36,10 @@ ENV LC_ALL=en_US.UTF-8
 RUN export NVM_DIR=/opt/nvm && mkdir -p "$NVM_DIR" && \
     curl -o /opt/nvm-install.sh https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh && \
     echo "2d8359a64a3cb07c02389ad88ceecd43f2fa469c06104f92f98df5b6f315275f  /opt/nvm-install.sh" | sha256sum -c && \
-    bash /opt/nvm-install.sh && \
+    bash /opt/nvm-install.sh && rm -f /opt/nvm-install.sh && \
     bash -c 'source /opt/nvm/nvm.sh && nvm install node' && \
     ln -s /opt/nvm/versions/node/*/ /opt/node
+
 ENV PATH=/opt/node/bin:$PATH
 
 # Install other popular runtimes from npm:
@@ -56,8 +57,22 @@ RUN cd /opt && wget "https://github.com/awslabs/llrt/releases/download/v0.7.0-be
 # RingoJS: Rhino-based runtime for JVM.
 # https://github.com/ringo/ringojs
 RUN cd /opt && wget "https://github.com/ringo/ringojs/releases/download/v4.0.0/ringojs-4.0.0.tar.gz" && \
-    tar xf ringojs*.tar.gz && \
+    tar xf ringojs*.tar.gz && rm -f ringojs*.tar.gz \
     echo >/usr/local/bin/ringojs \
       '#!/bin/sh'"\n" \
       'java -jar /opt/ringo*/run.jar "$@"' && \
     chmod a+rx /usr/local/bin/ringojs
+
+
+# -----------------------------------------------------------------------------
+# Dockerhub version
+
+FROM jsz-runtime AS jsz-hub
+
+ARG TARGETARCH
+
+COPY dist/$TARGETARCH /dist
+COPY bench /bench
+RUN rm -rf /bench/octane /bench/__pycache__ /bench/data.py
+
+WORKDIR /dist

@@ -28,7 +28,7 @@ if [[ -f $CIDFILE ]]; then
 fi
 
 # Prepare /dist directory inside container
-$DOCKER run --cidfile="$CIDFILE" "jszoo-$ID" /bin/bash -e -c "$(cat <<EOF
+$DOCKER run --cidfile="$CIDFILE" "jsz-$ID" /bin/bash -e -c "$(cat <<EOF
 mkdir -p /dist
 
 if [[ "\$JS_BINARY" != "" && ! -f "\$JS_BINARY" ]]; then
@@ -39,49 +39,47 @@ fi
 if [[ \$(file -b --mime-type "\$JS_BINARY" 2>/dev/null) == */*-executable ]]; then
   rm -f "/dist/$ID" || true
   strip -o "/dist/$ID" "\$JS_BINARY"
-  sha256sum "/dist/$ID" | cut -f 1 -d ' ' >/dist/json.binary_sha256
-  ls -l "/dist/$ID" 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' ' >/dist/json.binary_size
+  sha256sum "/dist/$ID" | cut -f 1 -d ' ' >/dist/jsz_binary_sha256
+  ls -l "/dist/$ID" 2>/dev/null | sed -e 's/  */ /g' | cut -f 5 -d ' ' >/dist/jsz_binary_size
 fi
 
 SRC="\$(pwd)"
 
-for f in json.*; do
+for f in jsz_*; do
   if [[ -f "\$f" && ! -f "/dist/\$f" ]]; then
     cp -f "\$f" "/dist/\$f"
   fi
 done
 
 if [[ -d .git ]]; then
-  git rev-parse HEAD >/dist/json.revision
-  git log -1 --format='%ad' --date=short HEAD >/dist/json.revision_date
-  git remote get-url origin >/dist/json.repository
+  git rev-parse HEAD >/dist/jsz_revision
+  git log -1 --format='%ad' --date=short HEAD >/dist/jsz_revision_date
+  git remote get-url origin >/dist/jsz_repository
 
-  if ! [[ -f /dist/json.version ]] && git describe --tags HEAD >/dev/null 2>/dev/null; then
-    git describe --tags HEAD >/dist/json.version 2>/dev/null
+  if ! [[ -f /dist/jsz_version ]] && git describe --tags HEAD >/dev/null 2>/dev/null; then
+    git describe --tags HEAD >/dist/jsz_version 2>/dev/null
   fi
 fi
 
 cd /dist
 
-rm -f json.c  # XXX
-
 ID="$ID"
 
 ENGINE="\${ID%_*}"
-echo "\$ENGINE" >json.engine
+echo "\$ENGINE" >jsz_engine
 
 if [[ "\$ID" == *_* ]]; then
   VARIANT="\${ID#*_}"
-  echo "\$VARIANT" >json.variant
+  echo "\$VARIANT" >jsz_variant
 fi
 
-echo "$ARCH" >json.arch
+echo "$ARCH" >jsz_arch
 
-# Assemble /dist/$ID.json from value fragments in /dist/json.*
+# Assemble /dist/$ID.json from value fragments in /dist/jsz_*
 {
   echo "{"
-  for f in json.*; do
-    key=\${f#json.}
+  for f in jsz_*; do
+    key=\${f#jsz_}
     if [[ \$key == binary_size || \$key == loc ]]; then
       val=\$(cat "\$f")
     else

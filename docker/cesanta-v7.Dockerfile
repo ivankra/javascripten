@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 # HEAD is broken

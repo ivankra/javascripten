@@ -11,4 +11,6 @@ JavaScript engine in pure Go.
 * Runtime:    tree walker
 * Regex:      RE2
 
+Non-compliant regex engine from Go.
+
 Mostly obsoleted by newer, faster and full-featured [goja](goja.md) engine.

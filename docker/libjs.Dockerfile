@@ -1,4 +1,4 @@
-ARG BASE=jszoo-clang
+ARG BASE=jsz-clang
 FROM $BASE
 
 ARG REPO=https://github.com/LadybirdBrowser/ladybird.git

@@ -1,4 +1,4 @@
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 ARG REPO=https://github.com/ferus-web/bali.git

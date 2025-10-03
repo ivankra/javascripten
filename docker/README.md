@@ -42,7 +42,7 @@ Container with pre-built binaries on
 Template for adding a new engine:
 
 ```Dockerfile
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 ARG REPO=
@@ -60,8 +60,8 @@ RUN make -j
 ENV JS_BINARY=<path to javascript shell binary>
 
 # Point WORKDIR to source directory for dist.sh to get metadata from git.
-# Tweak metadata if needed: drop json.<key> files in source or /dist dir.
-#RUN ${JS_BINARY} --version >json.version
+# Tweak metadata if needed: drop jsz_<key> files in source or /dist dir.
+#RUN ${JS_BINARY} --version >jsz_version
 
 # REPL command:
 CMD ${JS_BINARY}

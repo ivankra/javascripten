@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc14
+ARG BASE=jsz-gcc14
 FROM $BASE
 
 ARG TARBALL=https://archive.mozilla.org/pub/js/js185-1.0.0.tar.gz

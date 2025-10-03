@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc14
+ARG BASE=jsz-gcc14
 FROM $BASE
 
 ARG REPO=https://github.com/jerryscript-project/jerryscript.git

@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc14
+ARG BASE=jsz-gcc14
 FROM $BASE
 
 ARG REPO=https://github.com/facebook/hermes.git
@@ -14,7 +14,7 @@ RUN cmake -S . -B build_release -G Ninja -DCMAKE_BUILD_TYPE=Release
 RUN cmake --build build_release
 
 ENV JS_BINARY=/src/build_release/bin/hermes
-RUN ${JS_BINARY} -version | grep Hermes.release | egrep -o [0-9.]+ >json.version
+RUN ${JS_BINARY} -version | grep Hermes.release | egrep -o [0-9.]+ >jsz_version
 CMD ${JS_BINARY} -O
 
 # Ahead-of-time compiler to bytecode engine.

@@ -1,4 +1,4 @@
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 ARG REPO=https://github.com/BeRo1985/besen.git

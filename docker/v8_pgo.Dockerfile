@@ -1,6 +1,6 @@
 # V8 build from Chromium's tree with profile-guided optimizations.
 
-ARG BASE=jszoo-clang
+ARG BASE=jsz-clang
 FROM $BASE
 
 WORKDIR /src
@@ -60,5 +60,5 @@ RUN gn gen out/release/
 RUN autoninja -C out/release/ d8
 
 ENV JS_BINARY=/src/src/out/release/d8
-RUN ${JS_BINARY} -e 'console.log(version())' >json.version
+RUN ${JS_BINARY} -e 'console.log(version())' >jsz_version
 CMD ${JS_BINARY}

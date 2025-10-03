@@ -1,4 +1,4 @@
-ARG BASE=jszoo-clang
+ARG BASE=jsz-clang
 FROM $BASE
 
 ARG REPO=https://github.com/WebKit/WebKit.git
@@ -25,5 +25,6 @@ RUN export CXXFLAGS="-Wno-error" && \
       --cmakeargs="-DENABLE_STATIC_JSC=ON -DUSE_THIN_ARCHIVES=OFF -DDEVELOPER_MODE_FATAL_WARNINGS=OFF"
 
 ENV JS_BINARY=/src/WebKitBuild/JSCOnly/Release/bin/jsc
-RUN curl "https://commits.webkit.org/$(git rev-parse HEAD)/json" 2>&1 | sed -Ene 's/.*"identifier": "([^"]+)".*/\1/p' >json.version
+RUN curl "https://commits.webkit.org/$(git rev-parse HEAD)/json" 2>&1 \
+      | sed -Ene 's/.*"identifier": "([^"]+)".*/\1/p' >jsz_version
 CMD ${JS_BINARY}

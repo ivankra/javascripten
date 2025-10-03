@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 WORKDIR /src/ecm
@@ -21,5 +21,5 @@ RUN export CFLAGS="-O3" CXXFLAGS="-O3" && \
     cmake --build build
 
 ENV JS_BINARY=/src/kjs/build/bin/kjs5
-RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >json.version
+RUN ${JS_BINARY} --version | egrep -o '[0-9.]+' >jsz_version
 CMD ${JS_BINARY}

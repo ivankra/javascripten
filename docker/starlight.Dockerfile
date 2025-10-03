@@ -1,6 +1,6 @@
 # Ancient Rust codebase. Only builds on x64.
 
-ARG BASE=jszoo-rust
+ARG BASE=jsz-rust
 FROM $BASE
 
 ARG REPO=https://github.com/Starlight-JS/starlight.git
@@ -15,5 +15,5 @@ RUN rustup toolchain install nightly-2021-08-01 && rustup override set nightly-2
 RUN cargo build --release
 
 ENV JS_BINARY=/src/target/release/sl
-RUN mkdir -p /dist && rustc --version >/dist/json.rustc && git tag -d nightly
+RUN mkdir -p /dist && rustc --version >/dist/jsz_rustc && git tag -d nightly
 CMD ${JS_BINARY}

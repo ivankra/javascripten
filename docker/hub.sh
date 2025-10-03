@@ -13,16 +13,11 @@ set -x
 
 for arch in $ARCHS; do
   $DOCKER build \
-      -f sh.Dockerfile \
-      -t "jszoo-sh:$arch" \
-      --platform="linux/$arch" \
+      -f base-runtime.Dockerfile \
+      -t "jsz-hub:$arch" \
       --build-arg BASE=debian:stable \
-      ..
-  $DOCKER build \
-      -f hub.Dockerfile \
-      -t "jszoo-hub:$arch" \
-      --platform="linux/$arch" \
-      --build-arg BASE="jszoo-sh:$arch" \
+      --platform "linux/$arch" \
+      --target jsz-hub \
       ..
 done
 
@@ -30,7 +25,7 @@ $DOCKER login docker.io
 
 for tag in $(date +%Y%m%d) latest; do
   for arch in $ARCHS; do
-    $DOCKER push "localhost/jszoo-hub:$arch" "$PUSHDEST:$tag-$arch"
+    $DOCKER push "localhost/jsz-hub:$arch" "$PUSHDEST:$tag-$arch"
   done
   $DOCKER manifest rm "$PUSHDEST:$tag" || true
   $DOCKER manifest create "$PUSHDEST:$tag" $(for arch in $ARCHS; do echo "$PUSHDEST:$tag-$arch"; done)

@@ -47,4 +47,4 @@ mkdir -p "$IID_DIR" "$DIST_DIR"
 rm -f "$DIST_DIR/$ID.json"
 
 set -x
-$DOCKER build --platform="linux/$DOCKER_ARCH" --iidfile="$IID_DIR/$ID" -t "jszoo-$ID" $ARGS .
+$DOCKER build --platform="linux/$DOCKER_ARCH" --iidfile="$IID_DIR/$ID" -t "jsz-$ID" $ARGS .

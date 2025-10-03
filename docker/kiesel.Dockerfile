@@ -1,4 +1,4 @@
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 ARG REPO=https://codeberg.org/kiesel-js/kiesel.git
@@ -16,5 +16,5 @@ RUN cd /opt && wget -O zig.tar.xz "https://ziglang.org/download/${ZIG_VER}/zig-$
 RUN zig build --release=fast
 
 ENV JS_BINARY=/src/zig-out/bin/kiesel
-RUN ${JS_BINARY} --version | grep -i kiesel | grep -o '[0-9].*' >json.version
+RUN ${JS_BINARY} --version | grep -i kiesel | grep -o '[0-9].*' >jsz_version
 CMD ${JS_BINARY}

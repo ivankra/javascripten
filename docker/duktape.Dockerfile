@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 ARG REPO=https://github.com/svaarala/duktape.git

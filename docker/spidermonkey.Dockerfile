@@ -1,4 +1,4 @@
-ARG BASE=jszoo-clang
+ARG BASE=jsz-clang
 FROM $BASE
 
 ARG REPO=https://github.com/mozilla-firefox/firefox
@@ -44,5 +44,5 @@ RUN MOZCONFIG=/src/MOZCONFIG ./mach build
 RUN ln -s obj-*/ obj
 
 ENV JS_BINARY=/src/obj/dist/bin/js
-RUN ${JS_BINARY} -v | egrep -o [0-9.]+ >json.version
+RUN ${JS_BINARY} -v | egrep -o [0-9.]+ >jsz_version
 CMD ${JS_BINARY}

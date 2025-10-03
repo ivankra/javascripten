@@ -1,4 +1,4 @@
-ARG BASE=jszoo-rust
+ARG BASE=jsz-rust
 FROM $BASE
 
 ARG REPO=https://github.com/boa-dev/boa.git

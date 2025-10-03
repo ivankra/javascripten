@@ -26,7 +26,6 @@ RUN apt-get update -y && \
         gperf \
         gzip \
         less \
-        libtool \
         locales \
         lsb-release \
         make \
@@ -50,4 +49,4 @@ RUN apt-get update -y && \
     echo "en_US.UTF-8 UTF-8" >/etc/locale.gen && \
     locale-gen
 
-#ENV LC_ALL=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8

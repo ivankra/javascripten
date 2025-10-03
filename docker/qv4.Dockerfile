@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 ARG REPO=https://code.qt.io/qt/qt5.git

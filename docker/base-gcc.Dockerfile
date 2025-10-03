@@ -1,6 +1,6 @@
 # GCC-based build environment.
 
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 ARG VER=14
@@ -37,4 +37,4 @@ RUN apt-get update -y && \
 ENV CC=/usr/bin/gcc-$VER CXX=/usr/bin/g++-$VER AR=/usr/bin/ar NM=/usr/bin/nm
 
 # Record compiler's version in build metadata.
-RUN mkdir -p /dist && $CC -v 2>&1 | sed -ne 's/ *$//; s/.*gcc version /gcc /p' >/dist/json.cc
+RUN mkdir -p /dist && $CC -v 2>&1 | sed -ne 's/ *$//; s/.*gcc version /gcc /p' >/dist/jsz_cc

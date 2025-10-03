@@ -1,4 +1,4 @@
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 RUN apt-get update -y && \
@@ -6,4 +6,4 @@ RUN apt-get update -y && \
 
 RUN rustup toolchain install stable
 
-RUN mkdir -p /dist && rustc --version >/dist/json.rustc
+RUN mkdir -p /dist && rustc --version >/dist/jsz_rustc

@@ -1,4 +1,4 @@
-ARG BASE=jszoo-ubuntu22
+ARG BASE=jsz-ubuntu22
 FROM $BASE
 
 ARG REPO=https://github.com/chakra-core/ChakraCore.git

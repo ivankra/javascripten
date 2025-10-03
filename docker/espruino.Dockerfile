@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 ARG REPO=https://github.com/espruino/Espruino.git
@@ -11,5 +11,5 @@ RUN git clone --depth=1 --branch="$REV" "$REPO" . || \
 RUN make -j RELEASE=1
 
 ENV JS_BINARY=/src/bin/espruino
-RUN ${JS_BINARY} -e 'print(process.version)' | tail -2 | head -1 | tr -d '\r' >json.version
+RUN ${JS_BINARY} -e 'print(process.version)' | tail -2 | head -1 | tr -d '\r' >jsz_version
 CMD ${JS_BINARY}

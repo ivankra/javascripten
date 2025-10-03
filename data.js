@@ -351,7 +351,7 @@ kJavascriptZoo = [
       },
       {
         "arch": "arm64",
-        "binary_sha256": "b79dbc29102fcbd861a34ccd37e37ccadcccf9d2dbe8ecc00ce7e5199818ea8d",
+        "binary_sha256": "f297a3fb51f1a38210c97cd0dfa1ec611c7d1d8d6fef98abdbacf1b3895b294c",
         "binary_size": 199512,
         "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
         "repository": "https://github.com/cesanta/mjs.git",
@@ -605,7 +605,7 @@ kJavascriptZoo = [
     "runtime": "tree walker",
     "sources": "https://cpan.metacpan.org/authors/id/S/SP/SPROUT/JE-0.066.tar.gz",
     "standard": "ES3",
-    "summary": "Pure-Perl JavaScript engine.",
+    "summary": "JavaScript engine in pure Perl.",
     "title": "CPAN/JE",
     "url": "https://metacpan.org/dist/JE",
     "years": "2007-2014"
@@ -628,6 +628,19 @@ kJavascriptZoo = [
     "title": "CRIScript",
     "url": "https://web.archive.org/web/20100302002237/http://criscript.com/trac",
     "years": "2008"
+  },
+  {
+    "engine": "cznic-quickjs",
+    "language": "Go",
+    "license": "BSD-3-Clause, MIT",
+    "license_abbr": "BSD-3/MIT",
+    "loc": 167235,
+    "loc_command": "cloc lib*.go ccgo_linux_amd64.go",
+    "repository": "https://gitlab.com/cznic/quickjs",
+    "standard": "ES2023",
+    "summary": "QuickJS transpiled to pure Go.",
+    "title": "cznic/quickjs",
+    "years": "2024-"
   },
   {
     "engine": "dmdscript",
@@ -790,18 +803,7 @@ kJavascriptZoo = [
     "standard": "no (can't handle ES1)",
     "summary": "JavaScript interpreter written in Rust with QuickJS-inspired bytecode.",
     "title": "echosoar/jsi",
-    "years": "2022-",
-    "bench": [
-      {
-        "arch": "arm64",
-        "binary_sha256": "492ffb189b4690511b88dca04f51f532bd34b3aea2063a61c06c40609846c3ba",
-        "binary_size": 1053392,
-        "repository": "https://github.com/echosoar/jsi.git",
-        "revision": "fe199b5c182341a94c9b340486c25acebe163f02",
-        "revision_date": "2025-08-24",
-        "rustc": "rustc 1.90.0 (1159e78c4 2025-09-14)"
-      }
-    ]
+    "years": "2022-"
   },
   {
     "engine": "edbrowse",
@@ -1102,7 +1104,7 @@ kJavascriptZoo = [
     "repository": "https://github.com/dop251/goja.git",
     "runtime": "stack-based VM",
     "standard": "ES6 (partial)",
-    "summary": "JavaScript engine in pure Go.",
+    "summary": "JavaScript engine in pure Go. Fully ES5 compliant, partially ES6+.",
     "title": "goja",
     "years": "2016-",
     "bench": [
@@ -4039,7 +4041,7 @@ kJavascriptZoo = [
         "loc_command": "cloc js/src",
         "license_abbr": "MPL-2.0",
         "arch": "arm64",
-        "binary_sha256": "cf3e1789241e33f544b79c9d51d18ac709798b92a4a3a9c25992ec9bd536e14c",
+        "binary_sha256": "25eeac022dbc0dc3cc38440910c0208cbe2cf03a36c979381cea42b4a7d50621",
         "binary_size": 676912,
         "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
         "revision_date": "2004-09-24",
@@ -4047,7 +4049,7 @@ kJavascriptZoo = [
       },
       {
         "arch": "arm64",
-        "binary_sha256": "cd0a67929eb7d8d0596aaa9e7250c92c31d8cb006f2c61e95c7d54e872751edd",
+        "binary_sha256": "a935de1a4fea28cf45f2c979d104dbdfd88fa53ee828925d8e4222d0452d734d",
         "binary_size": 812688,
         "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
         "loc": 71823,
@@ -4057,7 +4059,7 @@ kJavascriptZoo = [
       },
       {
         "arch": "arm64",
-        "binary_sha256": "f6692f4ea39bcf8e1a5eabc763cc639c31ba34951ab7bab5ff9aa8ac252d376f",
+        "binary_sha256": "c9a70308a24af5b68f818e7c5e1c241a357d02041f83775a226cb1e9edf8d574",
         "binary_size": 948328,
         "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
         "loc": 79328,
@@ -4067,7 +4069,7 @@ kJavascriptZoo = [
       },
       {
         "arch": "arm64",
-        "binary_sha256": "2d9952db774e274daff5cf27b4d4e7b83ba441b72b5c5a446eac10e4769564b4",
+        "binary_sha256": "a75bcb23bb221358cca03631ba19ecae1c6a43a5d1ef90b11fb2e0da71f6fe6b",
         "binary_size": 948752,
         "cc": "gcc 14.2.0 (Debian 14.2.0-19)",
         "loc": 85195,
@@ -4594,17 +4596,6 @@ kJavascriptZoo = [
         "Typescript_note": "N=100 median=40121 mean=37005.38±553.00 max=41970",
         "zlib_note": "N=100 median=4249 mean=4297.81±8.96 max=4457",
         "jit": ""
-      },
-      {
-        "arch": "arm64",
-        "binary_sha256": "720f213419e0a8c8322b110884b2cc5c757c1467df261e2522a76cabce959158",
-        "binary_size": 23148184,
-        "cc": "clang 20.1.8 (++20250809043815+87f0227cb601-1~exp1~20250809163919.3)",
-        "repository": "https://chromium.googlesource.com/chromium/src.git",
-        "revision": "b95610d5c4a562d9cd834bc0a098d3316e2f533f",
-        "revision_date": "2025-09-29",
-        "variant": "pgo",
-        "version": "14.1.146.11"
       },
       {
         "arch": "x64",

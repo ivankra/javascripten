@@ -1,6 +1,6 @@
 # CPAN/JE
 
-Pure-Perl JavaScript engine.
+JavaScript engine in pure Perl.
 
 * URL:        https://metacpan.org/dist/JE
 * Sources:    https://cpan.metacpan.org/authors/id/S/SP/SPROUT/JE-0.066.tar.gz

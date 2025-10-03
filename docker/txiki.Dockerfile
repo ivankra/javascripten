@@ -2,7 +2,7 @@
 #
 # URL: https://github.com/saghul/txiki.js
 
-ARG BASE=jszoo-clang
+ARG BASE=jsz-clang
 FROM $BASE
 
 ARG REPO=https://github.com/saghul/txiki.js.git
@@ -19,5 +19,5 @@ RUN CFLAGS=-Wno-stringop-overread \
 # ffi submodule build fails
 
 ENV JS_BINARY=/src/build/tjs
-RUN ${JS_BINARY} -v | egrep -o '[0-9.]+.*' >json.version
+RUN ${JS_BINARY} -v | egrep -o '[0-9.]+.*' >jsz_version
 CMD ${JS_BINARY}

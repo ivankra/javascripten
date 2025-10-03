@@ -1,4 +1,4 @@
-ARG BASE=jszoo-gcc
+ARG BASE=jsz-gcc
 FROM $BASE
 
 ARG REPO=https://github.com/Constellation/iv.git
@@ -20,5 +20,5 @@ RUN export CXXFLAGS="-Wno-implicit-fallthrough -Wno-deprecated-copy -Wno-depreca
     make -C release lv5 -j
 
 ENV JS_BINARY=/src/release/iv/lv5/lv5
-RUN if ${JS_BINARY} -v | grep -q "JIT..off"; then echo "" >json.jit; fi
+RUN if ${JS_BINARY} -v | grep -q "JIT..off"; then echo "" >jsz_jit; fi
 CMD ${JS_BINARY}

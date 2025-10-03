@@ -1,6 +1,6 @@
 # Clang-based build environment.
 
-ARG BASE=jszoo-debian
+ARG BASE=jsz-debian
 FROM $BASE
 
 ARG VER=20
@@ -37,6 +37,6 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang-$VER 150 && \
     update-alternatives --install /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-$VER 150
 
 # Record compiler's version in build metadata.
-RUN mkdir -p /dist && $CC -v 2>&1 | sed -ne 's/.*clang version /clang /p' >/dist/json.cc
+RUN mkdir -p /dist && $CC -v 2>&1 | sed -ne 's/.*clang version /clang /p' >/dist/jsz_cc
 
 # Verify binaries: readelf -p .comment <binary>
